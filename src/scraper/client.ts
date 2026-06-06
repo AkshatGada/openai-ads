@@ -96,44 +96,49 @@ export async function probeAds(
 export function extractAdsFromHtml(html: string): AdCard[] {
   const ads: AdCard[] = [];
 
-  // Real ad cards in ChatGPT free-tier use:
-  //   data-ad-card-root="true"  — the card container
-  //   <p>Sponsored</p>          — the ad label (above the card)
-  //   Advertiser name appears in a <p> above "Sponsored"
-  //   Title and body are <p> tags inside the card
+  // Find all ad card markers
+  const marker = 'data-ad-card-root="true"';
+  let searchFrom = 0;
 
-  // Split HTML on data-ad-card-root to find each ad card
-  const parts = html.split('data-ad-card-root="true"');
+  while (true) {
+    const adIdx = html.indexOf(marker, searchFrom);
+    if (adIdx < 0) break;
+    searchFrom = adIdx + marker.length;
 
-  // First part is before any ad — skip it
-  for (let i = 1; i < parts.length; i++) {
-    const chunk = parts[i]!;
+    // Get 1000 chars after marker for title/body extraction
+    const after = html.slice(adIdx, adIdx + 1000);
 
-    // Extract title: first <p> with medium font inside the card
-    const titleMatch = chunk.match(/<p[^>]*class="[^"]*font-medium[^"]*"[^>]*>([^<]+)<\/p>/);
+    // Extract title: <p> with font-medium in class
+    const titleMatch = after.match(/<p[^>]*class="[^"]*font-medium[^"]*"[^>]*>([^<]+)<\/p>/);
     const title = titleMatch?.[1]?.trim() ?? "";
 
-    // Extract body: next <p> inside the card (line-clamp-2 is typical)
-    const bodyMatch = chunk.match(/<p[^>]*line-clamp-2[^>]*>([^<]+)<\/p>/);
+    // Extract body: <p> with line-clamp-2 in class
+    const bodyMatch = after.match(/<p[^>]*line-clamp-2[^>]*>([^<]+)<\/p>/);
     const body = bodyMatch?.[1]?.trim() ?? "";
 
-    // The advertiser name appears BEFORE data-ad-card-root, in the chunk above
-    // Look backwards in the full HTML for the nearest "Sponsored" section
-    const adIndex = html.indexOf('data-ad-card-root="true"', html.indexOf(chunk));
-    if (adIndex < 0) continue;
-
-    // Get the 3000 chars before this ad card to find the advertiser name
-    const before = html.slice(Math.max(0, adIndex - 3000), adIndex);
-    // Find "<p>Sponsored</p>" and the <p> just above it (advertiser name)
-    const sponsoredIdx = before.lastIndexOf("<p>Sponsored</p>");
-    if (sponsoredIdx > 0) {
-      // The advertiser name is in a <p> above "Sponsored" — find the nearest preceding <p>
+    // Look backwards to find the nearest "Sponsored" label and advertiser name
+    const before = html.slice(Math.max(0, adIdx - 10000), adIdx);
+    // The Sponsored label is <p class="...">Sponsored</p>
+    const sponsoredMatch = before.match(/<p[^>]*>Sponsored<\/p>\s*$/s);
+    if (!sponsoredMatch) {
+      // Try broader: find the last occurrence of "Sponsored" in a <p> tag
+      const spMatchGlobal = [...before.matchAll(/<p[^>]*>Sponsored<\/p>/gs)];
+      if (spMatchGlobal.length === 0) {
+        ads.push({ title, body, target_url: "", advertiser: "" });
+        continue;
+      }
+      const lastSponsored = spMatchGlobal[spMatchGlobal.length - 1]!;
+      const sponsoredIdx = lastSponsored.index!;
       const beforeSponsored = before.slice(0, sponsoredIdx);
       const nameMatches = [...beforeSponsored.matchAll(/<p[^>]*>([^<]+)<\/p>/g)];
       const advertiserName = nameMatches.length > 0 ? nameMatches[nameMatches.length - 1]![1]?.trim() ?? "" : "";
       ads.push({ title, body, target_url: "", advertiser: advertiserName });
     } else {
-      ads.push({ title, body, target_url: "", advertiser: "" });
+      const sponsoredIdx = sponsoredMatch.index!;
+      const beforeSponsored = before.slice(0, sponsoredIdx);
+      const nameMatches = [...beforeSponsored.matchAll(/<p[^>]*>([^<]+)<\/p>/g)];
+      const advertiserName = nameMatches.length > 0 ? nameMatches[nameMatches.length - 1]![1]?.trim() ?? "" : "";
+      ads.push({ title, body, target_url: "", advertiser: advertiserName });
     }
   }
 

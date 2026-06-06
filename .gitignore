@@ -11,3 +11,4 @@ chatgpt-*.html
 chatgpt-*.txt
 scraper-outputs*/
 nohup.out
+data/

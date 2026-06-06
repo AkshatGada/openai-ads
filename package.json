@@ -9,6 +9,7 @@
     "loop": "tsx src/loop.ts",
     "verify": "tsx src/scripts/verify.ts",
     "verify-scraper": "tsx src/scripts/verify-scraper.ts",
+    "analyze": "tsx src/analyzer/index.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
