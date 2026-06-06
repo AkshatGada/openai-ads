@@ -4,8 +4,8 @@
 
 import { existsSync, mkdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { probeWithProfile, converseWithProfile, saveResult } from "./client.js";
-import { createPersona, getPersona, listPersonas } from "./profiles.js";
+import { probeWithProfile, converseWithProfile, saveResult, launchProfile, createChatGPTAccount } from "./client.js";
+import { createPersona, getPersona, listPersonas, saveCredentials, loadCredentials, loadProfileMeta } from "./profiles.js";
 import type { PlaywrightProbeResult } from "./types.js";
 
 const OUTPUT_DIR = join(process.cwd(), "playwright-outputs");
@@ -18,16 +18,17 @@ Playwright ChatGPT Scraper — persona-based ad probing
 Commands:
   pnpm playwright --list                          List available personas
   pnpm playwright --create <persona>              Create and seed a persona profile (headed browser)
+  pnpm playwright --create-account <persona>      Create persona WITH a real ChatGPT account (email signup)
+  pnpm playwright --status <persona>              Show persona account status and history
   pnpm playwright --probe <persona> "<prompt>"    Probe ChatGPT with a prompt using persona
   pnpm playwright --converse <persona> <file>     Send prompts from file in sequence
   pnpm playwright --batch <persona> <file>        Batch probe: one prompt per file line
 
 Examples:
   pnpm playwright --list
-  pnpm playwright --create crypto-trader
+  pnpm playwright --create-account crypto-trader
+  pnpm playwright --status crypto-trader
   pnpm playwright --probe crypto-trader "Which exchange has the best REST API for Python trading bots?"
-  pnpm playwright --converse crypto-trader prompts.txt
-  pnpm playwright --batch api-engineer prompts.txt
 `);
 }
 
@@ -58,6 +59,86 @@ async function main(): Promise<void> {
     if (!getPersona(persona)) { console.error(`Unknown persona: ${persona}`); process.exit(1); }
     await createPersona(persona);
     console.log(`\nPersona "${persona}" created. Run probes with: pnpm playwright --probe ${persona} "...prompt..."`);
+    process.exit(0);
+  }
+
+  // --create-account <persona>
+  if (cmd === "--create-account") {
+    const persona = args[1];
+    if (!persona) { console.error("Missing persona name."); process.exit(1); }
+    if (!getPersona(persona)) { console.error(`Unknown persona: ${persona}`); process.exit(1); }
+
+    console.log(`\nCreating ChatGPT account for persona "${persona}"...\n`);
+
+    // Step 1: Launch browser (headed — user may need to solve CAPTCHA)
+    console.log("[1/4] Opening browser...");
+    const { page, browser } = await launchProfile(persona, { headless: false });
+
+    try {
+      // Step 2: Create temp email + signup + verify
+      console.log("[2/4] Creating ChatGPT account...");
+      const creds = await createChatGPTAccount(persona, page);
+
+      // Step 3: Save credentials
+      console.log("[3/4] Saving credentials...");
+      saveCredentials(persona, creds);
+      console.log(`  Email: ${creds.email}`);
+      console.log(`  Password: ${creds.password}`);
+
+      // Step 4: Seed persona conversations
+      console.log("[4/4] Seeding persona conversations...");
+      const personaDef = getPersona(persona)!;
+      for (let i = 0; i < personaDef.seedPrompts.length; i++) {
+        const prompt = personaDef.seedPrompts[i]!;
+        const isFirst = i === 0;
+        console.log(`  [${i + 1}/${personaDef.seedPrompts.length}] ${prompt.slice(0, 80)}...`);
+        const { sendPrompt } = await import("./client.js");
+        await sendPrompt(page, prompt, { waitForAds: false, newChat: isFirst });
+        await page.waitForTimeout(1500);
+      }
+
+      // Update meta
+      loadProfileMeta(persona); // ensure exists
+      const { saveProfileMeta } = await import("./profiles.js");
+      saveProfileMeta(persona, {
+        name: persona,
+        path: `browser-profiles/${persona}`,
+        created: new Date().toISOString(),
+        conversations: personaDef.seedPrompts.length,
+        lastUsed: new Date().toISOString(),
+        description: personaDef.description,
+        hasCredentials: true,
+      });
+
+      console.log(`\n✓ Persona "${persona}" ready — logged-in account with ${personaDef.seedPrompts.length} seed conversations.`);
+      console.log(`  Email: ${creds.email}`);
+      console.log(`  Probe: pnpm playwright --probe ${persona} "...prompt..."`);
+    } finally {
+      await browser.close();
+    }
+
+    process.exit(0);
+  }
+
+  // --status <persona>
+  if (cmd === "--status") {
+    const persona = args[1];
+    if (!persona) { console.error("Missing persona name."); process.exit(1); }
+
+    const meta = loadProfileMeta(persona);
+    const creds = loadCredentials(persona);
+    const def = getPersona(persona);
+
+    console.log(`\nPersona: ${persona}`);
+    console.log(`  Description: ${def?.description ?? meta.description}`);
+    console.log(`  Created: ${meta.created}`);
+    console.log(`  Conversations: ${meta.conversations}`);
+    console.log(`  Last used: ${meta.lastUsed || "never"}`);
+    console.log(`  Account: ${creds ? creds.email : "none (anonymous)"}`);
+    if (creds) {
+      console.log(`  Created at: ${creds.createdAt}`);
+    }
+    console.log("");
     process.exit(0);
   }
 

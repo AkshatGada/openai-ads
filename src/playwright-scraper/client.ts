@@ -5,8 +5,8 @@ import { join } from "node:path";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import type { AdCard } from "../scraper/types.js";
 import { extractAdsFromHtml } from "../scraper/client.js";
-import { loadProfileMeta, saveProfileMeta } from "./profiles.js";
-import type { PlaywrightProbeResult, PlaywrightProbeOptions } from "./types.js";
+import { loadProfileMeta, saveProfileMeta, loadCredentials } from "./profiles.js";
+import type { PlaywrightProbeResult, PlaywrightProbeOptions, PersonaCredentials } from "./types.js";
 
 // Apply stealth plugin to avoid bot detection
 const stealth = StealthPlugin();
@@ -174,6 +174,204 @@ export async function sendPrompt(
   return { html, ads };
 }
 
+
+// ══════════════════════════════════════════════════════════════
+// Account signup, login, and session management
+// ══════════════════════════════════════════════════════════════
+
+/**
+ * Complete ChatGPT account creation flow:
+ * 1. Create temp email via Mail.tm
+ * 2. Sign up on chatgpt.com
+ * 3. Wait for verification email
+ * 4. Verify the account
+ * Returns credentials ready for storage.
+ */
+export async function createChatGPTAccount(
+  prefix: string,
+  page: Page,
+): Promise<PersonaCredentials> {
+  const { createInbox, getToken, waitForMessage, extractVerifyLink, getMessageBody } = await import("./email.js");
+
+  console.log("  Creating temp email via Mail.tm...");
+  const inbox = await createInbox(prefix);
+  console.log(`  ✓ ${inbox.address}`);
+
+  console.log("  Signing up on ChatGPT...");
+  await signupOnPage(page, inbox.address, inbox.password);
+
+  console.log("  Waiting for verification email...");
+  const token = await getToken(inbox.address, inbox.password);
+  const msg = await waitForMessage(token, 120000, "OpenAI");
+
+  const fullMsg = await getMessageBody(token, msg.id);
+  const verifyLink = extractVerifyLink(fullMsg);
+
+  if (!verifyLink) {
+    console.log(`  ⚠ Could not extract verification link.`);
+    console.log(`  Subject: ${msg.subject} | From: ${msg.from}`);
+    throw new Error("Could not extract verification link from email. Check manually.");
+  }
+
+  console.log("  Verifying account...");
+  await verifyEmail(page, verifyLink);
+  console.log("  ✓ Account verified");
+
+  return {
+    email: inbox.address,
+    password: inbox.password,
+    mailTmId: inbox.id,
+    mailTmToken: token,
+    createdAt: new Date().toISOString(),
+  };
+}
+
+/** Fill and submit the ChatGPT signup form. */
+export async function signupOnPage(page: Page, email: string, password: string): Promise<void> {
+  await page.goto("https://chatgpt.com/", { waitUntil: "domcontentloaded", timeout: 30000 });
+  await page.waitForLoadState("networkidle", { timeout: 30000 }).catch(() => {});
+  await page.waitForTimeout(2000);
+
+  const signupSelectors = [
+    'button:has-text("Sign up")',
+    'a:has-text("Sign up")',
+    '[data-testid="signup-button"]',
+    'text=Sign up',
+  ];
+
+  let clicked = false;
+  for (const sel of signupSelectors) {
+    const el = page.locator(sel).first();
+    if (await el.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await el.click();
+      clicked = true;
+      break;
+    }
+  }
+
+  if (!clicked) {
+    await page.goto("https://chatgpt.com/auth/signup", { waitUntil: "domcontentloaded", timeout: 30000 });
+  }
+
+  await page.waitForTimeout(2000);
+
+  const emailInput = page.locator('input[type="email"], input[name="email"], input[placeholder*="email"]').first();
+  if (!(await emailInput.isVisible({ timeout: 5000 }).catch(() => false))) {
+    throw new Error("Could not find email input on signup page");
+  }
+
+  await emailInput.click();
+  await emailInput.fill(email);
+  await page.waitForTimeout(500);
+
+  const contBtn = page.locator('button:has-text("Continue"), button[type="submit"], input[type="submit"]').first();
+  if (await contBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
+    await contBtn.click();
+    await page.waitForTimeout(2000);
+  }
+
+  const pwdInput = page.locator('input[type="password"], input[name="password"], input[placeholder*="password"]').first();
+  if (await pwdInput.isVisible({ timeout: 5000 }).catch(() => false)) {
+    await pwdInput.click();
+    await pwdInput.fill(password);
+    await page.waitForTimeout(500);
+
+    const submitBtn = page.locator('button:has-text("Continue"), button[type="submit"]').first();
+    if (await submitBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await submitBtn.click();
+    }
+  }
+
+  await page.waitForTimeout(3000);
+}
+
+/** Open the verification link to confirm the ChatGPT account. */
+export async function verifyEmail(page: Page, verifyLink: string): Promise<void> {
+  await page.goto(verifyLink, { waitUntil: "domcontentloaded", timeout: 30000 });
+  await page.waitForLoadState("networkidle", { timeout: 30000 }).catch(() => {});
+  await page.waitForTimeout(3000);
+
+  if (page.url().startsWith("https://chatgpt.com/")) return;
+
+  const confirmBtn = page.locator('button:has-text("Verify"), button:has-text("Confirm"), button:has-text("Continue")').first();
+  if (await confirmBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
+    await confirmBtn.click();
+    await page.waitForTimeout(3000);
+  }
+}
+
+/** Log into an existing ChatGPT account using stored credentials. */
+export async function loginToAccount(page: Page, email: string, password: string): Promise<void> {
+  await page.goto("https://chatgpt.com/", { waitUntil: "domcontentloaded", timeout: 30000 });
+  await page.waitForLoadState("networkidle", { timeout: 30000 }).catch(() => {});
+  await page.waitForTimeout(2000);
+
+  const alreadyLoggedIn = await page.locator('textarea[placeholder*="Ask"], [contenteditable="true"]').first().isVisible({ timeout: 2000 }).catch(() => false);
+  if (alreadyLoggedIn) return;
+
+  const loginSelectors = [
+    'button:has-text("Log in")',
+    'a:has-text("Log in")',
+    'text=Log in',
+  ];
+
+  let clicked = false;
+  for (const sel of loginSelectors) {
+    const el = page.locator(sel).first();
+    if (await el.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await el.click();
+      clicked = true;
+      break;
+    }
+  }
+
+  if (!clicked) {
+    await page.goto("https://chatgpt.com/auth/login", { waitUntil: "domcontentloaded", timeout: 30000 });
+  }
+
+  await page.waitForTimeout(2000);
+
+  const emailInput = page.locator('input[type="email"], input[name="email"], input[placeholder*="email"]').first();
+  if (await emailInput.isVisible({ timeout: 5000 }).catch(() => false)) {
+    await emailInput.fill(email);
+    await page.waitForTimeout(500);
+    const btn = page.locator('button:has-text("Continue"), button[type="submit"]').first();
+    if (await btn.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await btn.click();
+      await page.waitForTimeout(2000);
+    }
+  }
+
+  const pwdInput = page.locator('input[type="password"], input[name="password"], input[placeholder*="password"]').first();
+  if (await pwdInput.isVisible({ timeout: 5000 }).catch(() => false)) {
+    await pwdInput.fill(password);
+    await page.waitForTimeout(500);
+    const btn = page.locator('button:has-text("Continue"), button[type="submit"]').first();
+    if (await btn.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await btn.click();
+      await page.waitForTimeout(3000);
+    }
+  }
+
+  await page.waitForLoadState("networkidle", { timeout: 30000 }).catch(() => {});
+  await page.waitForTimeout(2000);
+}
+
+/** Auto-login if credentials exist and session has expired. */
+export async function ensureLoggedIn(page: Page, persona: string): Promise<void> {
+  const needsLogin = await page.locator('button:has-text("Log in"), a:has-text("Log in")').first().isVisible({ timeout: 2000 }).catch(() => false);
+  if (!needsLogin) {
+    const hasChat = await page.locator('textarea[placeholder*="Ask"], [contenteditable="true"]').first().isVisible({ timeout: 2000 }).catch(() => false);
+    if (hasChat) return;
+  }
+
+  const creds = loadCredentials(persona);
+  if (!creds) return;
+
+  console.log(`  Auto-login with: ${creds.email}`);
+  await loginToAccount(page, creds.email, creds.password);
+}
+
 /**
  * Probe ChatGPT with a single prompt using a persistent persona profile.
  * The profile accumulates conversation history across calls.
@@ -182,12 +380,15 @@ export async function probeWithProfile(
   prompt: string,
   opts: PlaywrightProbeOptions = {},
 ): Promise<PlaywrightProbeResult> {
-  const { persona = "default", headless = true, waitForAds = true, adTimeoutMs = 5000, newChat = true } = opts;
+  const { persona = "default", headless = true, waitForAds = true, adTimeoutMs = 5000, newChat = true, loginIfNeeded = true } = opts;
 
   const { page, browser } = await launchProfile(persona, { headless });
 
   let result: PlaywrightProbeResult;
   try {
+    if (loginIfNeeded) {
+      await ensureLoggedIn(page, persona);
+    }
     const { html, ads } = await sendPrompt(page, prompt, { waitForAds, adTimeoutMs, newChat });
     result = {
       prompt,

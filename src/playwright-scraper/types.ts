@@ -1,9 +1,18 @@
 import type { AdCard } from "../scraper/types.js";
 
+export interface PersonaCredentials {
+  email: string;
+  password: string;
+  mailTmId: string;
+  mailTmToken: string;
+  createdAt: string;
+}
+
 export interface Persona {
   name: string;
   description: string;
   seedPrompts: string[];
+  credentials?: PersonaCredentials;
 }
 
 export interface ProfileMeta {
@@ -13,6 +22,7 @@ export interface ProfileMeta {
   conversations: number;
   lastUsed: string;
   description: string;
+  hasCredentials: boolean;
 }
 
 export interface PlaywrightProbeResult {
@@ -29,4 +39,5 @@ export interface PlaywrightProbeOptions {
   waitForAds?: boolean;
   adTimeoutMs?: number;
   newChat?: boolean;
+  loginIfNeeded?: boolean;
 }
