@@ -12,3 +12,6 @@ chatgpt-*.txt
 scraper-outputs*/
 nohup.out
 data/
+browser-profiles/
+playwright-outputs/
+playwright-logs/

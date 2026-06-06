@@ -21,9 +21,18 @@ function authHeader(): string {
 /** Send a single prompt to ChatGPT via Oxylabs and return parsed content or raw HTML. */
 export async function probeChatGPT(
   prompt: string,
-  opts: { search?: boolean; geo_location?: string; parse?: boolean } = {},
+  opts: { search?: boolean; geo_location?: string; parse?: boolean; session_id?: string } = {},
 ): Promise<{ content: unknown; rawHtml: string }> {
-  const { search = true, geo_location, parse = true } = opts;
+  const { search = true, geo_location, parse = true, session_id } = opts;
+
+  const body: Record<string, unknown> = {
+    source: "chatgpt",
+    prompt,
+    parse,
+    search,
+    ...(geo_location ? { geo_location } : {}),
+    ...(session_id ? { session_id } : {}),
+  };
 
   const res = await fetch(config.oxylabs.baseUrl, {
     method: "POST",
@@ -31,13 +40,7 @@ export async function probeChatGPT(
       Authorization: authHeader(),
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      source: "chatgpt",
-      prompt,
-      parse,
-      search,
-      ...(geo_location ? { geo_location } : {}),
-    }),
+    body: JSON.stringify(body),
   });
 
   const text = await res.text();
@@ -86,8 +89,9 @@ export async function probeContent(
 export async function probeAds(
   prompt: string,
   geo_location?: string,
+  session_id?: string,
 ): Promise<{ prompt: string; html: string; ads: AdCard[] }> {
-  const { rawHtml } = await probeChatGPT(prompt, { search: true, geo_location, parse: false });
+  const { rawHtml } = await probeChatGPT(prompt, { search: true, geo_location, parse: false, session_id });
   const ads = extractAdsFromHtml(rawHtml);
   return { prompt, html: rawHtml, ads };
 }
