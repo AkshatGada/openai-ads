@@ -1,11 +1,12 @@
-import { chromium } from "playwright-extra";
+import { chromium, firefox } from "playwright-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import type { Page, BrowserContext, Browser } from "playwright";
 import { join } from "node:path";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import type { AdCard } from "../scraper/types.js";
 import { extractAdsFromHtml } from "../scraper/client.js";
-import { loadProfileMeta, saveProfileMeta, loadCredentials } from "./profiles.js";
+import { config } from "../config.js";
+import { loadProfileMeta, saveProfileMeta, loadCredentials, getOrCreateProxySessionId } from "./profiles.js";
 import type { PlaywrightProbeResult, PlaywrightProbeOptions, PersonaCredentials } from "./types.js";
 
 // Apply stealth plugin to avoid bot detection
@@ -28,6 +29,44 @@ function profilePath(persona: string): string {
   return join(PROFILES_DIR, persona);
 }
 
+/** Build Oxylabs residential proxy config for a persona.
+ *  Returns null if proxy credentials not configured (falls back to local IP). */
+function getProxyForPersona(persona: string): { server: string; username: string; password: string } | null {
+  const { username, password, server } = config.oxylabs.proxy;
+  if (!username || !password) return null;
+
+  const sessionId = getOrCreateProxySessionId(persona);
+  return {
+    server,
+    username: `customer-${username}-cc-US-sessid-${sessionId}`,
+    password,
+  };
+}
+
+/**
+ * Launch a Firefox browser for auth flows (signup/login).
+ * Firefox avoids the Google OAuth redirect that Chromium triggers on ChatGPT's login page.
+ */
+export async function launchAuthBrowser(
+  persona: string,
+  opts: { headless?: boolean } = {},
+): Promise<{ page: Page; browser: Browser }> {
+  const userDataDir = join(profilePath(persona), "firefox-profile");
+  if (!existsSync(userDataDir)) {
+    mkdirSync(userDataDir, { recursive: true });
+  }
+
+  const context = await firefox.launchPersistentContext(userDataDir, {
+    headless: opts.headless ?? false,
+    viewport: { width: 1280, height: 900 },
+  });
+
+  const page = context.pages()[0] ?? (await context.newPage());
+  const browser = context.browser();
+  if (!browser) throw new Error("Browser not available from context");
+  return { page, browser };
+}
+
 /**
  * Launch a persistent browser context for a persona profile.
  * Profile data (cookies, localStorage, etc.) is saved to browser-profiles/<name>/.
@@ -42,12 +81,14 @@ export async function launchProfile(
   }
 
   const { headless = true } = opts;
+  const proxy = getProxyForPersona(persona);
 
   const context = await chromium.launchPersistentContext(userDataDir, {
     headless,
     viewport: { width: 1280, height: 900 },
     userAgent:
       "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    ...(proxy ? { proxy } : {}),
   });
 
   const page = context.pages()[0] ?? (await context.newPage());
@@ -200,6 +241,10 @@ export async function createChatGPTAccount(
   console.log("  Signing up on ChatGPT...");
   await signupOnPage(page, inbox.address, inbox.password);
 
+  // Debug: check what page we landed on
+  const currentUrl = page.url();
+  console.log(`  Page after signup: ${currentUrl.slice(0, 80)}`);
+
   console.log("  Waiting for verification email...");
   const token = await getToken(inbox.address, inbox.password);
   const msg = await waitForMessage(token, 120000, "OpenAI");
@@ -228,61 +273,90 @@ export async function createChatGPTAccount(
 
 /** Fill and submit the ChatGPT signup form. */
 export async function signupOnPage(page: Page, email: string, password: string): Promise<void> {
-  await page.goto("https://chatgpt.com/", { waitUntil: "domcontentloaded", timeout: 30000 });
+  // Go directly to login page — ChatGPT uses unified email-first flow
+  // Enter email → if new account → prompts for signup → if existing → prompts for password
+  await page.goto("https://chatgpt.com/auth/login", { waitUntil: "domcontentloaded", timeout: 30000 });
   await page.waitForLoadState("networkidle", { timeout: 30000 }).catch(() => {});
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(3000);
 
-  const signupSelectors = [
-    'button:has-text("Sign up")',
-    'a:has-text("Sign up")',
-    '[data-testid="signup-button"]',
-    'text=Sign up',
-  ];
+  // Fill email (type=email, id=email on the login page)
+  const emailInput = page.locator('input[type="email"], input[name="email"], input[id="email"]').first();
+  const hasEmail = await emailInput.isVisible({ timeout: 5000 }).catch(() => false);
 
-  let clicked = false;
-  for (const sel of signupSelectors) {
-    const el = page.locator(sel).first();
-    if (await el.isVisible({ timeout: 2000 }).catch(() => false)) {
-      await el.click();
-      clicked = true;
-      break;
-    }
-  }
-
-  if (!clicked) {
-    await page.goto("https://chatgpt.com/auth/signup", { waitUntil: "domcontentloaded", timeout: 30000 });
-  }
-
-  await page.waitForTimeout(2000);
-
-  const emailInput = page.locator('input[type="email"], input[name="email"], input[placeholder*="email"]').first();
-  if (!(await emailInput.isVisible({ timeout: 5000 }).catch(() => false))) {
-    throw new Error("Could not find email input on signup page");
+  if (!hasEmail) {
+    const screenshot = join(process.cwd(), "playwright-logs", "signup-debug.png");
+    if (!existsSync(join(process.cwd(), "playwright-logs"))) mkdirSync(join(process.cwd(), "playwright-logs"), { recursive: true });
+    await page.screenshot({ path: screenshot, fullPage: true });
+    throw new Error("Could not find email input on auth page");
   }
 
   await emailInput.click();
   await emailInput.fill(email);
   await page.waitForTimeout(500);
 
+  // Click Continue — ChatGPT checks if account exists
   const contBtn = page.locator('button:has-text("Continue"), button[type="submit"], input[type="submit"]').first();
   if (await contBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
     await contBtn.click();
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(3000);
   }
 
-  const pwdInput = page.locator('input[type="password"], input[name="password"], input[placeholder*="password"]').first();
-  if (await pwdInput.isVisible({ timeout: 5000 }).catch(() => false)) {
+  // After Continue, if new account → shows "Sign up" / password creation
+  // If existing account → shows password field for login
+  // Check what we got
+  const pwdInput = page.locator('input[type="password"], input[name="password"]').first();
+  const hasPassword = await pwdInput.isVisible({ timeout: 5000 }).catch(() => false);
+
+  if (hasPassword) {
+    // Check if this is a "Create your account" page or "Enter your password"
+    const isNewAccount = await page.locator('text="Create your account", text="Sign up", text="Set password", text="Create account"').first().isVisible({ timeout: 2000 }).catch(() => false);
+    const isLogin = await page.locator('text="Enter your password", text="Welcome back"').first().isVisible({ timeout: 2000 }).catch(() => false);
+
     await pwdInput.click();
     await pwdInput.fill(password);
     await page.waitForTimeout(500);
 
-    const submitBtn = page.locator('button:has-text("Continue"), button[type="submit"]').first();
+    if (isNewAccount) {
+      console.log("  Creating new account...");
+    } else if (isLogin) {
+      console.log("  Account exists — logging in instead");
+    } else {
+      console.log("  Submitting password (unclear if signup or login)...");
+    }
+
+    const submitBtn = page.locator('button:has-text("Continue"), button:has-text("Sign up"), button:has-text("Log in"), button[type="submit"]').first();
     if (await submitBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
       await submitBtn.click();
+      await page.waitForTimeout(3000);
     }
   }
 
-  await page.waitForTimeout(3000);
+  // Check if we need to fill name/birthday (signup flow)
+  const nameInput = page.locator('input[name="name"], input[placeholder*="name"]').first();
+  if (await nameInput.isVisible({ timeout: 2000 }).catch(() => false)) {
+    const nameParts = email.split("@")[0]!.split("-");
+    await nameInput.fill(`${nameParts[0] ?? "User"} ${nameParts[1] ?? "Test"}`);
+    await page.waitForTimeout(300);
+    const nextBtn = page.locator('button:has-text("Continue"), button[type="submit"]').first();
+    if (await nextBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await nextBtn.click();
+      await page.waitForTimeout(3000);
+    }
+  }
+
+  const birthInput = page.locator('input[type="date"], input[placeholder*="birth"]').first();
+  if (await birthInput.isVisible({ timeout: 2000 }).catch(() => false)) {
+    await birthInput.fill("1990-01-15");
+    await page.waitForTimeout(300);
+    const nextBtn = page.locator('button:has-text("Continue"), button[type="submit"]').first();
+    if (await nextBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await nextBtn.click();
+      await page.waitForTimeout(3000);
+    }
+  }
+
+  const finalUrl = page.url();
+  console.log(`  Signup submitted. Current URL: ${finalUrl.slice(0, 80)}`);
 }
 
 /** Open the verification link to confirm the ChatGPT account. */

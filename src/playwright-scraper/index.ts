@@ -4,7 +4,7 @@
 
 import { existsSync, mkdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { probeWithProfile, converseWithProfile, saveResult, launchProfile, createChatGPTAccount } from "./client.js";
+import { probeWithProfile, converseWithProfile, saveResult, launchProfile, launchAuthBrowser, createChatGPTAccount } from "./client.js";
 import { createPersona, getPersona, listPersonas, saveCredentials, loadCredentials, loadProfileMeta } from "./profiles.js";
 import type { PlaywrightProbeResult } from "./types.js";
 
@@ -70,9 +70,9 @@ async function main(): Promise<void> {
 
     console.log(`\nCreating ChatGPT account for persona "${persona}"...\n`);
 
-    // Step 1: Launch browser (headed — user may need to solve CAPTCHA)
-    console.log("[1/4] Opening browser...");
-    const { page, browser } = await launchProfile(persona, { headless: false });
+    // Step 1: Launch Firefox (avoids Google OAuth default in Chromium)
+    console.log("[1/4] Opening Firefox for signup...");
+    const { page, browser } = await launchAuthBrowser(persona, { headless: false });
 
     try {
       // Step 2: Create temp email + signup + verify
@@ -137,6 +137,7 @@ async function main(): Promise<void> {
     console.log(`  Account: ${creds ? creds.email : "none (anonymous)"}`);
     if (creds) {
       console.log(`  Created at: ${creds.createdAt}`);
+      console.log(`  Proxy session: ${creds.proxySessionId ?? "none (local IP)"}`);
     }
     console.log("");
     process.exit(0);

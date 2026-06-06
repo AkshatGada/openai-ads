@@ -6,6 +6,7 @@ export interface PersonaCredentials {
   mailTmId: string;
   mailTmToken: string;
   createdAt: string;
+  proxySessionId?: string;
 }
 
 export interface Persona {

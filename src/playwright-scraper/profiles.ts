@@ -75,6 +75,32 @@ export function hasCredentials(persona: string): boolean {
   return loadCredentials(persona) !== null;
 }
 
+/** Get or create a stable proxy session ID for a persona.
+ *  This ID is used with Oxylabs residential proxies to maintain IP stability
+ *  across sessions (same cc-US + sessid → same geo region). */
+export function getOrCreateProxySessionId(persona: string): string {
+  const creds = loadCredentials(persona);
+  if (creds?.proxySessionId) return creds.proxySessionId;
+
+  const id = `${persona}-${Math.random().toString(36).slice(2, 8)}`;
+
+  if (creds) {
+    creds.proxySessionId = id;
+    saveCredentials(persona, creds);
+  } else {
+    saveCredentials(persona, {
+      email: "",
+      password: "",
+      mailTmId: "",
+      mailTmToken: "",
+      createdAt: new Date().toISOString(),
+      proxySessionId: id,
+    });
+  }
+
+  return id;
+}
+
 /**
  * Create a new persona profile by sending seed conversation prompts.
  * This establishes conversation history so ads get personalized.
