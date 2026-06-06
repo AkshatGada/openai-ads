@@ -1,0 +1,27 @@
+{
+  "name": "openai-ads-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Agentic ad campaign manager on the OpenAI Ads API — maximizes leads (clicks + signups) for a business.",
+  "scripts": {
+    "dev": "tsx src/loop.ts",
+    "loop": "tsx src/loop.ts",
+    "verify": "tsx src/scripts/verify.ts",
+    "verify-scraper": "tsx src/scripts/verify-scraper.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.4",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  },
+  "packageManager": "pnpm@10.12.4"
+}

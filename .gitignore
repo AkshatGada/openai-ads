@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+runs/
+chatgpt-scraper/
+*.log
+.DS_Store
+chatgpt-*.html
+chatgpt-*.txt
+scraper-outputs*/
+nohup.out
