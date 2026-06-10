@@ -21,8 +21,9 @@
 // CLI should work standalone (e.g. on a personal laptop without those keys).
 import "dotenv/config";
 import { readFile } from "node:fs/promises";
-import { PersonaManager, makePersonaFromSeed } from "./manager.js";
+import { PersonaManager, makePersonaFromSeed, createWithBrowser } from "./manager.js";
 import { ChatGPTClient } from "./chatgpt/client.js";
+import { BrowserPersonaRunner } from "./browser/runner.js";
 import { ensureHome, identityExists, personaDir, readIdentity } from "./storage.js";
 import { asPersonaId, PersonaId } from "./types.js";
 import { listPersonaIds, readEnrichedIndex } from "./registry.js";
@@ -34,6 +35,7 @@ pnpm personas — manage persistent ChatGPT persona accounts
 Usage:
   pnpm personas --list
   pnpm personas --create <seed-id> [--dry-run] [--tags t1,t2] [--id <new-id>]
+  pnpm personas --create-account <seed-id>   [BROWSER] signs up a real account
   pnpm personas --status [<id>]
   pnpm personas --validate <id>
   pnpm personas --probe <id> "<prompt>"
@@ -42,8 +44,18 @@ Usage:
   pnpm personas --dump <id>
   pnpm personas --audit <id> [--limit N]
   pnpm personas --archive <id>
+  pnpm personas --refresh-cf <id>            [BROWSER] refreshes cf_clearance
+  pnpm personas --reauth <id>                [BROWSER] full re-auth via email code
   pnpm personas --health
   pnpm personas --init-keys
+
+Notes:
+  Commands marked [BROWSER] launch a Chromium with automation plugins.
+  They will be flagged by EDR products. Only run them on a machine
+  where this is acceptable (e.g. personal laptop, VPS).
+
+  Day-to-day probing (--probe, --batch, --converse, --validate) is
+  browserless and safe.
 
 Seeds available:
 ${PERSONA_SEEDS.map((s) => `  - ${s.id.padEnd(20)} ${s.label}`).join("\n")}
@@ -106,13 +118,18 @@ async function main(): Promise<void> {
     masterKeyHex: masterKey,
     home: process.env.OPENAI_ADS_HOME,
     clientFactory: (persona, auth) => new ChatGPTClient(persona, auth),
+    // Browser factory is lazy-instantiated; only loaded when actually used.
+    browserFactory: () => new BrowserPersonaRunner({ headless: flag("--headed") ? false : true }),
   });
   await pm.init();
 
   if (flag("--create")) return cmdCreate(pm, arg("--create")!);
+  if (flag("--create-account")) return cmdCreateAccount(pm, arg("--create-account")!);
   if (flag("--dump")) return cmdDump(pm, asPersonaId(arg("--dump")!));
   if (flag("--audit")) return cmdAudit(pm, asPersonaId(arg("--audit")!), arg("--limit"));
   if (flag("--archive")) return cmdArchive(pm, asPersonaId(arg("--archive")!));
+  if (flag("--refresh-cf")) return cmdRefreshCf(pm, asPersonaId(arg("--refresh-cf")!));
+  if (flag("--reauth")) return cmdReauth(pm, asPersonaId(arg("--reauth")!));
 
   // Network-bearing commands
   if (flag("--validate")) return cmdValidate(pm, asPersonaId(arg("--validate")!));
@@ -283,6 +300,37 @@ async function cmdArchive(pm: PersonaManager, id: PersonaId): Promise<void> {
   });
   await pm.audit(id, "archived");
   console.log(`Archived ${id} (files preserved at ${personaDir(id)})`);
+}
+
+async function cmdCreateAccount(pm: PersonaManager, seedId: string): Promise<void> {
+  console.warn(
+    "\n⚠️  This command launches Chromium with automation plugins.",
+    "It will trip EDR products. Use only on a machine where this is OK.\n",
+  );
+  if (!getSeed(seedId)) {
+    console.error(`Unknown seed: ${seedId}\nAvailable: ${PERSONA_SEEDS.map((s) => s.id).join(", ")}`);
+    process.exit(1);
+  }
+  const overrideId = arg("--id");
+  const tagsArg = arg("--tags");
+  const extraTags = tagsArg ? tagsArg.split(",").map((t) => t.trim()).filter(Boolean) : [];
+  const result = await createWithBrowser(seedId, pm, { id: overrideId, tags: extraTags });
+  console.log(`\n✅ Created account for "${result.label}" (${result.id})`);
+  console.log(`  on disk:  ${personaDir(result.id)}`);
+  console.log(`  next:     pnpm personas --validate ${result.id}`);
+  console.log("");
+}
+
+async function cmdRefreshCf(pm: PersonaManager, id: PersonaId): Promise<void> {
+  console.warn("\n⚠️  This command launches Chromium with automation plugins.\n");
+  await pm.recoverWithBrowser(id, "cf_blocked");
+  console.log(`✅ Refreshed cf_clearance for ${id}`);
+}
+
+async function cmdReauth(pm: PersonaManager, id: PersonaId): Promise<void> {
+  console.warn("\n⚠️  This command launches Chromium with automation plugins.\n");
+  await pm.recoverWithBrowser(id, "session_expired");
+  console.log(`✅ Re-authed ${id}`);
 }
 
 async function cmdValidate(pm: PersonaManager, id: PersonaId): Promise<void> {

@@ -9,7 +9,7 @@
 // The CLI lives in `./cli.ts`; tests live in `./tests/`.
 
 export * from "./types.js";
-export { PersonaManager, makePersonaFromSeed } from "./manager.js";
+export { PersonaManager, makePersonaFromSeed, createWithBrowser } from "./manager.js";
 export { PersonaCrypto, generateMasterKey } from "./crypto.js";
 export { PersonaLock } from "./lock.js";
 export { ProxyPool, poolFromEnv } from "./proxy/pool.js";
@@ -18,3 +18,7 @@ export { parseSSE } from "./chatgpt/messages.js";
 export { computeProofOfWork } from "./chatgpt/sentinel.js";
 export * as ChatGptTypes from "./chatgpt/types.js";
 export { PERSONA_SEEDS, getSeed, cryptoTrader, defiDeveloper, apiEngineer } from "./seeds/index.js";
+export { generateFingerprint, makePersonaWithFingerprint } from "./fingerprint.js";
+export { BrowserPersonaRunner } from "./browser/runner.js";
+export * as MailTm from "./email/mailtm.js";
+export { getLogger, childLogger } from "./observability/log.js";

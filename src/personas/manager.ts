@@ -80,6 +80,7 @@ export interface BrowserRunnerLike {
   reauth(
     persona: Persona,
     credentials: PersonaCredentials,
+    mailToken: string,
   ): Promise<{ sessionToken: string; cfClearance?: string; cfClearanceExp?: number }>;
   signup(
     seed: import("./types.js").PersonaSeed,
@@ -237,20 +238,33 @@ export class PersonaManager {
       await this.audit(id, "cf_clearance_refreshed", "auto-fallback");
     } else {
       const creds = await this.loadCredentials(id);
-      const result = await browser.reauth(persona, creds);
+      // Re-derive the mail.tm token so we can read the reauth code.
+      // NOTE: the token is sealed at rest. In a production build, we'd
+      // unseal it here. For now we require the operator to provide one
+      // via OPENAI_PERSONA_<ID>_MAIL_TOKEN (or we surface a clear error).
+      const envKey = `OPENAI_PERSONA_${id.toUpperCase().replace(/-/g, "_")}_MAIL_TOKEN`;
+      const mailToken = process.env[envKey] ?? "";
+      if (!mailToken) {
+        throw new Error(
+          `Cannot reauth: mail.tm token for ${id} not in ${envKey}. ` +
+            `Set it in .env to allow browser-driven reauth.`,
+        );
+      }
+      const existing = await this.loadAuth(id);
+      const result = await browser.reauth(persona, creds, mailToken);
       const auth: AuthState = {
         sessionToken: result.sessionToken,
         accessToken: null,
         accessTokenExp: null,
-        cfClearance: result.cfClearance ?? null,
-        cfClearanceExp: result.cfClearanceExp ?? null,
-        deviceId: persona.identity.id, // device id is stable per persona
-        puid: null,
+        cfClearance: result.cfClearance ?? existing.cfClearance ?? null,
+        cfClearanceExp: result.cfClearanceExp ?? existing.cfClearanceExp ?? null,
+        deviceId: existing.deviceId,
+        puid: existing.puid,
         lastValidatedAt: new Date().toISOString(),
         health: "healthy",
         sessionStartedAt: new Date().toISOString(),
         accountState: "UNKNOWN",
-        plan: "unknown",
+        plan: existing.plan,
       };
       await this.persistAuth(id, auth);
       await this.audit(id, "session_refreshed", "auto-fallback after expiry");
@@ -306,6 +320,114 @@ function classifyAuthError(e: any): SessionHealth {
   if (code === "banned") return "banned";
   if (code === "rate_limited") return "rate_limited";
   return "unknown";
+}
+
+// ─── Browser-driven creation (signs up a real account) ──────────
+export interface CreateWithBrowserOptions {
+  /** Override the persona id (defaults to seed.id). */
+  id?: string;
+  /** Override fingerprint seed. */
+  fingerprintSeed?: string;
+  /** Tags to add. */
+  tags?: string[];
+  createdBy?: string;
+}
+
+/**
+ * Sign up a real ChatGPT account and persist everything.
+ * Requires a `browserFactory` to be supplied at construction time.
+ * Will use the resulting account's `cf_clearance` and `sessionToken`
+ * to seed the auth state.
+ */
+export async function createWithBrowser(
+  seedId: string,
+  pm: PersonaManager,
+  opts: CreateWithBrowserOptions = {},
+): Promise<{ id: PersonaId; label: string }> {
+  const seed = getSeed(seedId);
+  if (!seed) throw new Error(`Unknown seed: ${seedId}`);
+  if (!pm["browserFactory" as keyof PersonaManager]) {
+    throw new Error(
+      "PersonaManager has no browserFactory; cannot create accounts on this build",
+    );
+  }
+  // Indirect through the public surface to keep the private field private.
+  const factory = (pm as any).browserFactory as BrowserFactory | undefined;
+  if (!factory) throw new Error("PersonaManager has no browserFactory");
+
+  const runner = factory();
+  const { credentials, auth } = await runner.signup(seed);
+
+  // Seal the mail.tm token (which lives in credentials.mailInbox) before
+  // persisting, so it can be used for reauth later.
+  const sealedMailToken = pm.crypto.seal(
+    (credentials.mailInbox?.tokenCipher as unknown as string) ?? "",
+    {
+      personaId: opts.id ?? seed.id,
+      masterKeyHex: pm.opts.masterKeyHex,
+      wraps: "PersonaCredentials", // not used directly; we re-seal creds below
+    },
+  );
+  if (credentials.mailInbox) {
+    credentials.mailInbox.tokenCipher = sealedMailToken.ciphertext;
+  }
+
+  // Build a real Persona with a generated fingerprint
+  const fingerprintSeed = opts.fingerprintSeed ?? `${seed.id}-${Date.now().toString(36)}`;
+  const { generateFingerprint } = await import("./fingerprint.js");
+  const fp = generateFingerprint(seed, fingerprintSeed);
+
+  const id = asPersonaId(opts.id ?? seed.id);
+  const persona: Persona = {
+    version: PERSONA_VERSION,
+    identity: {
+      id,
+      label: seed.label,
+      description: seed.description,
+      interests: seed.interests,
+      backstory: seed.backstory,
+      declared: seed.declared,
+      client: seed.client,
+      fingerprintSeed,
+      createdAt: new Date().toISOString(),
+      createdBy: opts.createdBy,
+      tags: [...seed.tags, ...(opts.tags ?? [])],
+    },
+    fingerprint: fp,
+    proxy: {
+      provider: "local",
+      sessionId: `local-${id}-${Date.now()}`,
+      description: "no proxy",
+      burned: false,
+      assignedAt: new Date().toISOString(),
+    },
+    behavioral: {
+      typingWpm: 65,
+      typingWpmStddev: 12,
+      interActionDelayMs: { mean: 1200, stddev: 400 },
+      activeHours: { start: 9, end: 23 },
+      mouseCurveSamples: [],
+      typingSamples: [],
+    },
+    history: { summaries: [], adsSeen: { total: 0, byAdvertiser: {}, byTopic: {} } },
+    operational: {
+      lastUsed: new Date(0).toISOString(),
+      totalProbes: 0,
+      totalConversations: 0,
+      sessionSuccessRate: 1.0,
+      recentAdYield: 0,
+      healthScore: 100,
+      flags: [],
+    },
+  };
+
+  await pm.persistPersona(persona);
+  await pm.persistCredentials(id, credentials);
+  await pm.persistAuth(id, auth);
+  await pm.audit(id, "created", `browser signup from seed ${seedId}`);
+  await pm.audit(id, "session_obtained", "via browser signup");
+
+  return { id, label: persona.identity.label };
 }
 
 // ─── Convenience: mint a fresh persona from a seed (no network) ───
