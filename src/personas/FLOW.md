@@ -54,10 +54,38 @@ You'll do Flow 2 many times per day per persona, batched or one-off.
 | 5 minutes | — |
 
 You do **not** need:
-- ❌ A ChatGPT account (yet — Flow 1.5 binds one)
-- ❌ Oxylabs creds (yet — optional, see Step 5)
+- ❌ A ChatGPT account (yet — Step 1.6 binds one)
 - ❌ mail.tm (yet — only needed for browser signup)
 - ❌ A working internet connection to ChatGPT (Flow 1 itself is offline)
+
+You **do** need (before any network call to `chatgpt.com`):
+- ✅ **Oxylabs ISP proxy credentials** — see Step 1.4. Without these,
+  Cloudflare will block every request from your home IP. **Do not
+  skip this step.** It is not optional.
+
+---
+
+## Why a proxy is mandatory
+
+`chatgpt.com` is behind Cloudflare Bot Management. From a residential
+IP (your home WiFi), the Cloudflare edge will:
+
+- **Block** most requests with HTTP 403 ("Just a moment..." challenge page)
+- **Challenge** even successful ones with a Turnstile CAPTCHA that has to be solved in a real browser
+- **Flag** repeated requests from the same IP, even if they succeed
+- **Geo-link** personas — without a proxy, every persona is "the same person from the same home," which is exactly what an anti-fraud system looks for
+
+The persona system uses Oxylabs **ISP proxies** (static residential IPs
+that don't rotate within a session) so each persona gets its own
+stable US IP. The system is wired for it from day one; you just need
+to put credentials in `.env` before any network call.
+
+**The proxy is not "Step 3 (optional)".** It is a prerequisite for
+anything that talks to `chatgpt.com`. Flow 1.4 (creating personas
+offline) doesn't need it, but every step from 1.5 onward does.
+
+If you don't have Oxylabs yet, see the "without Oxylabs" workaround
+in Step 1.4 — it's a slower path but it works.
 
 ---
 
@@ -138,7 +166,107 @@ as you like; it just prints a new random key. The persona system
 > but you cannot reuse the credentials or sessions without the key.
 > 1Password / Bitwarden / encrypted USB — pick one.
 
-### Step 1.4: Create personas (offline, no network)
+### Step 1.4: Set up the proxy (mandatory before any chatgpt.com call)
+
+The persona system needs an **Oxylabs ISP proxy** to talk to
+`chatgpt.com`. Without it, Cloudflare blocks every request from your
+home IP. This step is **not optional** — do not proceed to Step 1.6
+until this passes.
+
+**1. Get Oxylabs ISP creds.** Sign up at `https://oxylabs.io` (ISP
+product, not residential — ISP is static residential IPs that don't
+rotate). Cost is roughly $2-5 per IP per month. You'll get a
+`username` (the part after `customer-`) and a `password`.
+
+**2. Add to `.env`:**
+
+```bash
+cat >> .env <<'EOF'
+OXYLABS_PROXY_USERNAME=<your_username>
+OXYLABS_PROXY_PASSWORD=<your_password>
+OXYLABS_PROXY_TYPE=isp
+OXYLABS_PROXY_COUNTRY=US
+OXYLABS_PROXY_TTL_MIN=30
+EOF
+chmod 600 .env
+```
+
+> If you set `OXYLABS_PROXY_COUNTRY=US` (the default), every
+> persona will get a US static residential IP. Set it to whatever
+> country your personas' `declared.country` is.
+
+**3. Verify the proxy works:**
+
+```bash
+pnpm personas --proxy-test
+```
+
+**Success gate:** the output shows a US IP that is **not** your
+home IP:
+
+```
+Testing proxy: http://customer-<user>-cc-us-sessid-...:***@isp.oxylabs.io:8001
+Hitting https://ip.oxylabs.io/location through the proxy...
+✅ Proxy is working. Observed egress:
+   ip:        47.223.xx.xx
+   country:   US
+   region:    California
+   city:      Los Angeles
+   timezone:  America/Los_Angeles
+```
+
+**4. Inspect the pool config:**
+
+```bash
+pnpm personas --proxy-info
+```
+
+**Success gate:**
+
+```
+Proxy pool configuration:
+  type:    isp
+  country: US
+  ttl:     30 min
+  user:    set
+  pass:    set
+```
+
+If `--proxy-test` fails:
+
+| Failure | Fix |
+|---|---|
+| `CONNECT 401` | Wrong username/password. Check Oxylabs dashboard. |
+| `CONNECT 407` | Proxy needs to be activated / not in good standing. |
+| `ETIMEDOUT` | Your firewall or ISP is blocking outbound to `isp.oxylabs.io:8001`. Try from a different network. |
+| `ENOTFOUND` | DNS issue. Check your internet connection. |
+| `407 Proxy Authentication Required` | Username format. Oxylabs wants just `<username>`, NOT `customer-<username>`. The CLI prepends `customer-` automatically. |
+
+#### Without Oxylabs (workaround, slower)
+
+If you don't have Oxylabs yet and just want to test the system, you
+can run with **no proxy** by setting:
+
+```bash
+echo "PERSONA_PROXY_DISABLED=true" >> .env
+```
+
+This makes the system send traffic from your home IP. Cloudflare
+will likely block every request. You can use this to:
+- Test that `--create`, `--list`, `--status`, `--dump` work (offline)
+- Test that the persona architecture is correct end-to-end without a real ChatGPT session bound
+
+You **cannot** use this to actually probe ChatGPT. The moment
+you try `--validate` or `--probe` without a proxy, you'll get
+`http_403` (Cloudflare challenge) or `cf_blocked` (server-side
+block). When that happens, either:
+- Sign up for Oxylabs ISP ($2-5/IP/mo, takes 5 minutes)
+- Or: use the browser fallback (`--refresh-cf` / `--reauth`) to capture a `cf_clearance` from a real browser session, which sometimes works for short probe bursts
+
+**Do not proceed to Step 1.6 without either a working proxy or
+acceptance that the system will be Cloudflare-blocked.**
+
+### Step 1.5: Create personas (offline, no network)
 
 ```bash
 pnpm personas --create crypto-trader
@@ -179,7 +307,7 @@ Each persona is **~5-10KB on disk**. The previous design was
 200-500MB per persona (a Chrome user-data-dir). The new design
 is ~250x smaller.
 
-### Step 1.5: Bind a real ChatGPT session
+### Step 1.6: Bind a real ChatGPT session
 
 This is the **only step that needs an active ChatGPT account** and,
 for the autonomous path, **the only step that uses a browser.**
@@ -283,7 +411,7 @@ pnpm personas --validate crypto-trader
 |---|---|---|
 | `❌ crypto-trader: session_expired` | Session token is dead | Re-run Option A or B |
 | `❌ crypto-trader: cf_blocked` | Cloudflare challenge | `pnpm personas --refresh-cf crypto-trader` (browser) |
-| `❌ crypto-trader: http_403` | Wrong IP / bad TLS | Set up the Oxylabs proxy (Step 5) and retry |
+| `❌ crypto-trader: http_403` | Wrong IP / bad TLS | Set up the Oxylabs proxy (Step 1.4) and retry |
 
 ---
 
@@ -398,33 +526,7 @@ API (`ChatGPTClient.probe().html`).
 
 ---
 
-## Step 3 (optional but recommended) — Set up the proxy
-
-Without a proxy, OpenAI sees your home IP. This may:
-- Serve you different ads (geo-targeted)
-- Trigger Cloudflare challenges more often
-- Look like one user with many personas (IP-based linking)
-
-```bash
-# 1. Add to .env
-OXYLABS_PROXY_USERNAME=<your_oxylabs_username>
-OXYLABS_PROXY_PASSWORD=<your_oxylabs_password>
-
-# 2. Verify the proxy works
-pnpm personas --proxy-test
-# → prints observed egress IP, country, region, city
-```
-
-**Success gate:** the `--proxy-test` output shows a US IP
-different from your home IP.
-
-The persona system will now route every `--probe` / `--batch` /
-`--multi-batch` call through the proxy, and each persona gets its
-own sticky session → its own US IP.
-
----
-
-## Step 4 (optional) — Background health daemon
+## Step 3 (optional but recommended) — Background health daemon
 
 Keeps every persona's session fresh, updates health scores, and
 catches `cf_blocked` / `session_expired` within 5 minutes instead of
@@ -447,16 +549,17 @@ Press Ctrl-C to stop.
 
 ## What success looks like at the end of the runbook
 
-After completing all of Flow 1 + Flow 2 + (optionally) Step 3 + Step 4,
+After completing all of Flow 1 + Flow 2 + (optionally) Step 3,
 you should have:
 
 - ✅ 3 personas on disk (`~/.openai-ads/personas/{crypto-trader,defi-developer,api-engineer}/`)
 - ✅ Each persona has a real `sessionToken` in `state.bin` (encrypted with `PERSONA_MASTER_KEY`)
+- ✅ Each persona was bound through the Oxylabs ISP proxy (Step 1.4 verified)
 - ✅ Each persona has been probed 2-4 times with real ChatGPT responses
 - ✅ Some probes have surfaced ads (the `AdCard` shape you wanted)
 - ✅ The persona records show the accumulated activity: `probes: 3, ads seen: 2, healthScore: 100`
 - ✅ The audit log shows every action taken
-- ✅ (If you set up the proxy) each persona has its own US egress IP
+- ✅ Each persona has its own US egress IP (different `sessid` → different IP)
 
 If any of those checkmarks are missing, re-read the step that
 should have produced it. The success gates are explicit; if a
@@ -499,7 +602,7 @@ are explained in `SKILL.md` §2.
 | `pnpm typecheck` has errors elsewhere | Ignore them (pre-existing, unrelated) | Continue |
 | `--create` writes no files | Check `PERSONA_MASTER_KEY` is set | Re-run `--init-keys` |
 | `--validate` returns `session_expired` | Re-bind session (Flow 1.5) | Re-create persona |
-| `--validate` returns `cf_blocked` | `pnpm personas --refresh-cf <id>` (browser) | Set up the proxy (Step 3) |
+| `--validate` returns `cf_blocked` | `pnpm personas --refresh-cf <id>` (browser) | Set up the proxy (Step 1.4) |
 | `--probe` returns 403 | `pnpm personas --proxy-test` to check egress | Set up Oxylabs proxy |
 | `--probe` returns 429 (rate limit) | Switch to `gpt-4o-mini` (or wait) | Reduce `--concurrency` |
 | `--probe` returns no ads | Persona is on Free tier (no ads shown) | Use a Plus/Pro account |
