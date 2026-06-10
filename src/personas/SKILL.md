@@ -1,15 +1,26 @@
 # Persona System v2 — Agent Skill
 
-> **Purpose:** Operate and extend the persistent-persona system for probing
-> ChatGPT ads. This document is the single source of truth for an agent
-> (human or AI) that needs to install, run, debug, and modify the system.
+> **Purpose:** Operate and extend the persistent-persona system for
+> scraping ChatGPT ads. This document is the single source of truth
+> for an agent (human or AI) that needs to install, run, debug, and
+> modify the system.
 
 ## 0. What this is
 
-A `pnpm personas` CLI that manages **persistent, real ChatGPT accounts** as
-on-disk bundles of state (identity, encrypted credentials, auth tokens,
-behavioral model, conversation history, audit log), persisted under
+A `pnpm personas` CLI that lets you **scrape ChatGPT ads at scale
+through persistent, real persona accounts** — and the same CLI
+manages those accounts as on-disk bundles of state under
 `~/.openai-ads/personas/<id>/`.
+
+**The north-star workflow:**
+
+1. `pnpm personas --create <seed-id>` — mint a persona (cryptotrader, defi dev, fintech founder, …) with a real fingerprint, declared geo, and proxy IP.
+2. `pnpm personas --probe <id> --prompt "..."` — send a prompt from that persona to ChatGPT. The response streams back; the ad HTML is regex-scraped by `extractAdsFromHtml`; you get back the ad cards in the same `AdCard` shape the rest of the codebase already uses.
+3. `pnpm personas --batch <id> prompts.txt` — same as `--probe` but for a file of prompts.
+4. `pnpm personas --multi-batch jobs.txt` — `persona|prompt` per line, runs all personas in parallel, surfaces every ad.
+5. `pnpm personas:health` — background daemon that keeps every persona's session fresh and surfaces ad-yield trends.
+
+Each persona is a **real ChatGPT account with a real conversation history, a real US IP, and a real fingerprint** — so the ads you scrape are the ads *that persona would actually see* on a real browser. The scraping happens in Node, no browser, ~3-5s per probe.
 
 The system is designed around one core idea:
 
@@ -65,7 +76,174 @@ That's the full setup. The system is now ready.
 
 ---
 
-## 2. The CLI — every command
+## 1.5. North-star workflow — scrape ChatGPT ads via personas
+
+This is the workflow the whole system was built for. Skip to §2 if you
+just want a command reference.
+
+### The four steps
+
+**Step 1 — Mint personas.** Each persona is a *believable* ChatGPT
+account with its own US IP, fingerprint, and declared interests. The
+seed decides the persona's "story"; the proxy decides the IP; the
+fingerprint decides what ChatGPT thinks the device looks like.
+
+```bash
+pnpm personas --create crypto-trader
+pnpm personas --create defi-developer
+pnpm personas --create api-engineer
+pnpm personas --list
+```
+
+**Step 2 — Bind a real session (one-time, per persona).** A newly
+minted persona has no real `__Secure-next-auth.session-token` yet.
+You have two paths:
+
+- **Browser path (EDR-detectable, run on a personal machine):**
+  `pnpm personas --create-account <seed-id>` — drives a real Chromium
+  through the email-code signup flow on `chatgpt.com`, using `mail.tm`
+  for the disposable inbox. Captures the session token and `cf_clearance`
+  and seals them into `state.bin` automatically. **Run this on a
+  machine without CrowdStrike.**
+- **Manual injection:** log into `chatgpt.com` in a real browser once,
+  open DevTools → Application → Cookies → copy the value of
+  `__Secure-next-auth.session-token` (and `cf_clearance` if present).
+  See §8 for the inject snippet.
+
+**Step 3 — Probe & scrape.** This is the day-to-day loop. Send a
+prompt; get back the response AND the ads ChatGPT showed in the response.
+
+```bash
+# Single probe
+pnpm personas --probe crypto-trader --prompt \
+  "I'm evaluating stablecoin payment rails for a fintech — what APIs handle KYC + custody + on-chain settlement?"
+# → response text + ad cards parsed out of the SSE stream
+
+# Batch (one prompt per line in prompts.txt)
+pnpm personas --batch crypto-trader prompts.txt
+
+# Multi-persona parallel (persona|prompt per line in jobs.txt)
+pnpm personas --multi-batch jobs.txt --concurrency 5
+```
+
+The output of every probe is shaped like:
+
+```text
+prompt:    I'm evaluating stablecoin payment rails for a fintech — ...
+model:     gpt-4o
+elapsed:   4231ms
+conv id:   conv-abc-123
+msg id:    msg-xyz-789
+ads found: 2
+  🔴 BestMoney: "Get 4.5% APY on idle cash"
+  🔴 Robinhood: "Put Your Cash to Work"
+text:      There are several stablecoin payment APIs...
+```
+
+The `ads found` section is the scrape output. Same `AdCard` shape as
+`src/scraper/types.ts`. The ad HTML that produced it is also available
+in `result.html` (when called programmatically via `ChatGPTClient.probe()`).
+
+**Step 4 — Keep personas healthy.** The background daemon probes
+each persona's session every 5 minutes, refreshes the access token,
+updates the plan / health / proxy state, and writes a new audit
+entry. This catches `cf_blocked` and `session_expired` failures
+within 5 minutes, which is much faster than discovering them at
+2am when a probe hangs.
+
+```bash
+# Foreground daemon
+pnpm personas:health
+
+# Or one-shot health check
+pnpm personas --health
+pnpm personas --validate crypto-trader
+```
+
+### A real end-to-end example
+
+You have 3 personas, 50 prompts you want to test, and you want every
+ad that ChatGPT shows to your personas, organized by persona.
+
+```bash
+# 1. Create the personas (offline, no network)
+pnpm personas --create crypto-trader
+pnpm personas --create defi-developer
+pnpm personas --create api-engineer
+
+# 2. (Once) bind real session tokens for each — see §8
+
+# 3. Write a jobs file
+cat > jobs.txt <<'EOF'
+crypto-trader|I'm evaluating stablecoin payment APIs for cross-border settlement
+crypto-trader|What's the cheapest way to move USD to USDC on Polygon
+crypto-trader|Comparing Circle vs Fireblocks for custody
+defi-developer|What's the most reliable RPC provider for Ethereum mainnet
+defi-developer|Best on-chain data indexing API for real-time position monitoring
+api-engineer|API gateway comparison: Kong vs Tyk vs AWS API Gateway
+api-engineer|Open-source Datadog alternatives for observability at scale
+EOF
+
+# 4. Run them all in parallel — 5 personas at a time, 3-5s each
+pnpm personas --multi-batch jobs.txt --concurrency 5
+
+# Output (abbreviated):
+#   [1/7] ads=1 t=3421ms 🔴 Robinhood: "Put Your Cash to Work"
+#   [2/7] ads=0 t=2810ms
+#   [3/7] ads=0 t=3122ms
+#   [4/7] ads=1 t=3891ms 🔴 BestMoney: "Get 4.5% APY on idle cash"
+#   [5/7] ads=0 t=2987ms
+#   [6/7] ads=0 t=3340ms
+#   [7/7] ads=1 t=4102ms 🔴 Tinfoil: "AI privacy for enterprise"
+# DONE. 7 jobs, 0 failed, 3 ads surfaced.
+```
+
+**Total wall clock:** ~25 seconds for 7 probes across 3 personas in
+parallel, vs. ~70 seconds if you ran them sequentially. And vs. the
+**old** Playwright-per-probe design, ~25s vs. ~3 minutes (because the
+old design launches a fresh Chromium for every single probe).
+
+### Where the ads go
+
+The `AdCard` shape is the same one the rest of the codebase already
+consumes. The persona system writes to the same shape so any
+downstream tool works unchanged:
+
+```ts
+type AdCard = {
+  title: string;
+  body: string;
+  target_url: string;        // empty from SSE; populated by the analyzer if needed
+  advertiser?: string;
+  image_url?: string;
+};
+```
+
+You can pipe `--multi-batch` output to `data/probes.json` (via
+`--ingest`) and run the existing `pnpm analyze` to get topic-density
+reports, advertiser coverage maps, and blue-ocean opportunities
+across your personas.
+
+```bash
+# Pipe via tee to a probe-batch output dir, then analyze
+pnpm personas --multi-batch jobs.txt 2>&1 | tee multi-batch.log
+# (Future) pnpm personas --ingest multi-batch.log → data/probes.json
+# pnpm analyze
+```
+
+### When this won't work
+
+The persona system can probe but the ad scrape will be empty if:
+
+| Condition | Symptom | Fix |
+|---|---|---|
+| Persona has no `sessionToken` | `Session expired: empty_session` | Bind a session (step 2 above) |
+| `cf_clearance` is missing or IP/UA mismatched | HTTP 403 "Just a moment…" | `pnpm personas --refresh-cf <id>` (browser path) |
+| Persona is rate-limited on the model | HTTP 429 | Switch to `gpt-4o-mini` or wait for the rolling window |
+| Persona is banned | `BANNED` health | Archive; create a new persona with a different seed id |
+| Account has no Plus plan | Free tier shows far fewer ads (gated by `chatgpt_plan_type`) | The system surfaces the plan in `--validate`; upgrade via OpenAI |
+
+---
 
 ```bash
 # ─── Persona management (no network) ────────────────────────
@@ -109,6 +287,70 @@ pnpm personas --init-keys                         # generate PERSONA_MASTER_KEY
   (use `-` for stdin)
 - **Master key** must be 64 hex chars (32 bytes). Generate with
   `pnpm personas --init-keys` or `openssl rand -hex 32`.
+
+---
+
+## 2. The CLI — every command
+
+> If you only read one section of this file, read this one. The CLI
+> is the entire product surface.
+
+```bash
+# ─── Persona management (no network) ────────────────────────
+pnpm personas --list                              # table of all personas
+pnpm personas --create <seed-id>                   # mint a persona from a seed
+pnpm personas --create <seed-id> --dry-run        # preview without writing
+pnpm personas --create <seed-id> --id <new-id>    # custom id
+pnpm personas --create <seed-id> --tags t1,t2    # add tags
+pnpm personas --status [<id>]                     # one or all personas, full detail
+pnpm personas --health                            # status table with health scores
+pnpm personas --dump <id>                         # full JSON (sanitized UA)
+pnpm personas --audit <id> [--limit N]            # tail the audit log
+pnpm personas --archive <id>                      # remove from index (files stay)
+
+# ─── Day-to-day operations (browserless, uses proxy) ────────
+pnpm personas --validate <id>                     # session check, no auto-fallback
+pnpm personas --probe <id> --prompt "..."         # single prompt
+pnpm personas --converse <id> <file>              # threaded conversation
+pnpm personas --batch <id> <file>                 # one prompt per line, fresh conv
+pnpm personas --multi-batch <file>                # "persona|prompt" per line, parallel
+
+# ─── Browser fallback (EDR-detectable, opt-in only) ─────────
+pnpm personas --create-account <seed-id>          # full signup via Chromium + mail.tm
+pnpm personas --reauth <id>                       # full re-auth via email code
+pnpm personas --refresh-cf <id>                   # refresh cf_clearance only
+
+# ─── Proxy management ───────────────────────────────────────
+pnpm personas --proxy-info [<id>]                 # pool + per-persona config
+pnpm personas --proxy-test                        # verify egress via ip.oxylabs.io
+pnpm personas --rotate-proxy <id>                 # burn current sessid, mint new
+
+# ─── Daemons & utilities ────────────────────────────────────
+pnpm personas:health                              # foreground health daemon
+pnpm personas --init-keys                         # generate PERSONA_MASTER_KEY
+```
+
+### File formats
+
+- **`--converse <file>` / `--batch <file>`** — one prompt per line
+- **`--multi-batch <file>`** — one `"<persona_id>|<prompt>"` per line
+  (use `-` for stdin)
+- **Master key** must be 64 hex chars (32 bytes). Generate with
+  `pnpm personas --init-keys` or `openssl rand -hex 32`.
+
+### Most important day-to-day commands
+
+If you're using the system to **scrape ads** (the north-star), these
+are the four commands you'll touch most:
+
+```bash
+pnpm personas --create <seed>      # mint a persona
+pnpm personas --probe <id> -p X    # probe + scrape ads
+pnpm personas --batch <id> file    # batch probe + scrape
+pnpm personas --multi-batch file  # multi-persona parallel
+```
+
+Everything else is infrastructure.
 
 ---
 
