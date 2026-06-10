@@ -11,18 +11,32 @@
     "verify-scraper": "tsx src/scripts/verify-scraper.ts",
     "verify-verseodin": "tsx src/scripts/verify-verseodin.ts",
     "analyze": "tsx src/analyzer/index.ts",
+    "analyze-oms": "tsx src/analyzer/index-v2.ts",
     "playwright": "tsx src/playwright-scraper/index.ts",
+    "personas": "tsx src/personas/cli.ts",
+    "personas:health": "tsx src/personas/health/daemon.ts",
+    "personas:test": "tsx src/personas/tests/run.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
+    "fingerprint-generator": "^2.1.0",
+    "fingerprint-injector": "^2.1.0",
+    "header-generator": "^2.1.0",
+    "impers": "^0.0.7",
+    "jose": "^6.0.0",
+    "lru-cache": "^11.0.0",
+    "patchright": "^1.60.0",
+    "pino": "^10.0.0",
     "playwright": "^1.60.0",
     "playwright-extra": "^4.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "tough-cookie": "^6.0.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^22.7.4",
+    "@types/tough-cookie": "^4.0.5",
     "tsx": "^4.19.1",
     "typescript": "^5.6.2"
   },
