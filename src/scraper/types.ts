@@ -45,3 +45,20 @@ export interface OxylabsResponse {
     status_code: number;
   }>;
 }
+
+// ── VerseOdin AI Engine Scraper types ──
+
+export interface VerseOdinResponse {
+  name: string;
+  engine: string;
+  prompt: string;
+  country: string;
+  answer_text: string;
+  answer_html: string;
+  citations: Array<{ url: string; title: string }>;
+  scrape_url: string;
+  took_ms: number;
+  quota_used_today: number;
+  quota_remaining_today: number;
+  quota_resets_at: string;
+}

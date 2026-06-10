@@ -29,10 +29,14 @@ export const config = {
     password: optional("OXYLABS_PASSWORD", ""),
     baseUrl: optional("OXYLABS_BASE_URL", "https://realtime.oxylabs.io/v1/queries"),
     proxy: {
-      username: optional("OXYLABS_PROXY_USERNAME", optional("OXYLABS_USERNAME", "")),
-      password: optional("OXYLABS_PROXY_PASSWORD", optional("OXYLABS_PASSWORD", "")),
+      username: optional("OXYLABS_PROXY_USERNAME", ""),
+      password: optional("OXYLABS_PROXY_PASSWORD", ""),
       server: optional("OXYLABS_PROXY_SERVER", "http://pr.oxylabs.io:7777"),
     },
+  },
+  verseodin: {
+    apiKey: required("VERSEODIN_API_KEY"),
+    baseUrl: optional("VERSEODIN_BASE_URL", "https://verseodin.com/api/scrape/ai-engine"),
   },
   // When false, the executor creates objects as `paused` and never spends. Flip with ADS_LIVE_MODE=true.
   liveMode: optional("ADS_LIVE_MODE", "false").toLowerCase() === "true",

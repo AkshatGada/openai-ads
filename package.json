@@ -9,6 +9,7 @@
     "loop": "tsx src/loop.ts",
     "verify": "tsx src/scripts/verify.ts",
     "verify-scraper": "tsx src/scripts/verify-scraper.ts",
+    "verify-verseodin": "tsx src/scripts/verify-verseodin.ts",
     "analyze": "tsx src/analyzer/index.ts",
     "playwright": "tsx src/playwright-scraper/index.ts",
     "typecheck": "tsc --noEmit"
