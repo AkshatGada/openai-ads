@@ -24,6 +24,7 @@ import { readFile } from "node:fs/promises";
 import { PersonaManager, makePersonaFromSeed, createWithBrowser } from "./manager.js";
 import { ChatGPTClient } from "./chatgpt/client.js";
 import { BrowserPersonaRunner } from "./browser/runner.js";
+import { poolFromEnv } from "./proxy/pool.js";
 import { ensureHome, identityExists, personaDir, readIdentity } from "./storage.js";
 import { asPersonaId, PersonaId } from "./types.js";
 import { listPersonaIds, readEnrichedIndex } from "./registry.js";
@@ -47,6 +48,9 @@ Usage:
   pnpm personas --archive <id>
   pnpm personas --refresh-cf <id>            [BROWSER] refreshes cf_clearance
   pnpm personas --reauth <id>                [BROWSER] full re-auth via email code
+  pnpm personas --rotate-proxy <id>          rotate the persona's proxy session
+  pnpm personas --proxy-info [<id>]          show pool + per-persona proxy config
+  pnpm personas --proxy-test                verify egress IP via ip.oxylabs.io
   pnpm personas --health
   pnpm personas --init-keys
 
@@ -56,7 +60,17 @@ Notes:
   where this is acceptable (e.g. personal laptop, VPS).
 
   Day-to-day probing (--probe, --batch, --converse, --validate) is
-  browserless and safe.
+  browserless and uses the configured proxy (OXYLABS_PROXY_USERNAME etc).
+
+Proxy env vars (optional):
+  OXYLABS_PROXY_USERNAME  — your Oxylabs customer username (no "customer-" prefix)
+  OXYLABS_PROXY_PASSWORD  — your Oxylabs password
+  OXYLABS_PROXY_TYPE      — isp (default) | residential | datacenter
+  OXYLABS_PROXY_COUNTRY   — cc code, default US
+  OXYLABS_PROXY_STATE     — e.g. us-ca
+  OXYLABS_PROXY_CITY      — e.g. los_angeles
+  OXYLABS_PROXY_TTL_MIN   — sticky session TTL, default 30
+  PERSONA_PROXY_DISABLED  — "true" to disable proxy entirely (local egress)
 
 Seeds available:
 ${PERSONA_SEEDS.map((s) => `  - ${s.id.padEnd(20)} ${s.label}`).join("\n")}
@@ -115,12 +129,19 @@ async function main(): Promise<void> {
 
   // Everything below mutates secrets; require the master key.
   const masterKey = masterKeyOrThrow();
+  const proxyPool = poolFromEnv();
   const pm = new PersonaManager({
     masterKeyHex: masterKey,
     home: process.env.OPENAI_ADS_HOME,
-    clientFactory: (persona, auth) => new ChatGPTClient(persona, auth),
+    proxyPool,
+    clientFactory: (persona, auth, ctx) =>
+      new ChatGPTClient(persona, auth, { proxyUrl: ctx.proxyUrl }),
     // Browser factory is lazy-instantiated; only loaded when actually used.
-    browserFactory: () => new BrowserPersonaRunner({ headless: flag("--headed") ? false : true }),
+    browserFactory: (browserOpts) =>
+      new BrowserPersonaRunner({
+        headless: flag("--headed") ? false : true,
+        proxy: browserOpts?.proxy,
+      }),
   });
   await pm.init();
 
@@ -131,6 +152,9 @@ async function main(): Promise<void> {
   if (flag("--archive")) return cmdArchive(pm, asPersonaId(arg("--archive")!));
   if (flag("--refresh-cf")) return cmdRefreshCf(pm, asPersonaId(arg("--refresh-cf")!));
   if (flag("--reauth")) return cmdReauth(pm, asPersonaId(arg("--reauth")!));
+  if (flag("--rotate-proxy")) return cmdRotateProxy(pm, asPersonaId(arg("--rotate-proxy")!));
+  if (flag("--proxy-info")) return cmdProxyInfo(pm, arg("--proxy-info"));
+  if (flag("--proxy-test")) return cmdProxyTest(proxyPool);
 
   // Network-bearing commands
   if (flag("--validate")) return cmdValidate(pm, asPersonaId(arg("--validate")!));
@@ -338,6 +362,166 @@ async function cmdReauth(pm: PersonaManager, id: PersonaId): Promise<void> {
   console.warn("\n⚠️  This command launches Chromium with automation plugins.\n");
   await pm.recoverWithBrowser(id, "session_expired");
   console.log(`✅ Re-authed ${id}`);
+}
+
+async function cmdRotateProxy(pm: PersonaManager, id: PersonaId): Promise<void> {
+  if (!pm.proxyPool) {
+    console.error("No proxy pool configured. Set OXYLABS_PROXY_USERNAME/PASSWORD in .env");
+    process.exit(1);
+  }
+  await pm.rotateProxy(id);
+  const assignment = pm.proxyPool.get(id);
+  console.log(`✅ Rotated proxy for ${id}`);
+  console.log(`   new session: ${assignment?.sessionId}`);
+  console.log(`   description: ${assignment?.description}`);
+}
+
+async function cmdProxyInfo(pm: PersonaManager, idArg: string | undefined): Promise<void> {
+  if (!pm.proxyPool) {
+    console.error("No proxy pool configured. Set OXYLABS_PROXY_USERNAME/PASSWORD in .env");
+    process.exit(1);
+  }
+  console.log("\nProxy pool configuration:");
+  console.log(`  type:    ${pm.proxyPool.opts.type ?? "isp"}`);
+  console.log(`  country: ${pm.proxyPool.opts.country ?? "US"}`);
+  if (pm.proxyPool.opts.state) console.log(`  state:   ${pm.proxyPool.opts.state}`);
+  if (pm.proxyPool.opts.city) console.log(`  city:    ${pm.proxyPool.opts.city}`);
+  console.log(`  ttl:     ${pm.proxyPool.opts.sessionTtlMin ?? 30} min`);
+  console.log(`  user:    ${pm.proxyPool.opts.oxylabsUsername ? "set" : "MISSING"}`);
+  console.log(`  pass:    ${pm.proxyPool.opts.oxylabsPassword ? "set" : "MISSING"}`);
+  console.log("");
+
+  if (!idArg) return;
+  const id = asPersonaId(idArg);
+  const a = pm.proxyPool.get(id);
+  if (!a) {
+    console.log(`(no assignment for ${id} — will be created on first use)`);
+    return;
+  }
+  console.log(`Assignment for ${id}:`);
+  console.log(`  sessionId:    ${a.sessionId}`);
+  console.log(`  description:  ${a.description}`);
+  console.log(`  burned:       ${a.burned}${a.burnedReason ? ` (${a.burnedReason})` : ""}`);
+  if (a.lastEgress) {
+    console.log(`  last egress:  ${a.lastEgress.ip} (${a.lastEgress.country}${a.lastEgress.region ? "/" + a.lastEgress.region : ""})`);
+  }
+  console.log(`  proxy URL:    ${pm.proxyUrlFor(id)?.replace(/:[^:@]+@/, ":***@") ?? "(none)"}`);
+  console.log("");
+}
+
+async function cmdProxyTest(proxyPool: import("./proxy/pool.js").ProxyPool): Promise<void> {
+  if (!proxyPool.opts.oxylabsUsername) {
+    console.error("No proxy creds. Set OXYLABS_PROXY_USERNAME / OXYLABS_PROXY_PASSWORD in .env");
+    process.exit(1);
+  }
+  // Build a throwaway persona id for the test assignment.
+  const testId = asPersonaId("__proxy_test__");
+  const a = proxyPool.assign(testId);
+  const url = proxyPool.proxyUrlFor(a);
+  if (!url) {
+    console.error("Proxy pool is disabled (PERSONA_PROXY_DISABLED=true)");
+    process.exit(1);
+  }
+  // Use Node's undici via fetch with a Proxy agent. Easiest: use the
+  // dynamic import of node's URL + a HTTPS-over-HTTP-CONNECT tunnel.
+  // For simplicity, use fetch with dispatcher (Node 22+ supports this).
+  // Fall back to: print the URL and ask the user to verify externally.
+  console.log(`Testing proxy: ${url.replace(/:[^:@]+@/, ":***@")}`);
+  console.log("Hitting https://ip.oxylabs.io/location through the proxy...");
+  // Tunnel via http(s) request through the proxy
+  try {
+    const { request } = await import("node:https");
+    const { response, body } = await tunneledGet(url, "https://ip.oxylabs.io/location");
+    if (response.statusCode === 200) {
+      const data = JSON.parse(body.toString("utf8"));
+      console.log("✅ Proxy is working. Observed egress:");
+      console.log(`   ip:        ${data.ip ?? "?"}`);
+      console.log(`   country:   ${data.country ?? "?"}`);
+      console.log(`   region:    ${data.region ?? "?"}`);
+      console.log(`   city:      ${data.city ?? "?"}`);
+      console.log(`   timezone:  ${data.timezone ?? "?"}`);
+    } else {
+      console.log(`❌ Proxy responded ${response.statusCode}`);
+      console.log(body.toString("utf8").slice(0, 200));
+    }
+  } catch (e) {
+    console.log(`❌ Proxy test failed: ${e instanceof Error ? e.message : e}`);
+    console.log(`   URL was: ${url.replace(/:[^:@]+@/, ":***@")}`);
+    process.exit(1);
+  }
+}
+
+/** Tunnel a GET through an HTTP proxy (HTTP-CONNECT for HTTPS, absolute-URI for HTTP). */
+async function tunneledGet(
+  proxyUrl: string,
+  target: string,
+): Promise<{ response: { statusCode: number }; body: Buffer }> {
+  const { request } = await import("node:http");
+  const proxy = new URL(proxyUrl);
+  const tu = new URL(target);
+  // For HTTPS targets, use CONNECT; for HTTP, send absolute URI.
+  if (tu.protocol === "https:") {
+    return new Promise((resolve, reject) => {
+      const req = request({
+        host: proxy.hostname,
+        port: proxy.port,
+        method: "CONNECT",
+        path: `${tu.hostname}:${tu.port || 443}`,
+        headers: {
+          "Proxy-Authorization":
+            "Basic " +
+            Buffer.from(
+              decodeURIComponent(proxy.username) + ":" + decodeURIComponent(proxy.password),
+            ).toString("base64"),
+        },
+      });
+      req.on("connect", (res, socket) => {
+        if (res.statusCode !== 200) {
+          reject(new Error(`CONNECT ${res.statusCode}`));
+          return;
+        }
+        // Tunneled TLS over the socket
+        const tls = require("node:tls") as typeof import("node:tls");
+        const ts = tls.connect({
+          host: tu.hostname,
+          port: tu.port ? parseInt(tu.port, 10) : 443,
+          socket,
+        });
+        let buf = Buffer.alloc(0);
+        let headerEnd = -1;
+        const headers =
+          `GET ${tu.pathname}${tu.search} HTTP/1.1\r\n` +
+          `Host: ${tu.host}\r\n` +
+          `User-Agent: persona-proxy-test/1.0\r\n` +
+          `Connection: close\r\n\r\n`;
+        ts.write(headers);
+        ts.on("data", (d) => {
+          buf = Buffer.concat([buf, d]);
+          if (headerEnd < 0) {
+            const i = buf.indexOf("\r\n\r\n");
+            if (i >= 0) {
+              headerEnd = i + 4;
+              const statusLine = buf.slice(0, buf.indexOf("\r\n")).toString("utf8");
+              const m = statusLine.match(/^HTTP\/\d\.\d (\d+)/);
+              const statusCode = m ? parseInt(m[1]!, 10) : 0;
+              const body = buf.slice(headerEnd);
+              resolve({ response: { statusCode }, body });
+            }
+          }
+        });
+        ts.on("end", () => {
+          if (headerEnd < 0) {
+            // No headers parsed yet; treat as empty body
+            resolve({ response: { statusCode: 0 }, body: buf });
+          }
+        });
+        ts.on("error", reject);
+      });
+      req.on("error", reject);
+      req.end();
+    });
+  }
+  throw new Error("HTTP target not yet supported in --proxy-test");
 }
 
 async function cmdValidate(pm: PersonaManager, id: PersonaId): Promise<void> {

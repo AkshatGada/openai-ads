@@ -6,6 +6,7 @@ import { randomUUID } from "node:crypto";
 import { LRUCache } from "lru-cache";
 import { PersonaCrypto } from "./crypto.js";
 import { PersonaLock } from "./lock.js";
+import { ProxyPool } from "./proxy/pool.js";
 import {
   appendAudit,
   appendBehaviorSample,
@@ -39,14 +40,20 @@ export interface PersonaManagerOptions {
   maxInMemory?: number;
   /** Path to the personas home directory (default ~/.openai-ads). */
   home?: string;
+  /** Proxy pool. If omitted, proxies are not used. */
+  proxyPool?: ProxyPool;
   /** Optional: lazy-injected ChatGPTClient factory (Phase 2). */
   clientFactory?: ClientFactory;
   /** Optional: lazy-injected BrowserPersonaRunner (Phase 3). */
   browserFactory?: BrowserFactory;
 }
 
-export type ClientFactory = (persona: Persona, auth: AuthState) => ChatGPTClientLike;
-export type BrowserFactory = () => BrowserRunnerLike;
+export type ClientFactory = (
+  persona: Persona,
+  auth: AuthState,
+  ctx: { proxyUrl?: string },
+) => ChatGPTClientLike;
+export type BrowserFactory = (opts: { proxy?: { server: string; username?: string; password?: string } }) => BrowserRunnerLike;
 
 export interface ChatGPTClientLike {
   validateSession(): Promise<import("./types.js").ValidationResult>;
@@ -94,6 +101,7 @@ export class PersonaManager {
   readonly crypto: PersonaCrypto;
   readonly lock = new PersonaLock();
   readonly impersonate: string;
+  readonly proxyPool?: ProxyPool;
   private readonly lru: LRUCache<PersonaId, Persona>;
   private readonly authCache = new Map<PersonaId, AuthState>();
   private readonly clientFactory?: ClientFactory;
@@ -103,8 +111,39 @@ export class PersonaManager {
     this.crypto = new PersonaCrypto(opts.masterKeyHex);
     this.impersonate = opts.impersonate ?? "chrome131";
     this.lru = new LRUCache({ max: opts.maxInMemory ?? 50 });
+    this.proxyPool = opts.proxyPool;
     this.clientFactory = opts.clientFactory;
     this.browserFactory = opts.browserFactory;
+  }
+
+  /** Compute the proxy URL for a persona (or undefined if no pool / no creds). */
+  proxyUrlFor(id: PersonaId): string | undefined {
+    if (!this.proxyPool) return undefined;
+    const assignment = this.proxyPool.assign(id);
+    return this.proxyPool.proxyUrlFor(assignment);
+  }
+
+  /** Rotate a persona's proxy (mark current burned, get a new sessid). */
+  async rotateProxy(id: PersonaId): Promise<void> {
+    if (!this.proxyPool) throw new Error("No proxy pool configured");
+    this.proxyPool.rotate(id);
+    // Persist the new assignment on the persona record.
+    const persona = await this.load(id);
+    persona.proxy = this.proxyPool.assign(id);
+    await this.persistPersona(persona);
+    await this.audit(id, "proxy_rotated", "manual rotation");
+  }
+
+  /** Update the lastEgress info after observing a real request. */
+  async recordEgress(
+    id: PersonaId,
+    info: NonNullable<import("./types.js").ProxyAssignment["lastEgress"]>,
+  ): Promise<void> {
+    if (!this.proxyPool) return;
+    this.proxyPool.recordEgress(id, info);
+    const persona = await this.load(id);
+    persona.proxy = this.proxyPool.get(id) ?? persona.proxy;
+    await this.persistPersona(persona);
   }
 
   // ─── Bootstrap ────────────────────────────────────────────────
@@ -216,7 +255,8 @@ export class PersonaManager {
       const auth = await this.ensureValidSession(id, persona, {
         autoFallbackToBrowser: opts.autoFallbackToBrowser ?? true,
       });
-      return this.clientFactory!(persona, auth);
+      const proxyUrl = this.proxyUrlFor(id);
+      return this.clientFactory!(persona, auth, { proxyUrl });
     });
   }
 
@@ -246,7 +286,18 @@ export class PersonaManager {
       );
     }
     const persona = await this.load(id);
-    const browser = this.browserFactory();
+    const proxyUrl = this.proxyUrlFor(id);
+    const proxy = proxyUrl
+      ? (() => {
+          const u = new URL(proxyUrl);
+          return {
+            server: `${u.protocol}//${u.hostname}:${u.port}`,
+            username: decodeURIComponent(u.username),
+            password: decodeURIComponent(u.password),
+          };
+        })()
+      : undefined;
+    const browser = this.browserFactory({ proxy });
     if (reason === "cf_blocked") {
       const { cfClearance, cfClearanceExp } = await browser.refreshCfClearance(persona);
       const auth = await this.loadAuth(id);
@@ -313,7 +364,8 @@ export class PersonaManager {
     if (!this.clientFactory) {
       return auth; // best-effort: caller will surface error
     }
-    const client = this.clientFactory(persona, auth);
+    const proxyUrl = this.proxyUrlFor(id);
+    const client = this.clientFactory(persona, auth, { proxyUrl });
     try {
       const v = await client.validateSession();
       auth.accessToken = v.accessToken ?? null;
@@ -384,7 +436,7 @@ export async function createWithBrowser(
   const factory = (pm as any).browserFactory as BrowserFactory | undefined;
   if (!factory) throw new Error("PersonaManager has no browserFactory");
 
-  const runner = factory();
+  const runner = factory({});
   const { credentials, auth } = await runner.signup(seed);
 
   // Seal the mail.tm token (which lives in credentials.mailInbox) before

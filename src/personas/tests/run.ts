@@ -14,6 +14,7 @@ import {
 import { personaDir, readIdentity } from "../storage.js";
 import { asPersonaId, AuthState } from "../types.js";
 import { computeHealthScore, issuesFor, buildReport } from "../health/score.js";
+import { ProxyPool } from "../proxy/pool.js";
 
 interface TestCase {
   name: string;
@@ -243,6 +244,99 @@ test("health: buildReport shape", async () => {
   assert(r.id === persona.identity.id, "id matches");
   assert(typeof r.healthScore === "number", "score is number");
   assert(Array.isArray(r.issues), "issues is array");
+});
+
+// ─── proxy pool ────────────────────────────────────────────────
+test("proxy: build Oxylabs ISP URL", () => {
+  const pool = new ProxyPool({
+    oxylabsUsername: "alice",
+    oxylabsPassword: "pw",
+    type: "isp",
+    country: "US",
+  });
+  const a = pool.assign("crypto-trader");
+  const url = pool.proxyUrlFor(a)!;
+  assert(url !== undefined, "URL defined");
+  assert(url.startsWith("http://customer-alice-cc-us-sessid-crypto-trader-"), "URL format");
+  assert(url.includes("@isp.oxylabs.io:8001"), "ISP host:port");
+  assert(url.endsWith(":pw@isp.oxylabs.io:8001"), "password appended");
+  assert(url.includes(`-sesstime-30`), "TTL injected");
+});
+
+test("proxy: residential uses pr.oxylabs.io:7777", () => {
+  const pool = new ProxyPool({
+    oxylabsUsername: "alice",
+    oxylabsPassword: "pw",
+    type: "residential",
+  });
+  const a = pool.assign("p1");
+  const url = pool.proxyUrlFor(a)!;
+  assert(url.includes("@pr.oxylabs.io:7777"), "residential host:port");
+});
+
+test("proxy: no creds → no URL", () => {
+  const pool = new ProxyPool({ type: "isp" });
+  const a = pool.assign("p1");
+  const url = pool.proxyUrlFor(a);
+  assert(url === undefined, "no URL without creds");
+});
+
+test("proxy: disabled → no URL even with creds", () => {
+  const pool = new ProxyPool({ oxylabsUsername: "alice", oxylabsPassword: "pw", disabled: true });
+  const a = pool.assign("p1");
+  const url = pool.proxyUrlFor(a);
+  assert(url === undefined, "disabled returns undefined");
+});
+
+test("proxy: per-persona geo (state + city)", () => {
+  const pool = new ProxyPool({
+    oxylabsUsername: "alice",
+    oxylabsPassword: "pw",
+    type: "isp",
+    country: "US",
+    state: "us-ca",
+    city: "los_angeles",
+  });
+  const a = pool.assign("p1");
+  const url = pool.proxyUrlFor(a)!;
+  assert(url.includes("-cc-us-us-ca-los_angeles-"), "geo chain");
+});
+
+test("proxy: rotation marks old as burned and issues new sessid", () => {
+  const pool = new ProxyPool({ oxylabsUsername: "alice", oxylabsPassword: "pw" });
+  const a1 = pool.assign("p1");
+  const a2 = pool.rotate("p1");
+  assert(a1.burned === true, "old marked burned");
+  assert(a1.burnedReason === "manual rotation", "burn reason");
+  assert(a2.burned === false, "new is fresh");
+  assert(a2.sessionId !== a1.sessionId, "different sessionId");
+});
+
+test("proxy: idempotent assign — same id → same proxy unless burned", () => {
+  const pool = new ProxyPool({ oxylabsUsername: "alice", oxylabsPassword: "pw" });
+  const a1 = pool.assign("p1");
+  const a2 = pool.assign("p1");
+  assert(a1 === a2, "same assignment object");
+});
+
+test("proxy: TTL is configurable", () => {
+  const pool = new ProxyPool({
+    oxylabsUsername: "alice",
+    oxylabsPassword: "pw",
+    sessionTtlMin: 5,
+  });
+  const a = pool.assign("p1");
+  const url = pool.proxyUrlFor(a)!;
+  assert(url.includes("-sesstime-5"), "TTL=5");
+});
+
+test("proxy: markBurned → next assign gets fresh sessid", () => {
+  const pool = new ProxyPool({ oxylabsUsername: "alice", oxylabsPassword: "pw" });
+  const a1 = pool.assign("p1");
+  pool.markBurned("p1", "IP flagged");
+  const a2 = pool.assign("p1");
+  assert(a1.burned === true, "old burned");
+  assert(a2.sessionId !== a1.sessionId, "new sessid");
 });
 
 // ─── main runner ───────────────────────────────────────────────
