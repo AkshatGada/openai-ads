@@ -202,7 +202,10 @@ export class PersonaManager {
   }
 
   // ─── Client access (Phase 2 hook) ───────────────────────────
-  async getClient(id: PersonaId): Promise<ChatGPTClientLike> {
+  async getClient(
+    id: PersonaId,
+    opts: { autoFallbackToBrowser?: boolean } = {},
+  ): Promise<ChatGPTClientLike> {
     if (!this.clientFactory) {
       throw new Error(
         "PersonaManager has no clientFactory; Phase 2 ChatGPTClient not wired in this build",
@@ -210,8 +213,25 @@ export class PersonaManager {
     }
     return this.lock.run(id, async () => {
       const persona = await this.load(id);
-      const auth = await this.ensureValidSession(id, persona);
+      const auth = await this.ensureValidSession(id, persona, {
+        autoFallbackToBrowser: opts.autoFallbackToBrowser ?? true,
+      });
       return this.clientFactory!(persona, auth);
+    });
+  }
+
+  /**
+   * Validate the session without auto-falling-back to the browser.
+   * Used by `pnpm personas --validate` so the user can see "session
+   * expired" as a clean error, not an unexpected browser launch.
+   */
+  async validateNoFallback(id: PersonaId): Promise<AuthState> {
+    if (!this.clientFactory) {
+      throw new Error("PersonaManager has no clientFactory");
+    }
+    return this.lock.run(id, async () => {
+      const persona = await this.load(id);
+      return this.ensureValidSession(id, persona, { autoFallbackToBrowser: false });
     });
   }
 
@@ -275,11 +295,16 @@ export class PersonaManager {
    * Ensure the auth state has a valid (non-expired) accessToken. Refreshes
    * via /api/auth/session if needed. Falls back to the browser if the
    * session-token itself is dead or Cloudflare is blocking.
+   *
+   * `opts.autoFallbackToBrowser` defaults to TRUE; pass FALSE to surface
+   * the error without launching a browser (used by --validate).
    */
   async ensureValidSession(
     id: PersonaId,
     persona: Persona,
+    opts: { autoFallbackToBrowser?: boolean } = {},
   ): Promise<AuthState> {
+    const autoFallback = opts.autoFallbackToBrowser ?? true;
     let auth = await this.loadAuth(id);
     const now = Math.floor(Date.now() / 1000);
     if (auth.accessToken && auth.accessTokenExp && auth.accessTokenExp > now + 60) {
@@ -303,7 +328,11 @@ export class PersonaManager {
       auth.health = reason;
       auth.lastValidatedAt = new Date().toISOString();
       await this.persistAuth(id, auth);
-      if ((reason === "cf_blocked" || reason === "session_expired") && this.browserFactory) {
+      if (
+        autoFallback &&
+        (reason === "cf_blocked" || reason === "session_expired") &&
+        this.browserFactory
+      ) {
         await this.audit(id, "browser_invoked", `auto-recover from ${reason}`);
         await this.recoverWithBrowser(id, reason);
         return this.loadAuth(id);

@@ -41,6 +41,7 @@ Usage:
   pnpm personas --probe <id> "<prompt>"
   pnpm personas --converse <id> <file>
   pnpm personas --batch <id> <file>
+  pnpm personas --multi-batch <file> [--concurrency N]   one "persona|prompt" per line
   pnpm personas --dump <id>
   pnpm personas --audit <id> [--limit N]
   pnpm personas --archive <id>
@@ -144,6 +145,12 @@ async function main(): Promise<void> {
   }
   if (flag("--converse")) return cmdConverse(pm, asPersonaId(arg("--converse")!), arg("--converse-file") ?? positional(1));
   if (flag("--batch")) return cmdBatch(pm, asPersonaId(arg("--batch")!), arg("--batch-file") ?? positional(1));
+  if (flag("--multi-batch")) {
+    const { runMultiBatch } = await import("./multi-batch.js");
+    const filePath = arg("--multi-batch-file") ?? positional(1) ?? "-";
+    const concurrency = parseInt(arg("--concurrency") ?? "5", 10);
+    return runMultiBatch(pm, filePath, { concurrency });
+  }
 
   console.error("Unknown command. Try --help.");
   process.exit(1);
@@ -334,24 +341,40 @@ async function cmdReauth(pm: PersonaManager, id: PersonaId): Promise<void> {
 }
 
 async function cmdValidate(pm: PersonaManager, id: PersonaId): Promise<void> {
-  const client = await pm.getClient(id);
-  const v = await client.validateSession();
-  if (!v.valid) {
-    console.log(`❌ ${id}: invalid (${v.reason ?? "unknown"})`);
+  // Use the no-fallback variant: --validate is for *introspection*;
+  // we don't want a stray browser launch just because a session is dead.
+  let auth: import("./types.js").AuthState;
+  try {
+    auth = await pm.validateNoFallback(id);
+  } catch (e: any) {
+    const code = e?.code ?? "unknown";
+    const msg = e instanceof Error ? e.message : String(e);
+    console.log(`❌ ${id}: ${code} — ${msg}`);
+    if (code === "cf_blocked") {
+      console.log(`   run: pnpm personas --refresh-cf ${id}   (requires browser)`);
+    } else if (code === "session_expired") {
+      console.log(`   run: pnpm personas --reauth ${id}   (requires browser)`);
+    }
     return;
   }
-  // Best-effort: enrich with /backend-api/me
-  let plan = "unknown";
-  let email = v.profile?.email ?? "unknown";
-  try {
-    const me = await client.getMe();
-    plan = me.plan;
-    email = me.email;
-  } catch {
-    /* /me may fail; not fatal */
+  // Probe /me if we have an access token.
+  let plan = auth.plan;
+  let email = "?";
+  if (auth.accessToken) {
+    const client = new ChatGPTClient(
+      await pm.load(id),
+      auth,
+    );
+    try {
+      const me = await client.getMe();
+      plan = me.plan;
+      email = me.email;
+    } catch {
+      /* /me may fail; keep the cached plan */
+    }
   }
   console.log(
-    `✅ ${id}: valid — user=${v.userId ?? "?"} email=${email} plan=${plan} accessTokenExp=${v.accessTokenExp ?? "?"}`,
+    `✅ ${id}: health=${auth.health} accountState=${auth.accountState} plan=${plan} email=${email}`,
   );
 }
 

@@ -11,8 +11,9 @@ import {
   parseSSE,
   computeProofOfWork,
 } from "../index.js";
-import { personaDir, personasHome, readIdentity } from "../storage.js";
-import { asPersonaId } from "../types.js";
+import { personaDir, readIdentity } from "../storage.js";
+import { asPersonaId, AuthState } from "../types.js";
+import { computeHealthScore, issuesFor, buildReport } from "../health/score.js";
 
 interface TestCase {
   name: string;
@@ -160,6 +161,88 @@ test("sentinel: PoW respects difficulty", async () => {
     screen: "1920x1080",
   });
   assert(out.proofToken.startsWith("gAAAAAB"), "valid token for difficulty 000");
+});
+
+// ─── health score ──────────────────────────────────────────────
+test("health: healthy persona scores ~100", async () => {
+  const k = generateMasterKey();
+  const pm = new PersonaManager({ masterKeyHex: k });
+  await pm.init();
+  const home = freshHome();
+  process.env.OPENAI_ADS_HOME = home;
+  const id = asPersonaId("test-healthy");
+  const { persona, credentials, auth } = makePersonaFromSeed("crypto-trader", { id });
+  auth.health = "healthy";
+  auth.accountState = "OK";
+  auth.sessionStartedAt = new Date().toISOString();
+  auth.cfClearance = "test-cf";
+  auth.cfClearanceExp = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60;
+  auth.sessionToken = "test-session";
+  await pm.persistPersona(persona);
+  await pm.persistCredentials(id, credentials);
+  await pm.persistAuth(id, auth);
+  const score = computeHealthScore({
+    persona,
+    auth,
+    lastSessionValid: true,
+    lastCfBlocked: false,
+    sessionSuccessWindow: 1.0,
+    recentAdYield: 0.5,
+  });
+  assert(score >= 80, `healthy score >= 80, got ${score}`);
+  rmSync(home, { recursive: true, force: true });
+});
+
+test("health: banned persona scores 0", async () => {
+  const { persona, auth } = makePersonaFromSeed("defi-developer", {
+    id: asPersonaId("test-banned"),
+  });
+  auth.health = "banned";
+  auth.accountState = "BANNED";
+  const score = computeHealthScore({
+    persona,
+    auth,
+    lastSessionValid: false,
+    lastCfBlocked: false,
+    sessionSuccessWindow: 0,
+    recentAdYield: 0,
+  });
+  assert(score === 0, `banned score is 0, got ${score}`);
+});
+
+test("health: cf_blocked + missing cf_clearance => issues", async () => {
+  const { persona, auth } = makePersonaFromSeed("api-engineer", {
+    id: asPersonaId("test-cf"),
+  });
+  auth.health = "cf_blocked";
+  auth.cfClearance = null;
+  const issues = issuesFor({
+    persona,
+    auth,
+    lastSessionValid: false,
+    lastCfBlocked: true,
+    sessionSuccessWindow: 0.5,
+    recentAdYield: 0,
+  });
+  assert(issues.some((i) => i.includes("cf_clearance")), "lists cf_clearance issue");
+  assert(issues.some((i) => i.includes("Cloudflare")), "lists Cloudflare issue");
+});
+
+test("health: buildReport shape", async () => {
+  const { persona, auth } = makePersonaFromSeed("crypto-trader", {
+    id: asPersonaId("test-report"),
+  });
+  const r = buildReport({
+    persona,
+    auth,
+    lastSessionValid: true,
+    lastCfBlocked: false,
+    sessionSuccessWindow: 1.0,
+    recentAdYield: 0,
+  });
+  assert(r.id === persona.identity.id, "id matches");
+  assert(typeof r.healthScore === "number", "score is number");
+  assert(Array.isArray(r.issues), "issues is array");
 });
 
 // ─── main runner ───────────────────────────────────────────────
