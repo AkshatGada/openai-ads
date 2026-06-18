@@ -32,6 +32,9 @@ export interface PlaywrightProbeResult {
   ads: AdCard[];
   persona: string;
   timestamp: string;
+  elapsed_ms: number;
+  html_size: number;
+  cost_estimated_usd: number;
 }
 
 export interface PlaywrightProbeOptions {

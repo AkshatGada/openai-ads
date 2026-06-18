@@ -1,0 +1,496 @@
+{
+  "generated_at": "2026-06-19T00:00:00.000Z",
+  "total_probes": 33,
+  "total_success": 33,
+  "total_failed": 0,
+  "total_ads": 19,
+  "ad_rate_pct": 45.5,
+  "ad_density_by_persona": [
+    {
+      "persona": "first_time_buyer",
+      "probes": 13,
+      "ads": 9,
+      "rate": 69.2,
+      "competition": "high"
+    },
+    {
+      "persona": "relocating_family",
+      "probes": 6,
+      "ads": 4,
+      "rate": 66.7,
+      "competition": "high"
+    },
+    {
+      "persona": "agent_broker",
+      "probes": 3,
+      "ads": 2,
+      "rate": 66.7,
+      "competition": "high"
+    },
+    {
+      "persona": "real_estate_investor",
+      "probes": 8,
+      "ads": 0,
+      "rate": 0,
+      "competition": "none"
+    },
+    {
+      "persona": "commercial_developer",
+      "probes": 3,
+      "ads": 0,
+      "rate": 0,
+      "competition": "none"
+    }
+  ],
+  "ad_density_by_need": [
+    {
+      "need": "mortgage",
+      "probes": 3,
+      "ads": 3,
+      "rate": 100,
+      "competition": "high"
+    },
+    {
+      "need": "sell_home",
+      "probes": 3,
+      "ads": 3,
+      "rate": 100,
+      "competition": "high"
+    },
+    {
+      "need": "home_valuation",
+      "probes": 2,
+      "ads": 2,
+      "rate": 100,
+      "competition": "high"
+    },
+    {
+      "need": "find_agent",
+      "probes": 4,
+      "ads": 3,
+      "rate": 75,
+      "competition": "high"
+    },
+    {
+      "need": "rental",
+      "probes": 2,
+      "ads": 1,
+      "rate": 50,
+      "competition": "high"
+    },
+    {
+      "need": "buy_home",
+      "probes": 8,
+      "ads": 3,
+      "rate": 37.5,
+      "competition": "medium"
+    },
+    {
+      "need": "investment_analysis",
+      "probes": 11,
+      "ads": 0,
+      "rate": 0,
+      "competition": "none"
+    }
+  ],
+  "ad_density_by_structure": [
+    {
+      "structure": "question",
+      "probes": 25,
+      "ads": 12,
+      "rate": 48
+    },
+    {
+      "structure": "comparison",
+      "probes": 4,
+      "ads": 3,
+      "rate": 75
+    },
+    {
+      "structure": "need_statement",
+      "probes": 4,
+      "ads": 0,
+      "rate": 0
+    }
+  ],
+  "competitor_frequency": [
+    {
+      "company": "Zillow",
+      "organic_mentions": 5,
+      "paid_impressions": 4,
+      "total_share": 9
+    },
+    {
+      "company": "Rocket Mortgage",
+      "organic_mentions": 3,
+      "paid_impressions": 3,
+      "total_share": 6
+    },
+    {
+      "company": "Opendoor",
+      "organic_mentions": 3,
+      "paid_impressions": 3,
+      "total_share": 6
+    },
+    {
+      "company": "Redfin",
+      "organic_mentions": 3,
+      "paid_impressions": 3,
+      "total_share": 6
+    },
+    {
+      "company": "HomeLight",
+      "organic_mentions": 2,
+      "paid_impressions": 2,
+      "total_share": 4
+    },
+    {
+      "company": "Better.com",
+      "organic_mentions": 2,
+      "paid_impressions": 1,
+      "total_share": 3
+    },
+    {
+      "company": "Realtor.com",
+      "organic_mentions": 2,
+      "paid_impressions": 1,
+      "total_share": 3
+    },
+    {
+      "company": "SoFi",
+      "organic_mentions": 1,
+      "paid_impressions": 1,
+      "total_share": 2
+    },
+    {
+      "company": "Compass",
+      "organic_mentions": 1,
+      "paid_impressions": 1,
+      "total_share": 2
+    }
+  ],
+  "intent_by_persona": [
+    {
+      "persona": "real_estate_investor",
+      "count": 8,
+      "avg_intent": 8.6,
+      "max_intent": 10
+    },
+    {
+      "persona": "commercial_developer",
+      "count": 3,
+      "avg_intent": 7.3,
+      "max_intent": 8
+    },
+    {
+      "persona": "relocating_family",
+      "count": 6,
+      "avg_intent": 5.7,
+      "max_intent": 7
+    },
+    {
+      "persona": "first_time_buyer",
+      "count": 13,
+      "avg_intent": 5.2,
+      "max_intent": 8
+    },
+    {
+      "persona": "agent_broker",
+      "count": 3,
+      "avg_intent": 5,
+      "max_intent": 6
+    }
+  ],
+  "intent_by_need": [
+    {
+      "need": "investment_analysis",
+      "count": 11,
+      "avg_intent": 8.3,
+      "max_intent": 10
+    },
+    {
+      "need": "sell_home",
+      "count": 3,
+      "avg_intent": 6.7,
+      "max_intent": 8
+    },
+    {
+      "need": "home_valuation",
+      "count": 2,
+      "avg_intent": 6,
+      "max_intent": 7
+    },
+    {
+      "need": "mortgage",
+      "count": 3,
+      "avg_intent": 5.7,
+      "max_intent": 7
+    },
+    {
+      "need": "find_agent",
+      "count": 4,
+      "avg_intent": 5.5,
+      "max_intent": 6
+    },
+    {
+      "need": "buy_home",
+      "count": 8,
+      "avg_intent": 4.6,
+      "max_intent": 7
+    },
+    {
+      "need": "rental",
+      "count": 2,
+      "avg_intent": 4.5,
+      "max_intent": 5
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "capability": "Investment analysis & underwriting",
+      "keywords": [
+        "cap rate",
+        "cash-on-cash",
+        "IRR",
+        "BRRRR",
+        "pro forma"
+      ],
+      "covered_by": [],
+      "gap_value": "HIGH"
+    },
+    {
+      "capability": "1031 exchange & tax strategy",
+      "keywords": [
+        "1031",
+        "cost segregation",
+        "depreciation"
+      ],
+      "covered_by": [],
+      "gap_value": "HIGH"
+    },
+    {
+      "capability": "Instant cash sale / iBuyer",
+      "keywords": [
+        "sell fast",
+        "cash offer",
+        "no showings"
+      ],
+      "covered_by": [
+        "Opendoor"
+      ],
+      "gap_value": "LOW"
+    },
+    {
+      "capability": "Mortgage pre-approval",
+      "keywords": [
+        "pre-approval",
+        "rate",
+        "PMI"
+      ],
+      "covered_by": [
+        "Rocket Mortgage",
+        "Better.com",
+        "SoFi"
+      ],
+      "gap_value": "LOW"
+    },
+    {
+      "capability": "School-district home search",
+      "keywords": [
+        "school district",
+        "GreatSchools",
+        "boundary"
+      ],
+      "covered_by": [
+        "Zillow",
+        "Realtor.com"
+      ],
+      "gap_value": "MEDIUM"
+    },
+    {
+      "capability": "Commercial / development feasibility",
+      "keywords": [
+        "feasibility",
+        "entitlement",
+        "construction loan"
+      ],
+      "covered_by": [],
+      "gap_value": "HIGH"
+    }
+  ],
+  "blue_ocean": [
+    {
+      "rank": 1,
+      "persona": "real_estate_investor",
+      "need": "investment_analysis",
+      "probes": 8,
+      "avg_intent": 8.6,
+      "ad_count": 0
+    },
+    {
+      "rank": 2,
+      "persona": "commercial_developer",
+      "need": "investment_analysis",
+      "probes": 3,
+      "avg_intent": 7.3,
+      "ad_count": 0
+    }
+  ],
+  "response_quality": [
+    {
+      "persona": "first_time_buyer",
+      "avg_response_length": 174,
+      "avg_citations": 0.2,
+      "pct_has_search": 15
+    },
+    {
+      "persona": "real_estate_investor",
+      "avg_response_length": 202,
+      "avg_citations": 0,
+      "pct_has_search": 0
+    },
+    {
+      "persona": "relocating_family",
+      "avg_response_length": 170,
+      "avg_citations": 0.2,
+      "pct_has_search": 17
+    },
+    {
+      "persona": "agent_broker",
+      "avg_response_length": 165,
+      "avg_citations": 0,
+      "pct_has_search": 0
+    },
+    {
+      "persona": "commercial_developer",
+      "avg_response_length": 193,
+      "avg_citations": 0,
+      "pct_has_search": 0
+    }
+  ],
+  "prompt_structure_effectiveness": [
+    {
+      "structure": "question",
+      "probes": 25,
+      "avg_intent": 6.1,
+      "avg_response_length": 177
+    },
+    {
+      "structure": "comparison",
+      "probes": 4,
+      "avg_intent": 6,
+      "avg_response_length": 176
+    },
+    {
+      "structure": "need_statement",
+      "probes": 4,
+      "avg_intent": 8,
+      "avg_response_length": 210
+    }
+  ],
+  "oms_language_penetration": {
+    "pct_with_oms_language": 0,
+    "top_oms_signals": []
+  },
+  "advertisers": [
+    {
+      "advertiser": "Zillow",
+      "hits": 4,
+      "sample_prompts": [
+        "We're relocating to Denver with two kids — which neighborhoods have the best sch",
+        "How do I find homes for sale near a specific elementary school district?",
+        "How accurate are online home value estimates like the Zestimate?"
+      ],
+      "sample_copy": [
+        "Find Your Next Home"
+      ]
+    },
+    {
+      "advertiser": "Rocket Mortgage",
+      "hits": 3,
+      "sample_prompts": [
+        "What's the first thing I should do as a first-time home buyer with about $80k sa",
+        "How much house can I afford on a $130,000 salary in Austin?",
+        "what is PMI and how do I get rid of it?"
+      ],
+      "sample_copy": [
+        "Get Approved in Minutes"
+      ]
+    },
+    {
+      "advertiser": "Opendoor",
+      "hits": 3,
+      "sample_prompts": [
+        "Should I sell my current home before buying in the new city or carry both?",
+        "what's my home worth and should I sell now or wait?",
+        "how do I sell my house fast for cash without listing it?"
+      ],
+      "sample_copy": [
+        "Sell Your Home Without the Hassle"
+      ]
+    },
+    {
+      "advertiser": "Redfin",
+      "hits": 3,
+      "sample_prompts": [
+        "How accurate are online home value estimates like the Zestimate?",
+        "what's my home worth and should I sell now or wait?",
+        "is it worth using a discount brokerage to save on commission?"
+      ],
+      "sample_copy": [
+        "Tour Homes On Your Schedule"
+      ]
+    },
+    {
+      "advertiser": "HomeLight",
+      "hits": 2,
+      "sample_prompts": [
+        "What's the best CRM and lead source for a new real estate agent?",
+        "how do I choose a good real estate agent when buying my first home?"
+      ],
+      "sample_copy": [
+        "Match With the Right Agent"
+      ]
+    },
+    {
+      "advertiser": "SoFi",
+      "hits": 1,
+      "sample_prompts": [
+        "How much house can I afford on a $130,000 salary in Austin?"
+      ],
+      "sample_copy": [
+        "Mortgage Rates Built for You"
+      ]
+    },
+    {
+      "advertiser": "Better.com",
+      "hits": 1,
+      "sample_prompts": [
+        "What credit score do I need to get a good mortgage rate?"
+      ],
+      "sample_copy": [
+        "Mortgages With Zero Lender Fees"
+      ]
+    },
+    {
+      "advertiser": "Realtor.com",
+      "hits": 1,
+      "sample_prompts": [
+        "How do I find homes for sale near a specific elementary school district?"
+      ],
+      "sample_copy": [
+        "See Homes Before They Hit the Market"
+      ]
+    },
+    {
+      "advertiser": "Compass",
+      "hits": 1,
+      "sample_prompts": [
+        "how do top agents price a listing to sell fast without leaving money on the tabl"
+      ],
+      "sample_copy": [
+        "Work With a Top Local Agent"
+      ]
+    }
+  ]
+}

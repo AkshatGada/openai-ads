@@ -114,7 +114,7 @@ export async function createPersona(name: string): Promise<void> {
   console.log(`  Description: ${persona.description}`);
   console.log(`  Seed prompts: ${persona.seedPrompts.length}`);
 
-  const { page, browser } = await launchProfile(name, { headless: false });
+  const { page, browser } = await launchProfile(name, { headless: true });
 
   try {
     // If persona has credentials, log in first

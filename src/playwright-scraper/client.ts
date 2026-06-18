@@ -9,17 +9,8 @@ import { config } from "../config.js";
 import { loadProfileMeta, saveProfileMeta, loadCredentials, getOrCreateProxySessionId } from "./profiles.js";
 import type { PlaywrightProbeResult, PlaywrightProbeOptions, PersonaCredentials } from "./types.js";
 
-// Apply stealth plugin to avoid bot detection
+// Apply stealth plugin to avoid bot detection — use all default evasions
 const stealth = StealthPlugin();
-// Remove evasions that break headless ChatGPT — keep core fingerprint masking
-stealth.enabledEvasions = new Set([
-  "chrome.runtime",
-  "iframe.contentWindow",
-  "navigator.plugins",
-  "navigator.webdriver",
-  "user-agent-override",
-]);
-
 chromium.use(stealth);
 
 const PROFILES_DIR = join(process.cwd(), "browser-profiles");
@@ -456,6 +447,7 @@ export async function probeWithProfile(
 ): Promise<PlaywrightProbeResult> {
   const { persona = "default", headless = true, waitForAds = true, adTimeoutMs = 5000, newChat = true, loginIfNeeded = true } = opts;
 
+  const startTime = Date.now();
   const { page, browser } = await launchProfile(persona, { headless });
 
   let result: PlaywrightProbeResult;
@@ -464,20 +456,28 @@ export async function probeWithProfile(
       await ensureLoggedIn(page, persona);
     }
     const { html, ads } = await sendPrompt(page, prompt, { waitForAds, adTimeoutMs, newChat });
+    const elapsed = Date.now() - startTime;
+
+    // Cost calculation: hardware ($0.038/hr) + bandwidth ($15/GB)
+    const hwRatePerMs = 0.038 / (1000 * 60 * 60); // $0.038/hour in $/ms
+    const bwRatePerByte = 15 / (1024 * 1024 * 1024); // $15/GB in $/byte
+    const estimatedCost = (elapsed * hwRatePerMs) + (html.length * bwRatePerByte);
+
     result = {
       prompt,
       html,
       ads,
       persona,
       timestamp: new Date().toISOString(),
+      elapsed_ms: elapsed,
+      html_size: html.length,
+      cost_estimated_usd: estimatedCost,
     };
   } finally {
     await browser.close();
   }
 
-  // Update profile metadata
   updateProfileMeta(persona);
-
   return result;
 }
 
@@ -498,16 +498,24 @@ export async function converseWithProfile(
     // First prompt: new chat
     for (let i = 0; i < prompts.length; i++) {
       const isFirst = i === 0;
+      const startTime = Date.now();
       const { html, ads } = await sendPrompt(page, prompts[i]!, {
         waitForAds: isFirst ? true : false, // only wait for ads on first prompt (saves time)
         newChat: isFirst,
       });
+      const elapsed = Date.now() - startTime;
+      const hwRatePerMs = 0.038 / (1000 * 60 * 60);
+      const bwRatePerByte = 15 / (1024 * 1024 * 1024);
+      const estimatedCost = (elapsed * hwRatePerMs) + (html.length * bwRatePerByte);
       results.push({
         prompt: prompts[i]!,
         html,
         ads,
         persona,
         timestamp: new Date().toISOString(),
+        elapsed_ms: elapsed,
+        html_size: html.length,
+        cost_estimated_usd: estimatedCost,
       });
       // Brief pause between prompts
       if (i < prompts.length - 1) {

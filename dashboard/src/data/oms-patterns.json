@@ -1,0 +1,571 @@
+{
+  "generated_at": "2026-06-10T18:45:20.492Z",
+  "total_probes": 116,
+  "total_success": 116,
+  "total_failed": 0,
+  "total_ads": 15,
+  "ad_rate_pct": 12.9,
+  "ad_density_by_persona": [
+    {
+      "persona": "remittance_founder",
+      "probes": 27,
+      "ads": 6,
+      "rate": 22.22222222222222,
+      "competition": "high"
+    },
+    {
+      "persona": "fintech_pm",
+      "probes": 10,
+      "ads": 3,
+      "rate": 30,
+      "competition": "high"
+    },
+    {
+      "persona": "unknown",
+      "probes": 60,
+      "ads": 3,
+      "rate": 5,
+      "competition": "medium"
+    },
+    {
+      "persona": "marketplace_cto",
+      "probes": 19,
+      "ads": 3,
+      "rate": 15.789473684210526,
+      "competition": "high"
+    }
+  ],
+  "ad_density_by_need": [
+    {
+      "need": "unknown",
+      "probes": 63,
+      "ads": 7,
+      "rate": 11.11111111111111,
+      "competition": "high"
+    },
+    {
+      "need": "remittance",
+      "probes": 27,
+      "ads": 6,
+      "rate": 22.22222222222222,
+      "competition": "high"
+    },
+    {
+      "need": "comparison",
+      "probes": 4,
+      "ads": 1,
+      "rate": 25,
+      "competition": "high"
+    },
+    {
+      "need": "disbursement",
+      "probes": 16,
+      "ads": 1,
+      "rate": 6.25,
+      "competition": "medium"
+    },
+    {
+      "need": "virtual_accounts",
+      "probes": 2,
+      "ads": 0,
+      "rate": 0,
+      "competition": "none"
+    },
+    {
+      "need": "onramp",
+      "probes": 3,
+      "ads": 0,
+      "rate": 0,
+      "competition": "none"
+    },
+    {
+      "need": "developer_eval",
+      "probes": 1,
+      "ads": 0,
+      "rate": 0,
+      "competition": "none"
+    }
+  ],
+  "ad_density_by_structure": [
+    {
+      "structure": "mixed",
+      "probes": 95,
+      "ads": 14,
+      "rate": 14.736842105263156
+    },
+    {
+      "structure": "comparison",
+      "probes": 5,
+      "ads": 1,
+      "rate": 20
+    },
+    {
+      "structure": "need_statement",
+      "probes": 15,
+      "ads": 0,
+      "rate": 0
+    },
+    {
+      "structure": "question",
+      "probes": 1,
+      "ads": 0,
+      "rate": 0
+    }
+  ],
+  "competitor_frequency": [
+    {
+      "company": "Ramp",
+      "organic_mentions": 48,
+      "paid_impressions": 0,
+      "total_share": 48
+    },
+    {
+      "company": "Circle",
+      "organic_mentions": 48,
+      "paid_impressions": 0,
+      "total_share": 48
+    },
+    {
+      "company": "Stripe",
+      "organic_mentions": 43,
+      "paid_impressions": 0,
+      "total_share": 43
+    },
+    {
+      "company": "Fireblocks",
+      "organic_mentions": 21,
+      "paid_impressions": 0,
+      "total_share": 21
+    },
+    {
+      "company": "Cybrid",
+      "organic_mentions": 18,
+      "paid_impressions": 0,
+      "total_share": 18
+    },
+    {
+      "company": "Mastercard",
+      "organic_mentions": 11,
+      "paid_impressions": 6,
+      "total_share": 17
+    },
+    {
+      "company": "Wyre",
+      "organic_mentions": 12,
+      "paid_impressions": 0,
+      "total_share": 12
+    },
+    {
+      "company": "Transak",
+      "organic_mentions": 11,
+      "paid_impressions": 0,
+      "total_share": 11
+    },
+    {
+      "company": "Coinbase",
+      "organic_mentions": 11,
+      "paid_impressions": 0,
+      "total_share": 11
+    },
+    {
+      "company": "Conduit",
+      "organic_mentions": 10,
+      "paid_impressions": 0,
+      "total_share": 10
+    },
+    {
+      "company": "MoonPay",
+      "organic_mentions": 10,
+      "paid_impressions": 0,
+      "total_share": 10
+    },
+    {
+      "company": "Stellar",
+      "organic_mentions": 10,
+      "paid_impressions": 0,
+      "total_share": 10
+    },
+    {
+      "company": "Paxos",
+      "organic_mentions": 8,
+      "paid_impressions": 0,
+      "total_share": 8
+    },
+    {
+      "company": "Chainalysis",
+      "organic_mentions": 5,
+      "paid_impressions": 0,
+      "total_share": 5
+    },
+    {
+      "company": "BitPay",
+      "organic_mentions": 5,
+      "paid_impressions": 0,
+      "total_share": 5
+    },
+    {
+      "company": "Ripple",
+      "organic_mentions": 5,
+      "paid_impressions": 0,
+      "total_share": 5
+    },
+    {
+      "company": "BestMoney",
+      "organic_mentions": 2,
+      "paid_impressions": 2,
+      "total_share": 4
+    },
+    {
+      "company": "BlindPay",
+      "organic_mentions": 3,
+      "paid_impressions": 0,
+      "total_share": 3
+    },
+    {
+      "company": "SAP",
+      "organic_mentions": 0,
+      "paid_impressions": 3,
+      "total_share": 3
+    },
+    {
+      "company": "Elliptic",
+      "organic_mentions": 2,
+      "paid_impressions": 0,
+      "total_share": 2
+    }
+  ],
+  "intent_by_persona": [
+    {
+      "persona": "fintech_pm",
+      "count": 10,
+      "avg_intent": 2.1,
+      "max_intent": 5
+    },
+    {
+      "persona": "remittance_founder",
+      "count": 27,
+      "avg_intent": 2.037037037037037,
+      "max_intent": 5
+    },
+    {
+      "persona": "unknown",
+      "count": 60,
+      "avg_intent": 1.7666666666666666,
+      "max_intent": 6
+    },
+    {
+      "persona": "marketplace_cto",
+      "count": 19,
+      "avg_intent": 1.5789473684210527,
+      "max_intent": 5
+    }
+  ],
+  "intent_by_need": [
+    {
+      "need": "comparison",
+      "count": 4,
+      "avg_intent": 3.75,
+      "max_intent": 6
+    },
+    {
+      "need": "remittance",
+      "count": 27,
+      "avg_intent": 2.037037037037037,
+      "max_intent": 5
+    },
+    {
+      "need": "onramp",
+      "count": 3,
+      "avg_intent": 2,
+      "max_intent": 3
+    },
+    {
+      "need": "developer_eval",
+      "count": 1,
+      "avg_intent": 2,
+      "max_intent": 2
+    },
+    {
+      "need": "unknown",
+      "count": 63,
+      "avg_intent": 1.7301587301587302,
+      "max_intent": 5
+    },
+    {
+      "need": "disbursement",
+      "count": 16,
+      "avg_intent": 1.5,
+      "max_intent": 4
+    },
+    {
+      "need": "virtual_accounts",
+      "count": 2,
+      "avg_intent": 0.5,
+      "max_intent": 1
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "capability": "Virtual bank accounts per customer",
+      "keywords": [
+        "virtual account",
+        "named account",
+        "dollar account",
+        "USD account"
+      ],
+      "covered_by": [
+        "Circle",
+        "Cybrid",
+        "BlindPay",
+        "Ramp",
+        "Stripe"
+      ],
+      "gap_value": "LOW"
+    },
+    {
+      "capability": "ACH auto-converts to USDC",
+      "keywords": [
+        "ACH.*USDC",
+        "auto.convert",
+        "ACH.*deposit.*stablecoin"
+      ],
+      "covered_by": [
+        "Cybrid",
+        "Conduit",
+        "BlindPay",
+        "MoonPay"
+      ],
+      "gap_value": "LOW"
+    },
+    {
+      "capability": "Full fiat-crypto in one API",
+      "keywords": [
+        "single.*API.*fiat",
+        "fiatToCrypto",
+        "cryptoToFiat",
+        "one.*API.*stablecoin"
+      ],
+      "covered_by": [],
+      "gap_value": "HIGH"
+    },
+    {
+      "capability": "Disbursement to 40+ countries",
+      "keywords": [
+        "40.*countr",
+        "global.*disburse",
+        "pay.*global",
+        "pay.*seller.*countr"
+      ],
+      "covered_by": [
+        "Cybrid",
+        "MoonPay",
+        "Transak",
+        "Ramp",
+        "Stripe",
+        "Circle",
+        "Ripple"
+      ],
+      "gap_value": "LOW"
+    },
+    {
+      "capability": "Cash-in at retail locations",
+      "keywords": [
+        "cash.*deposit.*retail",
+        "cash.*in.*store",
+        "retail.*location",
+        "deposit.*code"
+      ],
+      "covered_by": [],
+      "gap_value": "HIGH"
+    },
+    {
+      "capability": "Sub-2-second finality",
+      "keywords": [
+        "sub.2.second",
+        "second.*finality",
+        "instant.*settle",
+        "settle.*second"
+      ],
+      "covered_by": [
+        "Circle",
+        "Stripe",
+        "Ramp"
+      ],
+      "gap_value": "LOW"
+    },
+    {
+      "capability": "KYC endorsements",
+      "keywords": [
+        "endorsement",
+        "KYC.*gate",
+        "KYC.*approv"
+      ],
+      "covered_by": [],
+      "gap_value": "HIGH"
+    },
+    {
+      "capability": "Webhooks + idempotency keys",
+      "keywords": [
+        "webhook",
+        "idempotency",
+        "signing.*secret"
+      ],
+      "covered_by": [],
+      "gap_value": "HIGH"
+    }
+  ],
+  "blue_ocean": [],
+  "response_quality": [
+    {
+      "persona": "unknown",
+      "avg_response_length": 4508,
+      "avg_citations": 0,
+      "pct_has_search": 0
+    },
+    {
+      "persona": "remittance_founder",
+      "avg_response_length": 4342,
+      "avg_citations": 0,
+      "pct_has_search": 0
+    },
+    {
+      "persona": "fintech_pm",
+      "avg_response_length": 4259,
+      "avg_citations": 0,
+      "pct_has_search": 0
+    },
+    {
+      "persona": "marketplace_cto",
+      "avg_response_length": 4252,
+      "avg_citations": 0,
+      "pct_has_search": 0
+    }
+  ],
+  "prompt_structure_effectiveness": [
+    {
+      "structure": "question",
+      "probes": 1,
+      "avg_intent": 4,
+      "avg_response_length": 5000
+    },
+    {
+      "structure": "comparison",
+      "probes": 5,
+      "avg_intent": 3.6,
+      "avg_response_length": 4336
+    },
+    {
+      "structure": "need_statement",
+      "probes": 15,
+      "avg_intent": 2.3,
+      "avg_response_length": 4381
+    },
+    {
+      "structure": "mixed",
+      "probes": 95,
+      "avg_intent": 1.6,
+      "avg_response_length": 4407
+    }
+  ],
+  "oms_language_penetration": {
+    "pct_with_oms_language": 4,
+    "top_oms_signals": [
+      {
+        "signal": "virtual account",
+        "count": 2
+      },
+      {
+        "signal": "native USDC",
+        "count": 1
+      },
+      {
+        "signal": "stablecoin.*settlement",
+        "count": 1
+      },
+      {
+        "signal": "idempotency key",
+        "count": 1
+      }
+    ]
+  },
+  "advertisers": [
+    {
+      "advertiser": "Mastercard",
+      "hits": 11,
+      "sample_prompts": [
+        "we re losing sellers because payouts take 5 days need instan",
+        "our marketplace payment costs are 3 percent of gmv if we can",
+        "our customers send money home to family they don t care abou"
+      ],
+      "sample_copy": [
+        "Mastercard Payments Strategy",
+        "Crypto Ecosystem Security with Mastercard",
+        "Payments Data Consulting Services"
+      ]
+    },
+    {
+      "advertiser": "SAP",
+      "hits": 5,
+      "sample_prompts": [
+        "we re a neobank targeting freelancers and solopreneurs these",
+        "our fintech app lets users round up their spare change from",
+        "i direct treasury for a university system with 12 campuses w"
+      ],
+      "sample_copy": [
+        "Unified AI for Finance",
+        "AI For Finance"
+      ]
+    },
+    {
+      "advertiser": "BestMoney",
+      "hits": 3,
+      "sample_prompts": [
+        "evaluating whether to use circle or find a vertically integr",
+        "our sellers need to receive payment the same day they ship c"
+      ],
+      "sample_copy": [
+        "Start Processing Cards"
+      ]
+    },
+    {
+      "advertiser": "Astra Security",
+      "hits": 2,
+      "sample_prompts": [
+        "our remittance app needs virtual accounts for senders they f"
+      ],
+      "sample_copy": [
+        "Human + AI Powered Offensive Pentests"
+      ]
+    },
+    {
+      "advertiser": "wolfSSL Inc.",
+      "hits": 2,
+      "sample_prompts": [
+        "need a remittance api with idempotency keys when a transfer"
+      ],
+      "sample_copy": [
+        "Get FIPS 140-3 enabled in 90 days"
+      ]
+    },
+    {
+      "advertiser": "Rippling",
+      "hits": 2,
+      "sample_prompts": [
+        "our compliance team needs a full audit trail for every remit"
+      ],
+      "sample_copy": [
+        "SOC 2 Done in Days, Not Months"
+      ]
+    },
+    {
+      "advertiser": "Pebl",
+      "hits": 2,
+      "sample_prompts": [
+        "we operate a neobank in southeast asia and we re expanding t"
+      ],
+      "sample_copy": [
+        "Global Payroll Platform"
+      ]
+    }
+  ]
+}

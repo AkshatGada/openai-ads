@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Metric-matched fallback (suppress CLS while Geist loads) ── */
+@font-face {
+  font-family: "Geist Fallback";
+  src: local("Arial");
+  size-adjust: 100%;
+  ascent-override: 92%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+
+:root {
+  /* Motion timing tokens (mirror motion/transitions.ts). */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 180ms;
+  --dur-base: 320ms;
+  --dur-slow: 600ms;
+
+  /* Theme surface vars — animated dark↔light during the hero→dashboard flip. */
+  --surface: #0a0a0a; /* hero (dark) default */
+  --on-surface: #fafafa;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--surface);
+  color: var(--on-surface);
+  font-family: theme("fontFamily.sans");
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Ledger-grade numerals everywhere numbers live. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Display headlines: tight, engineered tracking on the sans. */
+.font-display {
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+/* Hairline rule — the structural device. */
+.hairline {
+  border-color: theme("colors.ink.200");
+}
+
+::selection {
+  background: theme("colors.signal");
+  color: #fff;
+}
+
+/* Custom focus ring = signal blue (a11y). */
+:focus-visible {
+  outline: 2px solid theme("colors.signal");
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

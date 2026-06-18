@@ -162,6 +162,7 @@ async function main(): Promise<void> {
       console.log(`    🔴 ${ad.advertiser}: "${ad.title}"`);
     }
     if (result.ads.length === 0) console.log("    No ads detected.");
+    console.log(`  Time: ${(result.elapsed_ms / 1000).toFixed(1)}s | HTML: ${(result.html_size / 1024).toFixed(0)}KB | Cost: $${result.cost_estimated_usd.toFixed(6)}`);
     console.log(`  HTML saved: ${fpath}`);
     console.log(`${"=".repeat(50)}`);
     process.exit(0);
