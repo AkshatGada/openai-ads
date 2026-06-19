@@ -66,7 +66,7 @@ export default function SearchBar({
           >
             {unknown ? (
               <li className={`px-4 py-3 font-mono text-xs ${compact ? "text-ink-400" : "text-paper/50"}`}>
-                No coverage yet — try “stablecoin” or “real estate”.
+                No coverage yet. Try “stablecoin” or “real estate”.
               </li>
             ) : (
               suggestions.map((s) => (

@@ -4,6 +4,51 @@
 
 ---
 
+## ★★ v3 DIRECTION — "DOT MATRIX" (current; supersedes v2 visuals. Structure from v2 holds: one page, 3 views.)
+
+Aesthetic = **Nothing-inspired dot-matrix / retro-digital, made our own with a distinctive ORANGE accent.** Borrow the *system*, don't copy: monochrome (true black / stark white), LED dot-grid motif, dot-matrix display type, IBM-mainframe retro-digital feel — but the signal color is **orange**, not Nothing red.
+
+- **Accent — "Ember orange" `#FF5C00`.** The only chromatic color. Sparingly: high intent, active nav, the dot-glyph/logo, focus rings, key numbers, the headline emphasis word. Everything else is monochrome weight.
+- **Type:** **Doto** (Google Fonts — free variable dot-matrix, 6×10 dot grid, axes for dot size/roundness) for **display, section numbers, eyebrows, big stat numbers, nav labels**. **Geist Mono** for body, data, prompts, table cells (readability). Doto is NEVER used for long text. Wide letter-spacing on dot-matrix labels for the LED-readout feel.
+- **Monochrome scale:** push toward true Nothing contrast — landing on near-pure black `#0A0A0A`/`#000`, dashboard on stark white `#FFFFFF`/`#FAFAFA`. Greys for structure. Orange only as signal.
+- **Signature background = ANIMATED LED DOT-MATRIX FIELD** (replaces the Bayer dither shader). A regular grid of small dots; dots light up / scale / shift toward the cursor (a soft spotlight), idle shimmer, click ripple. On black they glow off-white with occasional orange; behind the white dashboard they're a faint grey dot-grid at low opacity. This is the literal "Glyph Matrix" feel. GPU-cheap (instanced points or a cheap fragment shader over a grid).
+- **Dot-grid as structural motif:** dotted separators, dotted borders on key cards, section markers rendered as dot patterns, stat numbers in Doto so they read like an LED readout.
+- **Theme flip:** black landing → white dashboard (keep the reveal; dots invert from glowing-on-black to grey-on-white).
+- **Layout & motion:** keep v2's researched recipes (six interaction states, low-alpha borders, brand-tinted shadows now orange-tinted, Disney follow-through 100–200ms, stagger, springs, bento). Industrial/precise, slightly retro-tech. Buttons & chips can have a dot-matrix label.
+- **Copy voice:** unchanged — sharp, human, zero em-dashes.
+
+The v2 floating-ad-card hero idea still works, now rendered on the LED field with dot-matrix headline + orange accent.
+
+---
+
+## v2 DIRECTION (structure still current; visuals superseded by v3 above)
+
+**Product name:** **GPT Ads Library**. Type system: **Geist** (sans, UI + display) + **Geist Mono** (data/prompts/IDs). NOT serif.
+
+**It is ONE attractive page, not a marketing site.** No educational "what are ChatGPT ads" sections. The page IS the hero + the search; entering an industry transitions into the dashboard. Single-purpose, premium, confident.
+
+**Dashboard = exactly 3 views** (no Overview/BlueOcean):
+1. **Ad Creatives** — the actual ads running (advertiser, title, body) + triggering prompt. The showpiece.
+2. **Prompts** — the prompts ads rank on, ranked by frequency + buying-intent; sortable/searchable.
+3. **Advertisers** — who shows up (organic vs paid), drill-in to their creatives.
+
+**Researched technique recipes (apply literally):**
+- **Six states per interactive element** (default/hover/focus/active/disabled/loading). "If one is missing, it isn't done." Focus rings designed (signal blue), never browser default.
+- **Borders:** thin, low-alpha — `0.5px`–`1px` at low opacity. Dark glass cards = `1px` white @ ~10–14% (NOT pure white — glows harshly on dark). Never default `<hr>`.
+- **Depth/glass (tasteful, dark):** semi-transparent surface (`bg-white/[0.04]`) + `backdrop-blur` + 1px low-alpha border + soft shadow. Glass tells the user what's "near" (cards/modals) vs "far" (bg).
+- **Shadows:** soft, layered, slightly **brand-tinted** (a trace of signal-blue), not flat black. Elevation only on raised/hover elements.
+- **Motion — Disney follow-through:** main transition + a **100–200ms delayed overlapping** secondary move. One spring + one ease, defined once. Stagger lists. Spring physics over linear. "Robustness": scroll/type/nav must feel perfect 100% of the time.
+- **Scroll-driven motion:** `whileInView` reveals, scroll-linked parallax on hero cards (subtle), stagger on grids.
+- **Layout:** **bento grid** for the dashboard overview-feel within views; card-based data; "interaction density, not visual density" (sparse look, everything responds to hover/focus).
+- **Data display:** items → cards; detail → tables. Tabular-nums for all numbers. Skeletons that match layout (no generic spinners). Designed empty states.
+- **Hero centerpiece (keep & extend the floating-card idea):** real ad cards float in an asymmetric, parallax cluster (glass, brand-tinted shadow), cursor-reactive drift, radial vignette focusing the headline + search. The product shows itself.
+
+**Copy voice:** sharp, human, confident. Short sentences. Real specifics. **Zero em-dashes**, zero AI tells, no "—", no "unleash/seamless/elevate."
+
+References distilled from: Vercel/Linear/Stripe premium-UI practice (single typeface, semantic color, six states, 0.5–1px low-alpha borders, brand-tinted shadows, skeletons), Rauno Freiberg / Devouring Details (follow-through & overlapping action, physics, robustness), 2026 Awwwards patterns (bento, tasteful dark glassmorphism, floating hero cards, scroll-driven motion).
+
+---
+
 ## 0. What we're building (so design serves it)
 
 A **competitive ad-intelligence terminal**. A user names their industry; we reveal what ads competitors are running inside ChatGPT, the exact prompts that trigger them, who's winning the conversation, and where the open lanes are. It is a *reconnaissance instrument*, not a marketing brochure. The design must feel like **looking through a lens at a hidden market** — precise, a little clandestine, undeniably premium.

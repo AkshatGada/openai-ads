@@ -21,7 +21,7 @@ export default function AdsGalleryView({ data }: { data: IndustryData }) {
   if (items.length === 0) {
     return (
       <div className="flex flex-col gap-4">
-        <SectionHeading index="02" title="Ads running" />
+        <SectionHeading index="01" title="Ad creatives" />
         <p className="py-16 text-center font-mono text-sm uppercase tracking-[0.12em] text-ink-400">
           No ads observed in this dataset.
         </p>
@@ -32,10 +32,10 @@ export default function AdsGalleryView({ data }: { data: IndustryData }) {
   return (
     <div className="flex flex-col gap-6">
       <SectionHeading
-        index="02"
-        title="Ads running"
+        index="01"
+        title="Ad creatives"
         sub={`${items.length} creatives observed`}
-        lead="Every ad we observed running in ChatGPT for this market — the advertiser, the creative, and the exact prompt that triggered it. Filter by advertiser to study a competitor's messaging."
+        lead="Every ad running in ChatGPT for this market. You get the advertiser, the creative, and the exact prompt that brought it up. Filter by advertiser to study how a competitor writes."
       />
 
       <div className="flex flex-wrap gap-2">

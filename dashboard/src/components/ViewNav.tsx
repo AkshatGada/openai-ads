@@ -1,13 +1,11 @@
 import { motion } from "motion/react";
 
-export type ViewId = "overview" | "ads" | "competitors" | "blueocean" | "prompts";
+export type ViewId = "ads" | "prompts" | "advertisers";
 
 export const VIEWS: { id: ViewId; label: string; index: string }[] = [
-  { id: "overview", label: "Overview", index: "01" },
-  { id: "ads", label: "Ads Running", index: "02" },
-  { id: "competitors", label: "Competitors", index: "03" },
-  { id: "blueocean", label: "Blue Ocean", index: "04" },
-  { id: "prompts", label: "Prompts", index: "05" },
+  { id: "ads", label: "Ad Creatives", index: "01" },
+  { id: "prompts", label: "Prompts", index: "02" },
+  { id: "advertisers", label: "Advertisers", index: "03" },
 ];
 
 export default function ViewNav({ active, onChange }: { active: ViewId; onChange: (v: ViewId) => void }) {
@@ -17,10 +15,10 @@ export default function ViewNav({ active, onChange }: { active: ViewId; onChange
         <button
           key={v.id}
           onClick={() => onChange(v.id)}
-          className="relative px-4 py-3 font-mono text-xs uppercase tracking-[0.1em] transition-colors"
+          className="dot-label relative px-4 py-3 text-xs uppercase transition-colors"
         >
           <span className={active === v.id ? "text-ink-950" : "text-ink-400 hover:text-ink-700"}>
-            <span className="mr-1.5 text-ink-300">{v.index}</span>
+            <span className={`mr-1.5 ${active === v.id ? "text-signal" : "text-ink-300"}`}>{v.index}</span>
             {v.label}
           </span>
           {active === v.id && (

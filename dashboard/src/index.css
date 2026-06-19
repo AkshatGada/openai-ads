@@ -51,10 +51,17 @@ body {
   font-feature-settings: "tnum" 1;
 }
 
-/* Display headlines: tight, engineered tracking on the sans. */
-.font-display {
+/* Dot-matrix display (Doto). Heavy weight + slight positive tracking reads as an LED readout. */
+.font-display,
+.font-dot {
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+/* Dot-matrix labels / eyebrows: wide tracking, the LED-readout feel. */
+.dot-label {
+  font-family: theme("fontFamily.dot");
   font-weight: 600;
-  letter-spacing: -0.025em;
+  letter-spacing: 0.1em;
 }
 
 /* Hairline rule — the structural device. */

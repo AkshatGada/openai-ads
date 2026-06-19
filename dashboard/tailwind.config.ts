@@ -20,12 +20,13 @@ export default {
           50: "#FAFAFA",
         },
         paper: "#FFFFFF",
-        signal: "#1A3CFF",
+        // Accent — "Ember orange". The only chromatic color, used as signal.
+        signal: "#FF5C00",
       },
       fontFamily: {
-        // Professional, clean sans for everything; mono for data/prompts.
-        // Metric-matched fallback declared in index.css to suppress CLS.
-        display: ['"Geist"', '"Geist Fallback"', "system-ui", "sans-serif"],
+        // Doto = dot-matrix (display, labels, numbers). Geist = body. Geist Mono = data/prompts.
+        dot: ['"Doto"', '"Geist Fallback"', "system-ui", "sans-serif"],
+        display: ['"Doto"', '"Geist Fallback"', "system-ui", "sans-serif"],
         sans: ['"Geist"', '"Geist Fallback"', "system-ui", "sans-serif"],
         mono: ['"Geist Mono"', "ui-monospace", "monospace"],
       },
@@ -36,10 +37,10 @@ export default {
         tighter2: "-0.03em",
       },
       fontSize: {
-        // Sans display: large but engineered (tight tracking), not editorial-huge.
-        hero: ["clamp(2.75rem, 6.5vw, 6rem)", { lineHeight: "1.02", letterSpacing: "-0.03em" }],
-        display: ["clamp(2rem, 4vw, 3.5rem)", { lineHeight: "1.05", letterSpacing: "-0.025em" }],
-        eyebrow: ["0.6875rem", { lineHeight: "1", letterSpacing: "0.18em" }],
+        // Dot-matrix display: blocky, so a touch smaller + airy line-height.
+        hero: ["clamp(2.5rem, 5.5vw, 5rem)", { lineHeight: "1.08", letterSpacing: "0.01em" }],
+        display: ["clamp(1.75rem, 3.5vw, 3rem)", { lineHeight: "1.1", letterSpacing: "0.01em" }],
+        eyebrow: ["0.6875rem", { lineHeight: "1", letterSpacing: "0.2em" }],
       },
       transitionTimingFunction: {
         out: "cubic-bezier(0.16, 1, 0.3, 1)",
