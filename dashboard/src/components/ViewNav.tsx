@@ -1,30 +1,29 @@
 import { motion } from "motion/react";
 
-export type ViewId = "ads" | "prompts" | "advertisers";
+export type ViewId = "advertisers" | "ads" | "prompts";
 
-export const VIEWS: { id: ViewId; label: string; index: string }[] = [
-  { id: "ads", label: "Ad Creatives", index: "01" },
-  { id: "prompts", label: "Prompts", index: "02" },
-  { id: "advertisers", label: "Advertisers", index: "03" },
+export const VIEWS: { id: ViewId; label: string }[] = [
+  { id: "advertisers", label: "Advertisers" },
+  { id: "ads", label: "Ads" },
+  { id: "prompts", label: "Prompts" },
 ];
 
 export default function ViewNav({ active, onChange }: { active: ViewId; onChange: (v: ViewId) => void }) {
   return (
-    <nav className="flex gap-1 border-b border-ink-200">
+    <nav className="flex gap-1 border-b border-border">
       {VIEWS.map((v) => (
         <button
           key={v.id}
           onClick={() => onChange(v.id)}
-          className="dot-label relative px-4 py-3 text-xs uppercase transition-colors"
+          className="relative px-4 py-2.5 font-sans text-sm transition-colors"
         >
-          <span className={active === v.id ? "text-ink-950" : "text-ink-400 hover:text-ink-700"}>
-            <span className={`mr-1.5 ${active === v.id ? "text-signal" : "text-ink-300"}`}>{v.index}</span>
+          <span className={active === v.id ? "text-text" : "text-text-faint hover:text-text-muted"}>
             {v.label}
           </span>
           {active === v.id && (
             <motion.span
               layoutId="nav-underline"
-              className="absolute inset-x-0 -bottom-px h-0.5 bg-signal"
+              className="absolute inset-x-0 -bottom-px h-0.5 bg-accent"
               transition={{ type: "spring", stiffness: 400, damping: 35 }}
             />
           )}

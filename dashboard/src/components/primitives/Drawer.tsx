@@ -1,8 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect } from "react";
-import { SPRING } from "../../motion/transitions";
+import { SPRING, DUR } from "../../motion/transitions";
 
-// Right-slide drawer (probe / advertiser detail). Focus-trap-lite + Esc.
 export default function Drawer({
   open,
   onClose,
@@ -18,7 +17,11 @@ export default function Drawer({
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
   }, [open, onClose]);
 
   return (
@@ -26,32 +29,35 @@ export default function Drawer({
       {open && (
         <>
           <motion.div
-            className="fixed inset-0 z-[60] bg-ink-950/30"
+            className="fixed inset-0 z-[60] bg-bg/60"
+            style={{ backdropFilter: "blur(4px)" }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: DUR.fast }}
             onClick={onClose}
           />
           <motion.aside
             role="dialog"
             aria-modal="true"
             aria-label={title}
-            className="fixed inset-y-0 right-0 z-[61] flex w-full max-w-xl flex-col border-l border-ink-200 bg-paper"
+            className="fixed inset-y-0 right-0 z-[61] flex w-full max-w-lg flex-col border-l border-border bg-surface"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={SPRING}
           >
-            <header className="flex items-center justify-between border-b border-ink-200 px-6 py-4">
-              <h3 className="font-display text-lg tracking-tightish text-ink-950">{title}</h3>
+            <header className="flex items-center justify-between border-b border-border px-5 py-3">
+              <h3 className="font-sans text-sm font-semibold text-text">{title}</h3>
               <button
                 onClick={onClose}
-                className="font-mono text-xs uppercase tracking-[0.1em] text-ink-500 transition-colors hover:text-ink-950"
+                aria-label="Close"
+                className="grid h-7 w-7 place-items-center rounded-sm text-text-faint transition-colors hover:bg-surface-2 hover:text-text"
               >
-                Close ✕
+                ✕
               </button>
             </header>
-            <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
+            <div className="flex-1 overflow-y-auto px-5 py-4">{children}</div>
           </motion.aside>
         </>
       )}

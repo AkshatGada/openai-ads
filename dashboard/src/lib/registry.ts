@@ -17,7 +17,7 @@ export const INDUSTRIES: Record<IndustryId, IndustryEntry> = {
   oms: {
     id: "oms",
     label: "Stablecoin & Payments",
-    tagline: "Fintech & stablecoin infrastructure · 116 real ChatGPT probes.",
+    tagline: "116 probes · 9 ads · 5 advertisers",
     aliases: ["oms", "stablecoin", "fintech", "payments", "money stack", "crypto", "open money stack"],
     load: async () => {
       const [patterns, probes] = await Promise.all([
@@ -33,7 +33,7 @@ export const INDUSTRIES: Record<IndustryId, IndustryEntry> = {
   "real-estate": {
     id: "real-estate",
     label: "Real Estate",
-    tagline: "Buyers, sellers, investors & agents (sample — scrape pending).",
+    tagline: "Sample data · scrape pending",
     aliases: ["real estate", "realty", "property", "homes", "housing", "mortgage", "realtor"],
     load: async () => {
       const [patterns, probes] = await Promise.all([

@@ -1,85 +1,125 @@
-import { useEffect, useState } from "react";
-import { AnimatePresence, LayoutGroup, MotionConfig, animate, useMotionValue, useMotionValueEvent } from "motion/react";
-import DotMatrixField from "./gl/DotMatrixField";
-import GrainOverlay from "./components/primitives/GrainOverlay";
-import Hero from "./components/Hero";
-import Dashboard from "./components/Dashboard";
+import { useState, useCallback } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import Header from "./components/Header";
+import Landing from "./components/Landing";
+import ViewNav, { type ViewId } from "./components/ViewNav";
+import AdsGalleryView from "./views/AdsGalleryView";
+import PromptsView from "./views/PromptsView";
+import AdvertisersView from "./views/AdvertisersView";
+import { useTheme } from "./lib/theme";
 import { useIndustryData } from "./hooks/useIndustryData";
-import { INDUSTRIES, type IndustryEntry, type IndustryId } from "./lib/registry";
-
-type Phase = "hero" | "dashboard";
-
-// Theme endpoints (mirror index.css :root). Animated via a 0..1 MotionValue.
-const DARK = { surface: "#0A0A0A", on: "#FAFAFA" };
-const LIGHT = { surface: "#FFFFFF", on: "#0A0A0A" };
-
-function lerpColor(a: string, b: string, t: number): string {
-  const pa = [parseInt(a.slice(1, 3), 16), parseInt(a.slice(3, 5), 16), parseInt(a.slice(5, 7), 16)];
-  const pb = [parseInt(b.slice(1, 3), 16), parseInt(b.slice(3, 5), 16), parseInt(b.slice(5, 7), 16)];
-  const c = pa.map((v, i) => Math.round(v + (pb[i]! - v) * t));
-  return `rgb(${c[0]},${c[1]},${c[2]})`;
-}
+import type { IndustryEntry, IndustryId } from "./lib/registry";
+import { INDUSTRIES } from "./lib/registry";
+import { viewSwap, EASE_OUT, DUR } from "./motion/transitions";
 
 export default function App() {
-  const [phase, setPhase] = useState<Phase>("hero");
-  const [industryId, setIndustryId] = useState<IndustryId | null>(null);
-  const data = useIndustryData(industryId);
+  const { theme, toggle } = useTheme();
+  const [selected, setSelected] = useState<IndustryId | null>(null);
+  const [view, setView] = useState<ViewId>("advertisers");
+  const dataState = useIndustryData(selected);
 
-  // LED dot-field uniforms (read by the rAF loop; never trigger React renders).
-  const fieldOpacity = useMotionValue(0.9); // bright glowing dots on the dark landing
-  const dark = useMotionValue(1); // 1 = dark/glow, 0 = light/grey grid
-  // 0 = dark hero, 1 = light dashboard. Drives CSS theme vars.
-  const themeT = useMotionValue(0);
+  const handleSelect = useCallback((entry: IndustryEntry) => {
+    setSelected(entry.id);
+    setView("advertisers");
+  }, []);
 
-  useMotionValueEvent(themeT, "change", (t) => {
-    document.documentElement.style.setProperty("--surface", lerpColor(DARK.surface, LIGHT.surface, t));
-    document.documentElement.style.setProperty("--on-surface", lerpColor(DARK.on, LIGHT.on, t));
-  });
+  const handleBack = useCallback(() => setSelected(null), []);
 
-  const selectIndustry = (entry: IndustryEntry) => setIndustryId(entry.id);
-
-  // When data is ready while in hero, run the dark→light flip + dim the field.
-  useEffect(() => {
-    if (phase === "hero" && data.status === "ready") {
-      const ease = [0.16, 1, 0.3, 1] as const;
-      animate(themeT, 1, { duration: 0.7, ease });
-      animate(dark, 0, { duration: 0.7, ease }); // dots invert: glow → grey grid
-      animate(fieldOpacity, 0.5, { duration: 0.7, ease }); // faint behind white dashboard
-      setPhase("dashboard");
-    }
-  }, [data.status, phase, themeT, dark, fieldOpacity]);
-
-  const reset = (entry: IndustryEntry) => setIndustryId(entry.id);
+  const entry = selected ? INDUSTRIES[selected] : null;
 
   return (
-    <MotionConfig reducedMotion="user">
-      {/* Above the AnimatePresence boundary → continuous through the morph. */}
-      <DotMatrixField opacity={fieldOpacity} dark={dark} />
-      <GrainOverlay />
+    <div className="min-h-screen bg-bg text-text">
+      <Header
+        theme={theme}
+        onToggleTheme={toggle}
+        breadcrumb={
+          entry && (
+            <button
+              onClick={handleBack}
+              className="font-sans text-sm text-text-muted transition-colors hover:text-text"
+            >
+              {entry.label}
+            </button>
+          )
+        }
+      />
 
-      <LayoutGroup>
-        <AnimatePresence mode="popLayout">
-          {phase === "hero" ? (
-            <Hero key="hero" onSelect={selectIndustry} />
-          ) : (
-            industryId &&
-            data.status === "ready" && (
-              <Dashboard key="dashboard" entry={INDUSTRIES[industryId]} data={data.data} onSelect={reset} />
-            )
-          )}
+      <AnimatePresence mode="wait">
+        {selected && entry ? (
+          <motion.div
+            key={`industry-${selected}`}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: DUR.base, ease: EASE_OUT }}
+          >
+            <IndustryView
+              entry={entry}
+              dataState={dataState}
+              view={view}
+              onViewChange={setView}
+            />
+          </motion.div>
+        ) : (
+          <Landing key="landing" onSelect={handleSelect} />
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function IndustryView({
+  entry,
+  dataState,
+  view,
+  onViewChange,
+}: {
+  entry: IndustryEntry;
+  dataState: ReturnType<typeof useIndustryData>;
+  view: ViewId;
+  onViewChange: (v: ViewId) => void;
+}) {
+  if (dataState.status === "loading") {
+    return (
+      <main className="mx-auto flex max-w-[1320px] flex-col items-center px-6 py-24 md:px-10">
+        <div className="flex items-center gap-3 font-mono text-sm text-text-faint">
+          <span className="h-2 w-2 animate-pulse rounded-full bg-accent" />
+          Loading…
+        </div>
+      </main>
+    );
+  }
+
+  if (dataState.status === "error") {
+    return (
+      <main className="mx-auto max-w-[1320px] px-6 py-24 md:px-10">
+        <p className="font-mono text-sm text-status-negative">Load failed: {dataState.message}</p>
+      </main>
+    );
+  }
+
+  if (dataState.status !== "ready") return null;
+
+  const { data } = dataState;
+
+  return (
+    <>
+      <div className="mx-auto max-w-[1320px] px-6 pt-10 md:px-10">
+        <h1 className="text-display text-text">{entry.label}</h1>
+        <div className="mt-6">
+          <ViewNav active={view} onChange={onViewChange} />
+        </div>
+      </div>
+
+      <main className="mx-auto max-w-[1320px] px-6 py-6 md:px-10">
+        <AnimatePresence mode="wait">
+          <motion.div key={view} variants={viewSwap} initial="hidden" animate="show" exit="exit">
+            {view === "advertisers" && <AdvertisersView data={data} />}
+            {view === "ads" && <AdsGalleryView data={data} />}
+            {view === "prompts" && <PromptsView data={data} />}
+          </motion.div>
         </AnimatePresence>
-      </LayoutGroup>
-
-      {phase === "hero" && data.status === "loading" && (
-        <div className="dot-label pointer-events-none fixed bottom-8 left-1/2 -translate-x-1/2 text-eyebrow uppercase text-paper/50">
-          Loading
-        </div>
-      )}
-      {data.status === "error" && (
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 font-mono text-xs text-signal">
-          Load failed: {data.message}
-        </div>
-      )}
-    </MotionConfig>
+      </main>
+    </>
   );
 }

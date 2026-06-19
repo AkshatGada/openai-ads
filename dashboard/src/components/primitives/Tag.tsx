@@ -1,17 +1,11 @@
-import type { Competition, GapValue } from "../../lib/format";
+type Variant = "default" | "accent" | "positive" | "warning" | "negative";
 
-type Variant = "default" | "signal" | Competition | GapValue;
-
-const STYLES: Record<string, string> = {
-  default: "border-ink-300 text-ink-600",
-  signal: "border-signal text-signal",
-  none: "border-ink-200 text-ink-400",
-  low: "border-ink-300 text-ink-500",
-  medium: "border-ink-500 text-ink-700",
-  high: "border-ink-900 text-ink-950 bg-ink-950/[0.04]",
-  LOW: "border-ink-300 text-ink-500",
-  MEDIUM: "border-ink-500 text-ink-700",
-  HIGH: "border-signal text-signal bg-signal/[0.06]",
+const STYLES: Record<Variant, string> = {
+  default: "border-border text-text-muted",
+  accent: "border-accent/40 text-accent bg-accent-soft",
+  positive: "border-status-positive/40 text-status-positive bg-status-positive/10",
+  warning: "border-status-warning/40 text-status-warning bg-status-warning/10",
+  negative: "border-status-negative/40 text-status-negative bg-status-negative/10",
 };
 
 export default function Tag({
@@ -23,9 +17,7 @@ export default function Tag({
 }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-[0.625rem] uppercase tracking-[0.1em] ${
-        STYLES[variant] ?? STYLES.default
-      }`}
+      className={`inline-flex items-center rounded-sm border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider ${STYLES[variant]}`}
     >
       {children}
     </span>

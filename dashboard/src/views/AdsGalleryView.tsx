@@ -3,15 +3,15 @@ import { AnimatePresence } from "motion/react";
 import type { IndustryData } from "../lib/types";
 import { adGallery, galleryFilters } from "../lib/derive";
 import AdCreativeCard from "../components/AdCreativeCard";
-import SectionHeading from "../components/primitives/SectionHeading";
 import { humanize } from "../lib/format";
-
-type FilterKey = "all" | string;
+import Drawer from "../components/primitives/Drawer";
+import { decodeEntities } from "../lib/format";
 
 export default function AdsGalleryView({ data }: { data: IndustryData }) {
   const items = useMemo(() => adGallery(data.probes), [data]);
   const filters = useMemo(() => galleryFilters(items), [items]);
-  const [advertiser, setAdvertiser] = useState<FilterKey>("all");
+  const [advertiser, setAdvertiser] = useState<string>("all");
+  const [selected, setSelected] = useState<typeof items[number] | null>(null);
 
   const shown = useMemo(
     () => (advertiser === "all" ? items : items.filter((i) => i.ad.advertiser === advertiser)),
@@ -20,45 +20,62 @@ export default function AdsGalleryView({ data }: { data: IndustryData }) {
 
   if (items.length === 0) {
     return (
-      <div className="flex flex-col gap-4">
-        <SectionHeading index="01" title="Ad creatives" />
-        <p className="py-16 text-center font-mono text-sm uppercase tracking-[0.12em] text-ink-400">
-          No ads observed in this dataset.
-        </p>
+      <div className="flex flex-col gap-3 py-20 text-center">
+        <p className="font-mono text-sm text-text-muted">0 ads observed</p>
+        <p className="font-mono text-xs text-text-faint">across {data.probes.length} probes — blue ocean</p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <SectionHeading
-        index="01"
-        title="Ad creatives"
-        sub={`${items.length} creatives observed`}
-        lead="Every ad running in ChatGPT for this market. You get the advertiser, the creative, and the exact prompt that brought it up. Filter by advertiser to study how a competitor writes."
-      />
-
-      <div className="flex flex-wrap gap-2">
-        <FilterChip active={advertiser === "all"} onClick={() => setAdvertiser("all")}>
-          All
-        </FilterChip>
+    <div className="flex flex-col gap-5">
+      <div className="flex flex-wrap items-center gap-2">
+        <FilterChip active={advertiser === "all"} onClick={() => setAdvertiser("all")}>All ({items.length})</FilterChip>
         {filters.advertisers.map((a) => (
-          <FilterChip key={a} active={advertiser === a} onClick={() => setAdvertiser(a)}>
-            {a}
-          </FilterChip>
+          <FilterChip key={a} active={advertiser === a} onClick={() => setAdvertiser(a)}>{a}</FilterChip>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         <AnimatePresence mode="popLayout">
           {shown.map((item, i) => (
-            <AdCreativeCard key={item.key} item={item} index={i} />
+            <AdCreativeCard key={item.key} item={item} index={i} onClick={() => setSelected(item)} />
           ))}
         </AnimatePresence>
       </div>
-      <p className="font-mono text-[0.625rem] uppercase tracking-[0.12em] text-ink-400">
-        Filtered by advertiser · personas: {filters.personas.map(humanize).join(", ")}
-      </p>
+
+      <Drawer open={!!selected} onClose={() => setSelected(null)} title={selected?.ad.advertiser ?? ""}>
+        {selected && (
+          <div className="flex flex-col gap-5">
+            <div>
+              <p className="label mb-1 text-text-faint">Ad title</p>
+              <p className="font-sans text-base font-medium text-text">{selected.ad.title}</p>
+            </div>
+            <div>
+              <p className="label mb-1 text-text-faint">Ad body</p>
+              <p className="font-sans text-sm leading-relaxed text-text-muted">{selected.ad.body}</p>
+            </div>
+            <div className="border-t border-border pt-4">
+              <p className="label mb-1 text-text-faint">Triggered by prompt</p>
+              <p className="font-mono text-xs leading-relaxed text-text">{selected.probe.prompt}</p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <span className="rounded-sm border border-border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-text-muted">
+                {humanize(selected.probe.persona)}
+              </span>
+              <span className="rounded-sm border border-border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-text-muted">
+                {humanize(selected.probe.primary_need)}
+              </span>
+            </div>
+            <div className="border-t border-border pt-4">
+              <p className="label mb-2 text-text-faint">ChatGPT response</p>
+              <p className="whitespace-pre-wrap font-sans text-xs leading-relaxed text-text-muted">
+                {decodeEntities(selected.probe.chatgpt_response).slice(0, 1200)}…
+              </p>
+            </div>
+          </div>
+        )}
+      </Drawer>
     </div>
   );
 }
@@ -68,7 +85,7 @@ function FilterChip({ active, onClick, children }: { active: boolean; onClick: (
     <button
       onClick={onClick}
       className={`rounded-full border px-3 py-1 font-mono text-xs transition-colors ${
-        active ? "border-ink-950 bg-ink-950 text-paper" : "border-ink-300 text-ink-600 hover:border-ink-600"
+        active ? "border-accent bg-accent-soft text-accent" : "border-border text-text-faint hover:border-border-strong hover:text-text-muted"
       }`}
     >
       {children}

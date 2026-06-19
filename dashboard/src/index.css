@@ -2,27 +2,63 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Metric-matched fallback (suppress CLS while Geist loads) ── */
-@font-face {
-  font-family: "Geist Fallback";
-  src: local("Arial");
-  size-adjust: 100%;
-  ascent-override: 92%;
-  descent-override: 24%;
-  line-gap-override: 0%;
+/* ─────────────────────────────────────────────────────────────
+   Design tokens — dark mode (default).
+   "Bloomberg terminal redesigned by Apple."
+   Cool-cast near-black, single teal-cyan accent, hairline structure.
+   ───────────────────────────────────────────────────────────── */
+
+:root,
+[data-theme="dark"] {
+  --bg: #0a0b0d;
+  --surface: #111317;
+  --surface-2: #16191e;
+  --border: #1f2329;
+  --border-strong: #2a2f37;
+  --text: #e6e8eb;
+  --text-muted: #9aa1ac;
+  --text-faint: #5c636f;
+
+  --accent: #ff6b3d;
+  --accent-hover: #ff8255;
+  --accent-soft: rgba(255, 107, 61, 0.12);
+  --accent-fg: #0a0a0a;
+
+  --positive: #34d399;
+  --warning: #f5b942;
+  --negative: #f87171;
+  --info: #60a5fa;
 }
 
-:root {
-  /* Motion timing tokens (mirror motion/transitions.ts). */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
-  --dur-fast: 180ms;
-  --dur-base: 320ms;
-  --dur-slow: 600ms;
+[data-theme="light"] {
+  --bg: #fbfbfc;
+  --surface: #ffffff;
+  --surface-2: #f4f5f7;
+  --border: #e4e6ea;
+  --border-strong: #c9cdd4;
+  --text: #111317;
+  --text-muted: #5c636f;
+  --text-faint: #9aa1ac;
 
-  /* Theme surface vars — animated dark↔light during the hero→dashboard flip. */
-  --surface: #0a0a0a; /* hero (dark) default */
-  --on-surface: #fafafa;
+  --accent: #e85d2f;
+  --accent-hover: #ff6b3d;
+  --accent-soft: rgba(232, 93, 47, 0.10);
+  --accent-fg: #ffffff;
+
+  --positive: #059669;
+  --warning: #d97706;
+  --negative: #dc2626;
+  --info: #2563eb;
+}
+
+/* ── Motion timing tokens ── */
+:root {
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
+  --dur-slow: 400ms;
 }
 
 * {
@@ -37,52 +73,81 @@ body,
 }
 
 body {
-  background: var(--surface);
-  color: var(--on-surface);
-  font-family: theme("fontFamily.sans");
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: tabular-nums lining-nums;
+  transition: background-color var(--dur-base) var(--ease-out),
+              color var(--dur-base) var(--ease-out);
 }
 
-/* Ledger-grade numerals everywhere numbers live. */
+/* ── Numeric utilities ── */
 .tnum {
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum" 1;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
 }
 
-/* Dot-matrix display (Doto). Heavy weight + slight positive tracking reads as an LED readout. */
-.font-display,
-.font-dot {
-  font-weight: 700;
-  letter-spacing: 0.01em;
-}
-/* Dot-matrix labels / eyebrows: wide tracking, the LED-readout feel. */
+/* ── Label / eyebrow — the universal metadata register ── */
+.label,
 .dot-label {
-  font-family: theme("fontFamily.dot");
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
-/* Hairline rule — the structural device. */
+/* ── Hairline border utility ── */
 .hairline {
-  border-color: theme("colors.ink.200");
+  border: 1px solid var(--border);
+}
+.hairline-b {
+  border-bottom: 1px solid var(--border);
+}
+.hairline-t {
+  border-top: 1px solid var(--border);
 }
 
+/* ── Selection — accent tint ── */
 ::selection {
-  background: theme("colors.signal");
-  color: #fff;
+  background: var(--accent);
+  color: var(--accent-fg);
 }
 
-/* Custom focus ring = signal blue (a11y). */
+/* ── Focus ring — accent, 2px offset ── */
 :focus-visible {
-  outline: 2px solid theme("colors.signal");
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
+/* ── Scrollbar — subtle, dark-friendly ── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-strong);
+}
+
+/* ── Reduced motion — root guard ── */
 @media (prefers-reduced-motion: reduce) {
-  * {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }

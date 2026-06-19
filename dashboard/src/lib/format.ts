@@ -19,14 +19,24 @@ export type GapValue = "LOW" | "MEDIUM" | "HIGH";
 export const asGap = (s: string): GapValue =>
   s === "LOW" || s === "MEDIUM" || s === "HIGH" ? s : "LOW";
 
-/** Decode common HTML entities in scraped responses for plain-text rendering. */
+/** Decode HTML entities in scraped responses for plain-text rendering.
+ *  Handles entities both with and without trailing semicolons (the scraper
+ *  sometimes drops them), plus common named entities and stray artifacts. */
 export function decodeEntities(s: string): string {
   return s
-    .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => String.fromCodePoint(parseInt(h, 16)))
-    .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(parseInt(d, 10)))
+    // Numeric hex entities — with or without semicolon (e.g. &#x2192; or &#x2192)
+    .replace(/&#x([0-9a-fA-F]+);?/g, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+    // Numeric decimal entities — with or without semicolon
+    .replace(/&#(\d+);?/g, (_, d) => String.fromCodePoint(parseInt(d, 10)))
+    // Named entities
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'");
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, " ")
+    // Scraping artifacts: mangled em/en-dashes
+    .replace(/-;/g, "—")
+    // Collapse runs of 3+ spaces (formatting whitespace from scrape)
+    .replace(/ {3,}/g, "  ");
 }
