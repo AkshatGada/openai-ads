@@ -65,11 +65,8 @@ export default function AdvertisersView({ data }: { data: IndustryData }) {
                   <p className="font-sans text-sm font-semibold text-text">{g.ad.title}</p>
                   <p className="mt-0.5 font-sans text-xs text-text-muted">{g.ad.body}</p>
                   <div className="mt-3 border-t border-border pt-2">
-                    <p className="flex items-center gap-1.5 font-sans text-[11px] font-medium tracking-wide text-text-faint">
-                      <span className="inline-block h-1 w-1 rounded-full bg-accent" />
-                      Triggered by
-                    </p>
-                    <p className="mt-0.5 font-mono text-xs leading-relaxed text-text-muted">{g.probe.prompt}</p>
+                    <p className="font-sans text-[11px] font-medium tracking-wide text-text-faint">Triggered by</p>
+                    <p className="mt-0.5 font-sans text-xs leading-relaxed text-text-muted">{g.probe.prompt}</p>
                   </div>
                 </div>
               ))}

@@ -37,11 +37,8 @@ export default function AdCreativeCard({ item, index, onClick }: { item: Gallery
       </div>
 
       <div className="border-t border-border bg-surface-2 px-4 py-2.5">
-        <p className="mb-1.5 flex items-center gap-1.5 font-sans text-[11px] font-medium tracking-wide text-text-faint">
-          <span className="inline-block h-1 w-1 rounded-full bg-accent" />
-          Triggered by
-        </p>
-        <p className="font-mono text-xs leading-relaxed text-text-muted line-clamp-2">{probe.prompt}</p>
+        <p className="mb-1.5 font-sans text-[11px] font-medium tracking-wide text-text-faint">Triggered by</p>
+        <p className="font-sans text-xs leading-relaxed text-text-muted line-clamp-2">{probe.prompt}</p>
       </div>
     </motion.article>
   );

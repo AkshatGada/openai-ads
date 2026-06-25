@@ -58,7 +58,7 @@ export default function AdsGalleryView({ data }: { data: IndustryData }) {
             </div>
             <div className="border-t border-border pt-4">
               <p className="label mb-1.5 text-text-faint">Triggered by prompt</p>
-              <p className="font-mono text-xs leading-relaxed text-text">{selected.probe.prompt}</p>
+              <p className="font-sans text-xs leading-relaxed text-text">{selected.probe.prompt}</p>
             </div>
             <div className="flex flex-wrap gap-2">
               <span className="rounded-sm border border-border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-text-muted">

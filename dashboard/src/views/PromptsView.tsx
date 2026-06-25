@@ -98,7 +98,7 @@ export default function PromptsView({ data }: { data: IndustryData }) {
             </div>
             <div>
               <p className="label mb-1 text-text-faint">Prompt</p>
-              <p className="font-mono text-sm leading-relaxed text-text">{selected.prompt}</p>
+              <p className="font-sans text-sm leading-relaxed text-text">{selected.prompt}</p>
             </div>
             <div>
               <p className="label mb-2 text-text-faint">ChatGPT response</p>
