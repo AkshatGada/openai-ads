@@ -10,11 +10,15 @@ export default function Landing({
   onSelect: (entry: IndustryEntry) => void;
 }) {
   return (
-    <div className="relative flex min-h-[calc(100vh-57px)] flex-col items-center overflow-hidden">
-      {/* ── Hero section with floating background creatives ── */}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0, transition: { duration: DUR.fast, ease: EASE_OUT } }}
+    >
+      {/* ── Hero ── */}
       <section
         aria-label="Hero"
-        className="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-6 w-full"
+        className="relative flex min-h-[calc(100vh-57px)] flex-col items-center justify-center overflow-hidden px-6"
       >
         <FloatingCreatives />
 
@@ -28,67 +32,61 @@ export default function Landing({
         />
 
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{
-            opacity: 0,
-            transition: { duration: DUR.fast, ease: EASE_OUT },
-          }}
+          variants={staggerParent(0.12)}
+          initial="hidden"
+          animate="show"
           className="relative z-10 -mt-12 flex w-full max-w-3xl flex-col items-center gap-7"
         >
-          <motion.div
-            variants={staggerParent(0.12)}
-            initial="hidden"
-            animate="show"
-            className="flex w-full flex-col items-center gap-7"
+          {/* Headline */}
+          <motion.h1
+            variants={fadeUp}
+            className="text-center font-display text-5xl font-bold leading-[1.05] tracking-tighter2 text-text md:text-7xl"
           >
-            <motion.h1
-              variants={fadeUp}
-              className="text-center font-display text-5xl font-bold leading-[1.05] tracking-tighter2 text-text md:text-7xl"
-            >
-              Who&apos;s advertising
-              <br />
-              on <span className="text-accent">ChatGPT?</span>
-            </motion.h1>
+            Who&apos;s advertising
+            <br />
+            on <span className="text-accent">ChatGPT?</span>
+          </motion.h1>
 
-            <motion.p
-              variants={fadeUp}
-              className="max-w-lg text-center font-sans text-base text-text-muted md:text-lg"
-            >
-              The first public database of{" "}
-              <strong className="text-text">ChatGPT ads</strong>. See which
-              companies are running{" "}
-              <strong className="text-text">OpenAI advertising</strong>{" "}
-              campaigns, what creatives they use, and which prompts trigger
-              their ads.
-            </motion.p>
+          {/* Subtitle */}
+          <motion.p
+            variants={fadeUp}
+            className="max-w-lg text-center font-sans text-base text-text-muted md:text-lg"
+          >
+            The first public database of{" "}
+            <strong className="text-text">ChatGPT ads</strong>. See which
+            companies are running{" "}
+            <strong className="text-text">OpenAI advertising</strong>{" "}
+            campaigns, what creatives they use, and which prompts trigger
+            their ads.
+          </motion.p>
 
-            <motion.div variants={fadeUp} className="w-full max-w-2xl">
-              <IndustrySearch onSelect={onSelect} />
-            </motion.div>
+          {/* Search */}
+          <motion.div variants={fadeUp} className="w-full max-w-2xl">
+            <IndustrySearch onSelect={onSelect} />
+          </motion.div>
 
-            <motion.div
-              variants={fadeUp}
-              className="flex flex-wrap items-center justify-center gap-2.5"
-            >
-              {INDUSTRY_LIST.map((e) => (
-                <button
-                  key={e.id}
-                  onClick={() => onSelect(e)}
-                  className="rounded-full border border-border bg-surface/80 px-4 py-2 font-sans text-sm text-text-muted backdrop-blur-md transition-all duration-200 hover:border-accent/60 hover:bg-accent-soft hover:text-text"
-                >
-                  {e.label}
-                </button>
-              ))}
-            </motion.div>
+          {/* Industry chips */}
+          <motion.div
+            variants={fadeUp}
+            className="flex flex-wrap items-center justify-center gap-2.5"
+          >
+            {INDUSTRY_LIST.map((e) => (
+              <button
+                key={e.id}
+                onClick={() => onSelect(e)}
+                className="rounded-full border border-border bg-surface/80 px-4 py-2 font-sans text-sm text-text-muted backdrop-blur-md transition-all duration-200 hover:border-accent/60 hover:bg-accent-soft hover:text-text"
+              >
+                {e.label}
+              </button>
+            ))}
           </motion.div>
         </motion.div>
       </section>
 
-      {/* ── How it works / Features ── */}
+      {/* ── Features ── */}
       <section
         aria-label="How it works"
-        className="relative z-10 mx-auto w-full max-w-[1320px] px-6 pb-24 pt-12 md:px-10 md:pb-32 md:pt-20"
+        className="mx-auto w-full max-w-[1320px] px-6 pb-24 pt-20 md:px-10 md:pb-32 md:pt-28"
       >
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -143,10 +141,10 @@ export default function Landing({
         </motion.div>
       </section>
 
-      {/* ── FAQ / SEO content ── */}
+      {/* ── FAQ / SEO ── */}
       <section
         aria-label="Frequently asked questions about ChatGPT ads"
-        className="relative z-10 mx-auto w-full max-w-[1320px] px-6 pb-32 md:px-10"
+        className="mx-auto w-full max-w-[1320px] px-6 pb-32 md:px-10"
       >
         <motion.h2
           initial={{ opacity: 0, y: 12 }}
@@ -198,6 +196,6 @@ export default function Landing({
           </p>
         </motion.div>
       </section>
-    </div>
+    </motion.div>
   );
 }

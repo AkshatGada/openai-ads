@@ -204,7 +204,7 @@ function IndustryView({
 
   return (
     <>
-      <div className="mx-auto max-w-[1320px] px-6 pt-10 md:px-10">
+      <div className="mx-auto max-w-[1320px] scroll-mt-16 px-6 pt-10 md:px-10">
         <h1 className="text-display text-text">{entry.label}</h1>
         <div className="mt-6">
           <ViewNav active={view} onChange={onViewChange} />
