@@ -7,6 +7,7 @@ import ViewNav, { type ViewId } from "@/components/ViewNav";
 import AdsGalleryView from "@/views/AdsGalleryView";
 import PromptsView from "@/views/PromptsView";
 import AdvertisersView from "@/views/AdvertisersView";
+import EmailGate from "@/components/EmailGate";
 import type { IndustryData } from "@/lib/types";
 import { getIndustryMeta } from "@/lib/data";
 import { viewSwap, EASE_OUT, DUR } from "@/motion/transitions";
@@ -83,6 +84,8 @@ export default function IndustryViewPage() {
         </main>
       ) : (
         <>
+          <EmailGate />
+
           <div className="mx-auto max-w-[1320px] scroll-mt-16 px-6 pt-10 md:px-10">
             <h1 className="text-display text-text">{meta.label}</h1>
             <div className="mt-6">
