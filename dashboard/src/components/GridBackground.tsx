@@ -31,9 +31,9 @@ export default function GridBackground() {
       const isDark = theme === "dark";
 
       ctx.strokeStyle = isDark
-        ? "rgba(255, 255, 255, 0.04)"
-        : "rgba(0, 0, 0, 0.08)";
-      ctx.lineWidth = 0.5;
+        ? "rgba(255, 255, 255, 0.10)"
+        : "rgba(0, 0, 0, 0.12)";
+      ctx.lineWidth = 1;
 
       // Vertical lines
       for (let x = 0; x <= w; x += spacing) {
@@ -50,6 +50,19 @@ export default function GridBackground() {
         ctx.lineTo(w, y);
         ctx.stroke();
       }
+
+      // Intersection dots — single path batch
+      ctx.fillStyle = isDark
+        ? "rgba(255, 255, 255, 0.18)"
+        : "rgba(0, 0, 0, 0.16)";
+      ctx.beginPath();
+      for (let x = 0; x <= w; x += spacing) {
+        for (let y = 0; y <= h; y += spacing) {
+          ctx.moveTo(x + 1.5, y);
+          ctx.arc(x, y, 1.5, 0, Math.PI * 2);
+        }
+      }
+      ctx.fill();
     };
 
     const handleResize = () => {
