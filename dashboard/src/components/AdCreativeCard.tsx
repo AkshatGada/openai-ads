@@ -1,9 +1,6 @@
 "use client";
 import { motion } from "motion/react";
 import type { GalleryItem } from "../lib/derive";
-import Tag from "./primitives/Tag";
-import IntentMeter from "./primitives/IntentMeter";
-import { humanize } from "../lib/format";
 import { EASE_OUT } from "../motion/transitions";
 
 export default function AdCreativeCard({ item, index, onClick }: { item: GalleryItem; index: number; onClick?: () => void }) {
@@ -27,13 +24,6 @@ export default function AdCreativeCard({ item, index, onClick }: { item: Gallery
       <div className="flex flex-col gap-1.5 px-4 py-3">
         <h3 className="font-sans text-sm font-medium leading-snug text-text">{ad.title}</h3>
         <p className="font-sans text-xs leading-relaxed text-text-muted">{ad.body}</p>
-      </div>
-
-      <div className="flex flex-wrap items-center gap-1.5 px-4 pb-3">
-        <Tag>{humanize(probe.persona)}</Tag>
-        <span className="ml-auto">
-          <IntentMeter value={probe.intent_score} animate={false} />
-        </span>
       </div>
 
       <div className="border-t border-border bg-surface-2 px-4 py-2.5">

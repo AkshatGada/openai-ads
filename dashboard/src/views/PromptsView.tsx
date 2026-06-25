@@ -4,7 +4,6 @@ import { motion } from "motion/react";
 import type { IndustryData, ProbeRecordV2 } from "../lib/types";
 import IntentMeter from "../components/primitives/IntentMeter";
 import Drawer from "../components/primitives/Drawer";
-import { decodeEntities, humanize } from "../lib/format";
 import { EASE_OUT, DUR } from "../motion/transitions";
 
 type SortKey = "rank" | "intent";
@@ -67,9 +66,6 @@ export default function PromptsView({ data }: { data: IndustryData }) {
             </span>
             <span className="relative z-10 min-w-0 flex-1">
               <span className="block truncate font-sans text-sm text-text">{p.prompt}</span>
-              <span className="mt-0.5 flex items-center gap-2 font-mono text-[10px] uppercase tracking-wider text-text-faint">
-                {humanize(p.persona)} · {humanize(p.primary_need)}
-              </span>
             </span>
             <span className="relative z-10 shrink-0">
               <IntentMeter value={p.intent_score} animate={false} />
@@ -88,23 +84,12 @@ export default function PromptsView({ data }: { data: IndustryData }) {
         )}
       </motion.div>
 
-      <Drawer open={!!selected} onClose={() => setSelected(null)} title={selected ? humanize(selected.primary_need) : ""}>
+      <Drawer open={!!selected} onClose={() => setSelected(null)} title={selected?.prompt.slice(0, 60) ?? ""}>
         {selected && (
           <div className="flex flex-col gap-5">
-            <div className="flex flex-wrap gap-2">
-              <span className="rounded-sm border border-border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-text-muted">{humanize(selected.persona)}</span>
-              <span className="rounded-sm border border-border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-text-muted">{selected.prompt_structure}</span>
-              {selected.has_ads && <span className="rounded-sm border border-accent/40 bg-accent-soft px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-accent">ad surfaced</span>}
-            </div>
             <div>
               <p className="label mb-1 text-text-faint">Prompt</p>
               <p className="font-sans text-sm leading-relaxed text-text">{selected.prompt}</p>
-            </div>
-            <div>
-              <p className="label mb-2 text-text-faint">ChatGPT response</p>
-              <p className="whitespace-pre-wrap font-sans text-xs leading-relaxed text-text-muted">
-                {decodeEntities(selected.chatgpt_response).slice(0, 1500)}…
-              </p>
             </div>
             {selected.ads.length > 0 && (
               <div className="border-t border-border pt-4">

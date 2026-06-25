@@ -4,9 +4,7 @@ import { AnimatePresence } from "motion/react";
 import type { IndustryData } from "../lib/types";
 import { adGallery, galleryFilters } from "../lib/derive";
 import AdCreativeCard from "../components/AdCreativeCard";
-import { humanize } from "../lib/format";
 import Drawer from "../components/primitives/Drawer";
-import { decodeEntities } from "../lib/format";
 
 export default function AdsGalleryView({ data }: { data: IndustryData }) {
   const items = useMemo(() => adGallery(data.probes), [data]);
@@ -59,20 +57,6 @@ export default function AdsGalleryView({ data }: { data: IndustryData }) {
             <div className="border-t border-border pt-4">
               <p className="label mb-1.5 text-text-faint">Triggered by prompt</p>
               <p className="font-sans text-xs leading-relaxed text-text">{selected.probe.prompt}</p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <span className="rounded-sm border border-border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-text-muted">
-                {humanize(selected.probe.persona)}
-              </span>
-              <span className="rounded-sm border border-border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-text-muted">
-                {humanize(selected.probe.primary_need)}
-              </span>
-            </div>
-            <div className="border-t border-border pt-4">
-              <p className="label mb-2 text-text-faint">ChatGPT response</p>
-              <p className="whitespace-pre-wrap font-sans text-xs leading-relaxed text-text-muted">
-                {decodeEntities(selected.probe.chatgpt_response).slice(0, 1200)}…
-              </p>
             </div>
           </div>
         )}
