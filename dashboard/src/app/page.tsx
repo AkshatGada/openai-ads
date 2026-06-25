@@ -1,15 +1,21 @@
 "use client";
-import { motion } from "motion/react";
-import IndustrySearch from "./IndustrySearch";
-import FloatingCreatives from "./FloatingCreatives";
-import { getIndustries, type IndustryEntry } from "@/lib/data";
-import { fadeUp, staggerParent, EASE_OUT, DUR } from "../motion/transitions";
 
-export default function Landing({
-  onSelect,
-}: {
-  onSelect: (entry: IndustryEntry) => void;
-}) {
+import { motion } from "motion/react";
+import { useRouter } from "next/navigation";
+import IndustrySearch from "@/components/IndustrySearch";
+import FloatingCreatives from "@/components/FloatingCreatives";
+import { suggestIndustries } from "@/lib/data";
+import type { IndustryEntry } from "@/lib/data";
+import { fadeUp, staggerParent, EASE_OUT, DUR } from "@/motion/transitions";
+
+export default function HomePage() {
+  const router = useRouter();
+  const industries = suggestIndustries("");
+
+  function handleSelect(entry: IndustryEntry) {
+    router.push(`/${entry.id}/advertisers`);
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -26,8 +32,7 @@ export default function Landing({
         <div
           className="pointer-events-none absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full"
           style={{
-            background:
-              "radial-gradient(circle, var(--accent-soft) 0%, transparent 70%)",
+            background: "radial-gradient(circle, var(--accent-soft) 0%, transparent 70%)",
             opacity: 0.6,
           }}
         />
@@ -57,24 +62,20 @@ export default function Landing({
             <strong className="text-text">ChatGPT ads</strong>. See which
             companies are running{" "}
             <strong className="text-text">OpenAI advertising</strong>{" "}
-            campaigns, what creatives they use, and which prompts trigger
-            their ads.
+            campaigns, what creatives they use, and which prompts trigger their ads.
           </motion.p>
 
           {/* Search */}
           <motion.div variants={fadeUp} className="w-full max-w-2xl">
-            <IndustrySearch onSelect={onSelect} />
+            <IndustrySearch onSelect={handleSelect} />
           </motion.div>
 
           {/* Industry chips */}
-          <motion.div
-            variants={fadeUp}
-            className="flex flex-wrap items-center justify-center gap-2.5"
-          >
-            {getIndustries().map((e) => (
+          <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-2.5">
+            {industries.map((e) => (
               <button
                 key={e.id}
-                onClick={() => onSelect(e)}
+                onClick={() => handleSelect(e)}
                 className="rounded-full border border-border bg-surface/80 px-4 py-2 font-sans text-sm text-text-muted backdrop-blur-md transition-all duration-200 hover:border-accent/60 hover:bg-accent-soft hover:text-text"
               >
                 {e.label}
@@ -97,46 +98,31 @@ export default function Landing({
           className="grid gap-8 md:grid-cols-3"
         >
           <article className="rounded-xl border border-border bg-surface/50 p-6 backdrop-blur-sm">
-            <div className="mb-3 font-mono text-xs font-semibold uppercase tracking-[0.1em] text-accent">
-              Discover
-            </div>
-            <h3 className="mb-2 font-display text-lg font-semibold text-text">
-              See who advertises on ChatGPT
-            </h3>
+            <div className="mb-3 font-mono text-xs font-semibold uppercase tracking-[0.1em] text-accent">Discover</div>
+            <h3 className="mb-2 font-display text-lg font-semibold text-text">See who advertises on ChatGPT</h3>
             <p className="font-sans text-sm leading-relaxed text-text-muted">
-              Browse advertisers across any industry — fintech, real estate,
-              SaaS, ecommerce, and more. See every ChatGPT ad creative and the
-              exact prompt that triggers it. The only public{" "}
+              Browse advertisers across any industry — fintech, real estate, SaaS, ecommerce, and more.
+              See every ChatGPT ad creative and the exact prompt that triggers it. The only public{" "}
               <strong>ChatGPT ad intelligence</strong> database.
             </p>
           </article>
 
           <article className="rounded-xl border border-border bg-surface/50 p-6 backdrop-blur-sm">
-            <div className="mb-3 font-mono text-xs font-semibold uppercase tracking-[0.1em] text-accent">
-              Analyze
-            </div>
-            <h3 className="mb-2 font-display text-lg font-semibold text-text">
-              Understand competitor strategy
-            </h3>
+            <div className="mb-3 font-mono text-xs font-semibold uppercase tracking-[0.1em] text-accent">Analyze</div>
+            <h3 className="mb-2 font-display text-lg font-semibold text-text">Understand competitor strategy</h3>
             <p className="font-sans text-sm leading-relaxed text-text-muted">
               Track which advertisers appear most often, what{" "}
-              <strong>ChatGPT context hints</strong> they target, and which
-              landing pages they send traffic to. Spot gaps and opportunities
-              before your competitors do.
+              <strong>ChatGPT context hints</strong> they target, and which landing pages they send traffic to.
+              Spot gaps and opportunities before your competitors do.
             </p>
           </article>
 
           <article className="rounded-xl border border-border bg-surface/50 p-6 backdrop-blur-sm">
-            <div className="mb-3 font-mono text-xs font-semibold uppercase tracking-[0.1em] text-accent">
-              Monitor
-            </div>
-            <h3 className="mb-2 font-display text-lg font-semibold text-text">
-              Stay ahead of the market
-            </h3>
+            <div className="mb-3 font-mono text-xs font-semibold uppercase tracking-[0.1em] text-accent">Monitor</div>
+            <h3 className="mb-2 font-display text-lg font-semibold text-text">Stay ahead of the market</h3>
             <p className="font-sans text-sm leading-relaxed text-text-muted">
-              New <strong>OpenAI advertisers</strong> appear every week.
-              ChatGPT Ads Library updates regularly so you can see who just
-              entered your space — and what they&apos;re testing.
+              New <strong>OpenAI advertisers</strong> appear every week. ChatGPT Ads Library updates regularly
+              so you can see who just entered your space — and what they&apos;re testing.
             </p>
           </article>
         </motion.div>
@@ -166,34 +152,26 @@ export default function Landing({
         >
           <p>
             <strong className="text-text">ChatGPT Ads</strong> (also called{" "}
-            <strong className="text-text">OpenAI Ads</strong>) are sponsored
-            messages that appear inside ChatGPT conversations. When a user asks
-            ChatGPT a question related to a product, service, or topic, an
-            advertiser&apos;s message may appear alongside the AI&apos;s
-            response.
+            <strong className="text-text">OpenAI Ads</strong>) are sponsored messages that appear
+            inside ChatGPT conversations. When a user asks ChatGPT a question related to a product,
+            service, or topic, an advertiser&apos;s message may appear alongside the AI&apos;s response.
           </p>
           <p>
             These ads are triggered by{" "}
-            <strong className="text-text">context hints</strong> — semantic
-            descriptions of the situations where an ad may be useful. Unlike
-            traditional search ads that match on keywords, ChatGPT ads match on
-            the meaning and intent behind a conversation.
+            <strong className="text-text">context hints</strong> — semantic descriptions of the
+            situations where an ad may be useful. Unlike traditional search ads that match on keywords,
+            ChatGPT ads match on the meaning and intent behind a conversation.
           </p>
           <p>
-            This makes{" "}
-            <strong className="text-text">
-              ChatGPT advertising competitive intelligence
-            </strong>{" "}
-            critical for marketers. Understanding which context hints your
-            competitors target, what ad copy they use, and where they send
-            traffic gives you an edge in the fastest-growing ad platform since
-            Google and Meta.
+            This makes <strong className="text-text">ChatGPT advertising competitive intelligence</strong>{" "}
+            critical for marketers. Understanding which context hints your competitors target, what
+            ad copy they use, and where they send traffic gives you an edge in the fastest-growing
+            ad platform since Google and Meta.
           </p>
           <p>
-            ChatGPT Ads Library is the first public tool to catalog and display
-            every ad running inside ChatGPT, organized by industry. Search for
-            your vertical above to see which companies are already advertising —
-            and what they&apos;re saying.
+            ChatGPT Ads Library is the first public tool to catalog and display every ad running inside
+            ChatGPT, organized by industry. Search for your vertical above to see which companies are
+            already advertising — and what they&apos;re saying.
           </p>
         </motion.div>
       </section>

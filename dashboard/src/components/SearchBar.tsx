@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { suggestIndustries, resolveIndustry, type IndustryEntry } from "../lib/registry";
+import { suggestIndustries, resolveIndustry, type IndustryEntry } from "@/lib/data";
 
 // The hero centerpiece. Carries layoutId="recon-search" so it MORPHS from
 // hero-center into the dashboard header. `compact` switches the dashboard-header form.

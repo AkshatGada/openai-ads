@@ -1,6 +1,8 @@
+"use client";
+
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { suggestIndustries, resolveIndustry, type IndustryEntry } from "../lib/registry";
+import { suggestIndustries, resolveIndustry, type IndustryEntry } from "@/lib/data";
 import { EASE_OUT, DUR } from "../motion/transitions";
 
 const EXAMPLES = ["stablecoin payments", "real estate", "crypto exchanges", "pre-IPO stocks", "SaaS tools"];

@@ -1,3 +1,4 @@
+"use client";
 import { motion } from "motion/react";
 
 export type ViewId = "advertisers" | "ads" | "prompts";

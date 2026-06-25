@@ -1,3 +1,4 @@
+"use client";
 import { useMemo, useState } from "react";
 import { motion } from "motion/react";
 import type { IndustryData, ProbeRecordV2 } from "../lib/types";

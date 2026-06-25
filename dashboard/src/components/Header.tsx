@@ -1,3 +1,4 @@
+"use client";
 import { motion } from "motion/react";
 import type { Theme } from "../lib/theme";
 import { EASE_OUT, DUR } from "../motion/transitions";

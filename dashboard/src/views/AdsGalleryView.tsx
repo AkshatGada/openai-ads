@@ -1,3 +1,4 @@
+"use client";
 import { useMemo, useState } from "react";
 import { AnimatePresence } from "motion/react";
 import type { IndustryData } from "../lib/types";

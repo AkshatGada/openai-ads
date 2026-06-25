@@ -1,3 +1,4 @@
+"use client";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect } from "react";
 import { SPRING, DUR } from "../../motion/transitions";

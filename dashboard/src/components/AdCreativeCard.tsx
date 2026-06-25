@@ -1,3 +1,4 @@
+"use client";
 import { motion } from "motion/react";
 import type { GalleryItem } from "../lib/derive";
 import Tag from "./primitives/Tag";
