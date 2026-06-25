@@ -4,11 +4,10 @@ import { motion } from "motion/react";
 import type { IndustryData } from "../lib/types";
 import { adGallery } from "../lib/derive";
 import Drawer from "../components/primitives/Drawer";
-import { EASE_OUT, staggerParent, fadeUp } from "../motion/transitions";
+import { staggerParent, fadeUp } from "../motion/transitions";
 
 export default function AdvertisersView({ data }: { data: IndustryData }) {
   const freq = data.patterns.competitor_frequency;
-  const max = Math.max(1, ...freq.map((f) => f.total_share));
   const [selected, setSelected] = useState<string | null>(null);
 
   const gallery = useMemo(() => adGallery(data.probes), [data.probes]);
@@ -19,7 +18,6 @@ export default function AdvertisersView({ data }: { data: IndustryData }) {
   const detail = data.patterns.advertisers.find((a) => a.advertiser === selected);
 
   const paid = freq.filter((f) => f.paid_impressions > 0);
-  const organic = freq.filter((f) => f.paid_impressions === 0);
 
   return (
     <div className="flex flex-col gap-8">
@@ -55,38 +53,6 @@ export default function AdvertisersView({ data }: { data: IndustryData }) {
           </motion.div>
         </section>
       )}
-
-      <section>
-        <p className="label mb-3 text-text-faint">Mentioned organically ({organic.length})</p>
-        <div className="flex flex-col">
-          {organic.map((f, i) => (
-            <motion.div
-              key={f.company}
-              initial={{ opacity: 0, x: -8 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.2, ease: EASE_OUT, delay: i * 0.02 }}
-              className="flex items-center gap-4 border-b border-border py-2.5"
-            >
-              <span className="tnum w-6 font-mono text-xs text-text-faint">{String(i + 1).padStart(2, "0")}</span>
-              <span className="w-32 shrink-0 font-sans text-sm text-text">{f.company}</span>
-              <div className="relative h-1.5 flex-1 overflow-hidden rounded-sm bg-border">
-                <motion.div
-                  className="absolute inset-y-0 left-0 origin-left bg-text-faint"
-                  style={{ width: `${(f.total_share / max) * 100}%` }}
-                  initial={{ scaleX: 0 }}
-                  whileInView={{ scaleX: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, ease: EASE_OUT, delay: i * 0.02 }}
-                />
-              </div>
-              <span className="tnum w-8 text-right font-mono text-xs text-text-muted">{f.total_share}</span>
-            </motion.div>
-          ))}
-          {organic.length === 0 && (
-            <p className="py-6 font-mono text-xs text-text-faint">None. Everyone here is paying.</p>
-          )}
-        </div>
-      </section>
 
       <Drawer open={!!selected} onClose={() => setSelected(null)} title={selected ?? ""}>
         <div className="flex flex-col gap-5">
