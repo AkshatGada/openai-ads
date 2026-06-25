@@ -98,9 +98,9 @@ export default function IndustrySearch({
         />
         {/* Typewriter placeholder overlay */}
         {!query && !focused && (
-          <span className="pointer-events-none absolute left-8 top-1/2 -translate-y-1/2 font-sans text-lg text-text-faint md:text-2xl">
+          <span className="pointer-events-none absolute left-8 top-1/2 -translate-y-1/2 font-sans text-lg leading-none text-text-faint md:text-2xl">
             try {typed}
-            <span className="ml-0.5 inline-block h-5 w-0.5 animate-pulse bg-accent md:h-7" />
+            <span className="ml-0.5 inline-block h-[1em] w-0.5 animate-pulse bg-accent align-middle" />
           </span>
         )}
         <kbd className="pointer-events-none absolute right-0 hidden font-mono text-[11px] text-text-faint sm:block">
