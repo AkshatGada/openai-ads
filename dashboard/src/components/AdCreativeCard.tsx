@@ -21,7 +21,7 @@ export default function AdCreativeCard({ item, index, onClick }: { item: Gallery
     >
       <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
         <span className="font-sans text-sm font-semibold text-text">{ad.advertiser}</span>
-        <span className="font-mono text-[10px] uppercase tracking-wider text-text-faint">Sponsored</span>
+        <span className="font-sans text-[11px] font-medium tracking-wide text-text-faint">Sponsored</span>
       </div>
 
       <div className="flex flex-col gap-1.5 px-4 py-3">
@@ -37,7 +37,10 @@ export default function AdCreativeCard({ item, index, onClick }: { item: Gallery
       </div>
 
       <div className="border-t border-border bg-surface-2 px-4 py-2.5">
-        <p className="mb-1 font-mono text-[10px] uppercase tracking-wider text-text-faint">Triggered by</p>
+        <p className="mb-1.5 flex items-center gap-1.5 font-sans text-[11px] font-medium tracking-wide text-text-faint">
+          <span className="inline-block h-1 w-1 rounded-full bg-accent" />
+          Triggered by
+        </p>
         <p className="font-mono text-xs leading-relaxed text-text-muted line-clamp-2">{probe.prompt}</p>
       </div>
     </motion.article>

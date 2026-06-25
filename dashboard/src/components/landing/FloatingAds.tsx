@@ -83,7 +83,7 @@ function ParallaxCard({
       >
         <div className="mb-2 flex items-center justify-between">
           <span className="text-sm font-semibold text-white/90">{ad.advertiser}</span>
-          <span className="font-mono text-[0.55rem] uppercase tracking-[0.14em] text-white/30">Sponsored</span>
+          <span className="font-sans text-[0.6rem] font-medium tracking-wide text-white/30">Sponsored</span>
         </div>
         <p className="text-sm font-medium leading-snug text-white">{ad.title}</p>
         <p className="mt-1 text-xs leading-relaxed text-white/45">{ad.body}</p>

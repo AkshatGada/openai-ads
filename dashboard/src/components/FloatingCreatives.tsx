@@ -92,7 +92,7 @@ function FloatingCard({
       >
         <div className="mb-2 flex items-center justify-between border-b border-border pb-2">
           <span className="font-sans text-xs font-semibold text-text">{ad.advertiser}</span>
-          <span className="font-mono text-[9px] uppercase tracking-wider text-text-faint">Sponsored</span>
+          <span className="font-sans text-[10px] font-medium tracking-wide text-text-faint">Sponsored</span>
         </div>
         <h4 className="mb-1 font-sans text-sm font-medium leading-snug text-text">{ad.title}</h4>
         <p className="font-sans text-xs leading-relaxed text-text-muted">{ad.body}</p>

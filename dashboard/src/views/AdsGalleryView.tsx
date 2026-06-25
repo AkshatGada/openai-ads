@@ -57,7 +57,7 @@ export default function AdsGalleryView({ data }: { data: IndustryData }) {
               <p className="font-sans text-sm leading-relaxed text-text-muted">{selected.ad.body}</p>
             </div>
             <div className="border-t border-border pt-4">
-              <p className="label mb-1 text-text-faint">Triggered by prompt</p>
+              <p className="label mb-1.5 text-text-faint">Triggered by prompt</p>
               <p className="font-mono text-xs leading-relaxed text-text">{selected.probe.prompt}</p>
             </div>
             <div className="flex flex-wrap gap-2">
