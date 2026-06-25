@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import GridBackground from "./components/GridBackground";
 import Header from "./components/Header";
 import Landing from "./components/Landing";
 import ViewNav, { type ViewId } from "./components/ViewNav";
@@ -28,7 +29,8 @@ export default function App() {
   const entry = selected ? INDUSTRIES[selected] : null;
 
   return (
-    <div className="flex min-h-screen flex-col bg-bg bg-grid text-text">
+    <div className="flex min-h-screen flex-col bg-bg text-text">
+      <GridBackground />
       <Header
         theme={theme}
         onToggleTheme={toggle}
