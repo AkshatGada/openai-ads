@@ -140,6 +140,19 @@ body {
   background: var(--border-strong);
 }
 
+/* ── Background grid ── */
+.bg-grid {
+  background-image:
+    radial-gradient(circle, var(--border) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: 0 0;
+}
+
+[data-theme="light"] .bg-grid {
+  background-image:
+    radial-gradient(circle, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+}
+
 /* ── Reduced motion — root guard ── */
 @media (prefers-reduced-motion: reduce) {
   *,

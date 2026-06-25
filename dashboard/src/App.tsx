@@ -28,7 +28,7 @@ export default function App() {
   const entry = selected ? INDUSTRIES[selected] : null;
 
   return (
-    <div className="flex min-h-screen flex-col bg-bg text-text">
+    <div className="flex min-h-screen flex-col bg-bg bg-grid text-text">
       <Header
         theme={theme}
         onToggleTheme={toggle}
