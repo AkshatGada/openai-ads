@@ -156,8 +156,7 @@ export default function App() {
 
           <div className="mt-10 border-t border-border pt-6">
             <p className="font-mono text-[0.625rem] uppercase tracking-[0.12em] text-text-faint">
-              &copy; {new Date().getFullYear()} ChatGPT Ads Library. ChatGPT is
-              a trademark of OpenAI. Not affiliated with OpenAI.
+              &copy; {new Date().getFullYear()} ChatGPT Ads Library
             </p>
           </div>
         </div>
