@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import IndustrySearch from "@/components/IndustrySearch";
 import FloatingCreatives from "@/components/FloatingCreatives";
+import WaitlistForm from "@/components/WaitlistForm";
 import { suggestIndustries } from "@/lib/data";
 import type { IndustryEntry } from "@/lib/data";
 import { fadeUp, staggerParent, EASE_OUT, DUR } from "@/motion/transitions";
@@ -82,6 +83,28 @@ export default function HomePage() {
               </button>
             ))}
           </motion.div>
+        </motion.div>
+      </section>
+
+      {/* ── Waitlist CTA ── */}
+      <section
+        aria-label="Waitlist"
+        className="mx-auto w-full max-w-[1320px] px-6 py-16 md:px-10 md:py-20"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: DUR.base, ease: EASE_OUT }}
+          className="flex flex-col items-center gap-4 text-center"
+        >
+          <h2 className="font-sans text-lg font-semibold text-text md:text-xl">
+            Get early access to new industries
+          </h2>
+          <p className="max-w-md font-sans text-sm text-text-muted">
+            New advertiser data drops weekly. Be the first to know when your vertical goes live.
+          </p>
+          <WaitlistForm />
         </motion.div>
       </section>
 
