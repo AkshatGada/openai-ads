@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, Suspense } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useParams, useRouter } from "next/navigation";
 import ViewNav, { type ViewId } from "@/components/ViewNav";
@@ -97,7 +97,11 @@ export default function IndustryViewPage() {
             <AnimatePresence mode="wait">
               <motion.div key={currentView} variants={viewSwap} initial="hidden" animate="show" exit="exit">
                 {currentView === "advertisers" && <AdvertisersView data={state.data} />}
-                {currentView === "ads" && <AdsGalleryView data={state.data} />}
+                {currentView === "ads" && (
+                  <Suspense fallback={<div className="py-24 text-center font-sans text-sm text-text-faint">Loading…</div>}>
+                    <AdsGalleryView data={state.data} />
+                  </Suspense>
+                )}
                 {currentView === "prompts" && <PromptsView data={state.data} />}
               </motion.div>
             </AnimatePresence>
