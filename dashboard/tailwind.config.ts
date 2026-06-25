@@ -41,7 +41,7 @@ export default {
         dot: ['"Inter"', "system-ui", "-apple-system", "sans-serif"],
       },
       fontSize: {
-        display: ["2.125rem", { lineHeight: "1.1", letterSpacing: "-0.04em", fontWeight: "300" }],
+        display: ["2.125rem", { lineHeight: "1.1", letterSpacing: "-0.04em", fontWeight: "500" }],
         h1: ["1.375rem", { lineHeight: "1.2", letterSpacing: "-0.02em", fontWeight: "600" }],
         h2: ["1.0625rem", { lineHeight: "1.3", letterSpacing: "-0.01em", fontWeight: "600" }],
         h3: ["0.9375rem", { lineHeight: "1.4", fontWeight: "600" }],
@@ -49,7 +49,7 @@ export default {
         "body-sm": ["0.75rem", { lineHeight: "1.45", fontWeight: "400" }],
         label: ["0.6875rem", { lineHeight: "1.2", letterSpacing: "0.04em", fontWeight: "600" }],
         caption: ["0.6875rem", { lineHeight: "1.4", fontWeight: "400" }],
-        metric: ["1.75rem", { lineHeight: "1.0", letterSpacing: "-0.03em", fontWeight: "300" }],
+        metric: ["1.75rem", { lineHeight: "1.0", letterSpacing: "-0.03em", fontWeight: "500" }],
         hero: ["clamp(2.75rem, 6vw, 5.5rem)", { lineHeight: "1.05", letterSpacing: "-0.04em", fontWeight: "700" }],
         eyebrow: ["0.6875rem", { lineHeight: "1", letterSpacing: "0.2em" }],
       },

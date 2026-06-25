@@ -88,9 +88,10 @@ export default function AdsGalleryView({ data }: { data: IndustryData }) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.98 }}
               transition={{ duration: DUR.base, ease: EASE_OUT }}
-              className="fixed inset-x-4 bottom-8 z-50 mx-auto max-w-2xl rounded-2xl border border-border bg-surface shadow-2xl md:bottom-auto md:inset-y-8 md:my-auto md:overflow-y-auto"
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8"
             >
-              <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-surface px-6 py-4">
+              <div className="w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl border border-border bg-surface shadow-2xl">
+                <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-surface px-6 py-4">
                 <div>
                   <p className="font-sans text-[15px] font-semibold text-text">{selected.ad.advertiser}</p>
                   <p className="mt-0.5 font-sans text-xs text-text-faint">Ad creative details</p>
@@ -116,6 +117,7 @@ export default function AdsGalleryView({ data }: { data: IndustryData }) {
                   <p className="mb-2 font-sans text-[11px] font-medium tracking-wide text-text-faint">Triggering prompt</p>
                   <p className="font-sans text-[15px] leading-relaxed text-text">{selected.probe.prompt}</p>
                 </div>
+              </div>
               </div>
             </motion.div>
           </>

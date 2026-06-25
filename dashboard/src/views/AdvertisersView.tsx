@@ -43,7 +43,7 @@ export default function AdvertisersView({ data }: { data: IndustryData }) {
                   </span>
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className="tnum font-sans text-[28px] font-light text-text">{f.total_share}</span>
+                  <span className="tnum font-sans text-[28px] font-medium text-text">{f.total_share}</span>
                   <span className="font-sans text-[11px] tracking-wide text-text-faint">appearances</span>
                 </div>
                 <span className="font-sans text-xs text-text-faint transition-colors group-hover:text-accent">
