@@ -61,7 +61,7 @@ export default {
         caption: ["0.6875rem", { lineHeight: "1.4", fontWeight: "400" }],
         metric: ["1.75rem", { lineHeight: "1.0", letterSpacing: "-0.03em", fontWeight: "300" }],
         // Legacy hero size (kept for migration).
-        hero: ["clamp(2.5rem, 5.5vw, 5rem)", { lineHeight: "1.08" }],
+        hero: ["clamp(2.75rem, 6vw, 5.5rem)", { lineHeight: "1.05", letterSpacing: "-0.04em", fontWeight: "700" }],
         eyebrow: ["0.6875rem", { lineHeight: "1", letterSpacing: "0.2em" }],
       },
       borderRadius: {

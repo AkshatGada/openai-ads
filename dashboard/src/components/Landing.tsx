@@ -40,7 +40,7 @@ export default function Landing({
           {/* Headline */}
           <motion.h1
             variants={fadeUp}
-            className="text-center font-display text-5xl font-bold leading-[1.05] tracking-tighter2 text-text md:text-7xl"
+            className="text-center text-hero font-bold tracking-tighter2 text-text md:font-extrabold"
           >
             Who&apos;s advertising
             <br />
