@@ -1,0 +1,30 @@
+{
+  "name": "ChatGPT Ads Library",
+  "short_name": "ChatGPT Ads",
+  "description": "Discover which ads run inside ChatGPT — search by industry.",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#0f172a",
+  "background_color": "#0f172a",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='36' fill='%236366F1'/%3E%3Ctext x='96' y='128' text-anchor='middle' font-family='system-ui,sans-serif' font-weight='700' font-size='120' fill='white'%3EG%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%236366F1'/%3E%3Ctext x='256' y='342' text-anchor='middle' font-family='system-ui,sans-serif' font-weight='700' font-size='320' fill='white'%3EG%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='36' fill='white'/%3E%3Ctext x='96' y='128' text-anchor='middle' font-family='system-ui,sans-serif' font-weight='700' font-size='120' fill='black'%3EG%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
