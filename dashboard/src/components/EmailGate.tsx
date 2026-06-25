@@ -6,7 +6,7 @@ import { sendOtp, verifyOtp } from "@/app/actions";
 import { EASE_OUT, DUR } from "@/motion/transitions";
 
 const STORAGE_KEY = "gads-verified-email";
-const DELAY_MS = 10000; // 10 seconds
+const DELAY_MS = 10000;
 
 type Step = "email" | "otp" | "done";
 
@@ -27,7 +27,6 @@ export default function EmailGate() {
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
-  // Show gate after 10 seconds — but only once per session
   useEffect(() => {
     if (done) return;
     const alreadyShown = sessionStorage.getItem("gads-gate-seen");
@@ -100,7 +99,6 @@ export default function EmailGate() {
 
   const otpValid = otp.every((d) => d !== "") && otp.length === 6;
 
-  // Don't render anything if already verified
   if (done) return null;
 
   return (
@@ -111,12 +109,12 @@ export default function EmailGate() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: DUR.base, ease: EASE_OUT }}
+          transition={{ duration: DUR.slow, ease: EASE_OUT }}
         >
           {/* Backdrop */}
           <motion.div
-            className="absolute inset-0 bg-bg/85"
-            style={{ backdropFilter: "blur(16px)" }}
+            className="absolute inset-0 bg-bg/88"
+            style={{ backdropFilter: "blur(24px) saturate(0.5)" }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -124,32 +122,42 @@ export default function EmailGate() {
 
           {/* Modal */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            initial={{ opacity: 0, scale: 0.98, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ duration: DUR.base, ease: EASE_OUT }}
-            className="relative z-10 w-full max-w-md overflow-hidden rounded-xl border border-border bg-surface shadow-2xl"
+            exit={{ opacity: 0, scale: 0.98, y: 16 }}
+            transition={{ duration: DUR.slow, ease: EASE_OUT }}
+            className="relative z-10 w-full max-w-[400px] overflow-hidden rounded-2xl border border-border bg-surface shadow-card-hover"
           >
             <AnimatePresence mode="wait">
+              {/* ── Email step ── */}
               {step === "email" && (
                 <motion.div
                   key="email"
-                  initial={{ opacity: 0, x: 20 }}
+                  initial={{ opacity: 0, x: 16 }}
                   animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
+                  exit={{ opacity: 0, x: -16 }}
                   transition={{ duration: DUR.fast }}
                   className="p-8"
                 >
-                  <h2 className="mb-2 font-sans text-lg font-semibold text-text">
+                  {/* Icon */}
+                  <div className="mb-5 grid h-10 w-10 place-items-center rounded-xl bg-accent-soft">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-accent">
+                      <rect width="20" height="16" x="2" y="4" rx="2"/>
+                      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                    </svg>
+                  </div>
+
+                  <h2 className="mb-1.5 font-sans text-[17px] font-semibold tracking-tight text-text">
                     Unlock full access
                   </h2>
-                  <p className="mb-6 font-sans text-sm text-text-muted">
-                    Enter your email to access the complete ad-intelligence dashboard. No spam, ever.
+                  <p className="mb-7 font-sans text-[13px] leading-relaxed text-text-muted">
+                    Enter your email to browse the complete ad intelligence library. No spam.
                   </p>
-                  <form
-                    action={handleSendOtp}
-                    className="flex flex-col gap-3"
-                  >
+
+                  <form action={handleSendOtp}>
+                    <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.1em] text-text-faint">
+                      Work email
+                    </label>
                     <input
                       type="email"
                       value={email}
@@ -157,51 +165,70 @@ export default function EmailGate() {
                       placeholder="you@company.com"
                       required
                       autoFocus
-                      className="rounded-lg border border-border bg-surface-2 px-4 py-3 font-sans text-sm text-text caret-accent outline-none placeholder:text-text-faint focus:border-accent"
+                      className="w-full rounded-lg border border-border bg-surface-2 px-3.5 py-2.5 font-sans text-[14px] text-text caret-accent outline-none ring-0 placeholder:text-text-faint transition-all duration-200 focus:border-accent focus:bg-surface-2"
                     />
                     <button
                       type="submit"
                       disabled={loading || !email}
-                      className="rounded-lg bg-accent px-4 py-3 font-sans text-sm font-semibold text-accent-fg transition-opacity hover:opacity-90 disabled:opacity-50"
+                      className="mt-3 w-full rounded-lg bg-accent px-4 py-2.5 font-sans text-[14px] font-medium text-accent-fg transition-all duration-200 hover:bg-accent-hover disabled:opacity-40"
                     >
                       {loading ? "Sending code…" : "Continue"}
                     </button>
                   </form>
+
                   {error && (
-                    <p className="mt-3 font-mono text-xs text-status-negative">{error}</p>
+                    <p className="mt-3 font-mono text-[11px] text-status-negative">{error}</p>
                   )}
-                  <button
-                    onClick={() => setVisible(false)}
-                    className="mt-4 w-full text-center font-sans text-xs text-text-faint transition-colors hover:text-text-muted"
-                  >
-                    Maybe later
-                  </button>
+
+                  <div className="mt-5 pt-5 border-t border-border">
+                    <button
+                      onClick={() => setVisible(false)}
+                      className="w-full text-center font-sans text-[12px] text-text-faint transition-colors hover:text-text-muted"
+                    >
+                      Skip for now
+                    </button>
+                  </div>
                 </motion.div>
               )}
 
+              {/* ── OTP step ── */}
               {step === "otp" && (
                 <motion.div
                   key="otp"
-                  initial={{ opacity: 0, x: 20 }}
+                  initial={{ opacity: 0, x: 16 }}
                   animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
+                  exit={{ opacity: 0, x: -16 }}
                   transition={{ duration: DUR.fast }}
                   className="p-8"
                 >
-                  <h2 className="mb-1 font-sans text-lg font-semibold text-text">
+                  {/* Icon */}
+                  <div className="mb-5 grid h-10 w-10 place-items-center rounded-xl bg-accent-soft">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-accent">
+                      <rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                  </div>
+
+                  <h2 className="mb-1 font-sans text-[17px] font-semibold tracking-tight text-text">
                     Check your inbox
                   </h2>
-                  <p className="mb-1 font-sans text-sm text-text-muted">
-                    We sent a code to <strong className="text-text">{email}</strong>
+                  <p className="mb-1 font-sans text-[13px] leading-relaxed text-text-muted">
+                    We sent a verification code to
                   </p>
+                  <p className="mb-5 font-sans text-[13px] font-medium text-text">{email}</p>
+
                   {mockOtp && (
-                    <p className="mb-5 font-mono text-xs text-accent">
-                      Mock mode — use code: <strong>{mockOtp}</strong>
-                    </p>
+                    <div className="mb-5 rounded-lg border border-accent/20 bg-accent-soft px-3 py-2">
+                      <p className="font-mono text-[11px] text-accent">
+                        Mock mode — use code <strong>{mockOtp}</strong>
+                      </p>
+                    </div>
                   )}
 
                   <form action={handleVerify}>
-                    <div className="flex justify-center gap-2" onPaste={handleOtpPaste}>
+                    <label className="mb-2 block font-mono text-[10px] uppercase tracking-[0.1em] text-text-faint">
+                      Verification code
+                    </label>
+                    <div className="flex justify-center gap-2.5" onPaste={handleOtpPaste}>
                       {otp.map((digit, i) => (
                         <input
                           key={i}
@@ -212,43 +239,54 @@ export default function EmailGate() {
                           maxLength={1}
                           inputMode="numeric"
                           autoFocus={i === 0}
-                          className="h-12 w-12 rounded-lg border border-border bg-surface-2 text-center font-mono text-lg text-text caret-accent outline-none focus:border-accent"
+                          className="h-[52px] w-[44px] rounded-lg border border-border bg-surface-2 text-center font-mono text-[18px] font-medium text-text caret-accent outline-none transition-all duration-200 focus:border-accent focus:ring-2 focus:ring-accent-soft"
                         />
                       ))}
                     </div>
                     <button
                       type="submit"
                       disabled={loading || !otpValid}
-                      className="mt-4 w-full rounded-lg bg-accent py-3 font-sans text-sm font-semibold text-accent-fg transition-opacity hover:opacity-90 disabled:opacity-50"
+                      className="mt-4 w-full rounded-lg bg-accent px-4 py-2.5 font-sans text-[14px] font-medium text-accent-fg transition-all duration-200 hover:bg-accent-hover disabled:opacity-40"
                     >
                       {loading ? "Verifying…" : "Verify"}
                     </button>
                   </form>
+
                   {error && (
-                    <p className="mt-3 font-mono text-xs text-status-negative">{error}</p>
+                    <p className="mt-3 font-mono text-[11px] text-status-negative">{error}</p>
                   )}
-                  <button
-                    onClick={() => { setStep("email"); setError(""); setOtp(["", "", "", "", "", ""]); }}
-                    className="mt-4 w-full text-center font-sans text-xs text-text-faint transition-colors hover:text-text-muted"
-                  >
-                    Use a different email
-                  </button>
+
+                  <div className="mt-5 pt-5 border-t border-border space-y-2">
+                    <button
+                      onClick={() => { setStep("email"); setError(""); setOtp(["", "", "", "", "", ""]); }}
+                      className="w-full text-center font-sans text-[12px] text-text-faint transition-colors hover:text-text-muted"
+                    >
+                      Change email
+                    </button>
+                  </div>
                 </motion.div>
               )}
 
+              {/* ── Done step ── */}
               {step === "done" && (
                 <motion.div
                   key="done"
-                  initial={{ opacity: 0, scale: 0.96 }}
+                  initial={{ opacity: 0, scale: 0.97 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: DUR.base, ease: EASE_OUT }}
-                  className="flex flex-col items-center gap-2 p-8 text-center"
+                  className="flex flex-col items-center p-8 text-center"
                 >
-                  <div className="grid h-12 w-12 place-items-center rounded-full bg-accent-soft">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-accent"><path d="M20 6 9 17l-5-5"/></svg>
+                  <div className="mb-5 grid h-12 w-12 place-items-center rounded-full bg-accent">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-accent-fg">
+                      <path d="M20 6 9 17l-5-5"/>
+                    </svg>
                   </div>
-                  <p className="font-sans text-sm font-semibold text-text">You&apos;re in</p>
-                  <p className="font-sans text-xs text-text-muted">Redirecting…</p>
+                  <p className="font-sans text-[17px] font-semibold tracking-tight text-text">
+                    You&apos;re in
+                  </p>
+                  <p className="mt-1 font-sans text-[13px] text-text-muted">
+                    Loading your dashboard…
+                  </p>
                 </motion.div>
               )}
             </AnimatePresence>
