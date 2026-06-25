@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://chatgpt-ad-library.vercel.app/sitemap.xml

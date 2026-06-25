@@ -28,10 +28,11 @@ export default function App() {
   const entry = selected ? INDUSTRIES[selected] : null;
 
   return (
-    <div className="min-h-screen bg-bg text-text">
+    <div className="flex min-h-screen flex-col bg-bg text-text">
       <Header
         theme={theme}
         onToggleTheme={toggle}
+        onHome={handleBack}
         breadcrumb={
           entry && (
             <button
@@ -64,6 +65,103 @@ export default function App() {
           <Landing key="landing" onSelect={handleSelect} />
         )}
       </AnimatePresence>
+
+      {/* ── Footer ── */}
+      <footer className="mt-auto border-t border-border bg-surface/30">
+        <div className="mx-auto max-w-[1320px] px-6 py-10 md:px-10">
+          <div className="flex flex-col gap-8 md:flex-row md:justify-between">
+            {/* Brand */}
+            <div className="max-w-xs">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="grid h-7 w-7 place-items-center rounded-md bg-accent font-mono text-sm font-bold text-accent-fg">
+                  G
+                </span>
+                <span className="font-display text-sm font-semibold tracking-tight text-text">
+                  ChatGPT Ads Library
+                </span>
+              </div>
+              <p className="font-sans text-xs leading-relaxed text-text-faint">
+                The first public database of ChatGPT ads. Browse advertisers,
+                creatives, and context hints by industry. Free competitive
+                intelligence for OpenAI advertising.
+              </p>
+            </div>
+
+            {/* Links */}
+            <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+              <div>
+                <h4 className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-text-muted">
+                  Industries
+                </h4>
+                <ul className="space-y-2">
+                  <li>
+                    <a
+                      href="?industry=real-estate"
+                      className="font-sans text-xs text-text-faint transition-colors hover:text-text"
+                    >
+                      Real Estate Ads
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="?industry=oms"
+                      className="font-sans text-xs text-text-faint transition-colors hover:text-text"
+                    >
+                      Fintech &amp; Payments
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-text-muted">
+                  Resources
+                </h4>
+                <ul className="space-y-2">
+                  <li>
+                    <a
+                      href="https://github.com/AkshatGada/openai-ads"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-sans text-xs text-text-faint transition-colors hover:text-text"
+                    >
+                      GitHub
+                    </a>
+                  </li>
+                  <li>
+                    <span className="font-sans text-xs text-text-faint">
+                      API (coming soon)
+                    </span>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-text-muted">
+                  About
+                </h4>
+                <ul className="space-y-2">
+                  <li>
+                    <span className="font-sans text-xs text-text-faint">
+                      Privacy
+                    </span>
+                  </li>
+                  <li>
+                    <span className="font-sans text-xs text-text-faint">
+                      Terms
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-10 border-t border-border pt-6">
+            <p className="font-mono text-[0.625rem] uppercase tracking-[0.12em] text-text-faint">
+              &copy; {new Date().getFullYear()} ChatGPT Ads Library. ChatGPT is
+              a trademark of OpenAI. Not affiliated with OpenAI.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
@@ -84,7 +182,7 @@ function IndustryView({
       <main className="mx-auto flex max-w-[1320px] flex-col items-center px-6 py-24 md:px-10">
         <div className="flex items-center gap-3 font-mono text-sm text-text-faint">
           <span className="h-2 w-2 animate-pulse rounded-full bg-accent" />
-          Loading…
+          Loading&hellip;
         </div>
       </main>
     );
@@ -93,7 +191,9 @@ function IndustryView({
   if (dataState.status === "error") {
     return (
       <main className="mx-auto max-w-[1320px] px-6 py-24 md:px-10">
-        <p className="font-mono text-sm text-status-negative">Load failed: {dataState.message}</p>
+        <p className="font-mono text-sm text-status-negative">
+          Load failed: {dataState.message}
+        </p>
       </main>
     );
   }
@@ -113,7 +213,13 @@ function IndustryView({
 
       <main className="mx-auto max-w-[1320px] px-6 py-6 md:px-10">
         <AnimatePresence mode="wait">
-          <motion.div key={view} variants={viewSwap} initial="hidden" animate="show" exit="exit">
+          <motion.div
+            key={view}
+            variants={viewSwap}
+            initial="hidden"
+            animate="show"
+            exit="exit"
+          >
             {view === "advertisers" && <AdvertisersView data={data} />}
             {view === "ads" && <AdsGalleryView data={data} />}
             {view === "prompts" && <PromptsView data={data} />}

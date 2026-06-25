@@ -3,8 +3,6 @@ import type { Theme } from "../lib/theme";
 import { EASE_OUT, DUR } from "../motion/transitions";
 
 // ── Theme toggle button ────────────────────────────────────────
-// Circle reveal via View Transitions API when supported, falls back
-// to instant toggle otherwise.
 function ThemeToggle({ theme, onToggle }: { theme: Theme; onToggle: () => void }) {
   const handleToggle = () => {
     if (typeof document !== "undefined" && (document as any).startViewTransition) {
@@ -36,28 +34,40 @@ function ThemeToggle({ theme, onToggle }: { theme: Theme; onToggle: () => void }
 }
 
 // ── Header ─────────────────────────────────────────────────────
-// Persistent top bar. Logo + wordmark on the left, breadcrumb slot
-// in the center, ⌘K hint + theme toggle on the right.
 export interface HeaderProps {
   theme: Theme;
   onToggleTheme: () => void;
   breadcrumb?: React.ReactNode;
   onCommandPalette?: () => void;
+  onHome?: () => void;
 }
 
-export default function Header({ theme, onToggleTheme, breadcrumb, onCommandPalette }: HeaderProps) {
+export default function Header({
+  theme,
+  onToggleTheme,
+  breadcrumb,
+  onCommandPalette,
+  onHome,
+}: HeaderProps) {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-bg/85 backdrop-blur-md">
       <div className="mx-auto flex max-w-[1320px] items-center gap-6 px-6 py-3 md:px-10">
         {/* ── Logo + wordmark ── */}
-        <div className="flex items-center gap-2.5">
+        <button
+          onClick={onHome}
+          aria-label="Go to ChatGPT Ads Library home"
+          className={`flex items-center gap-2.5 transition-opacity duration-150 ${
+            onHome ? "cursor-pointer hover:opacity-80" : "cursor-default"
+          }`}
+          title="ChatGPT Ads Library — Home"
+        >
           <span className="grid h-7 w-7 place-items-center rounded-md bg-accent font-mono text-sm font-bold text-accent-fg">
             G
           </span>
           <span className="font-display text-sm font-semibold tracking-tight text-text">
             ChatGPT Ads Library
           </span>
-        </div>
+        </button>
 
         {/* ── Breadcrumb (optional, center-left) ── */}
         {breadcrumb && (
