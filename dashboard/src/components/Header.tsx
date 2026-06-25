@@ -55,7 +55,7 @@ export default function Header({ theme, onToggleTheme, breadcrumb, onCommandPale
             G
           </span>
           <span className="font-display text-sm font-semibold tracking-tight text-text">
-            GPT Ads Library
+            ChatGPT Ads Library
           </span>
         </div>
 

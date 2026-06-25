@@ -56,7 +56,7 @@ export default function Dashboard({
 
       <footer className="mx-auto max-w-[1320px] border-t border-ink-200 px-6 py-8 md:px-12">
         <p className="font-mono text-[0.625rem] uppercase tracking-[0.12em] text-ink-400">
-          GPT Ads Library · {data.patterns.total_probes} probes · generated{" "}
+          ChatGPT Ads Library · {data.patterns.total_probes} probes · generated{" "}
           {new Date(data.patterns.generated_at).toISOString().slice(0, 10)}
         </p>
       </footer>

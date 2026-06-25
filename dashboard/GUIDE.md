@@ -1,4 +1,4 @@
-# GPT Ads Library — Guide for Forks
+# ChatGPT Ads Library — Guide for Forks
 
 This dashboard shows which companies are running ads inside ChatGPT, for any industry you probe. It's a self-contained React frontend that reads JSON data files. No backend, no database.
 
