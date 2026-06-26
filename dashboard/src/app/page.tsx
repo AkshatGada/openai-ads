@@ -114,6 +114,7 @@ export default function HomePage() {
 function DataShowcase() {
   const [oms, setOms] = useState<IndustryData | null>(null);
   const [enterprise, setEnterprise] = useState<IndustryData | null>(null);
+  const [realEstate, setRealEstate] = useState<IndustryData | null>(null);
 
   useEffect(() => {
     fetch("/api/industries/oms")
@@ -124,9 +125,13 @@ function DataShowcase() {
       .then((r) => r.json())
       .then(setEnterprise)
       .catch(() => {});
+    fetch("/api/industries/real-estate")
+      .then((r) => r.json())
+      .then(setRealEstate)
+      .catch(() => {});
   }, []);
 
-  const allProbes = [...(oms?.probes ?? []), ...(enterprise?.probes ?? [])];
+  const allProbes = [...(oms?.probes ?? []), ...(enterprise?.probes ?? []), ...(realEstate?.probes ?? [])];
   const advertiserMap = new Map<string, number>();
   for (const p of allProbes) {
     for (const ad of p.ads) {
@@ -275,7 +280,7 @@ function DataShowcase() {
       </section>
 
       {/* ── Industry breakdown ── */}
-      <IndustryBreakdown oms={oms} enterprise={enterprise} />
+      <IndustryBreakdown oms={oms} enterprise={enterprise} realEstate={realEstate} />
 
       {/* ── How it works ── */}
       <section className="border-t border-border">
@@ -350,9 +355,11 @@ function DataShowcase() {
 function IndustryBreakdown({
   oms,
   enterprise,
+  realEstate,
 }: {
   oms: IndustryData | null;
   enterprise: IndustryData | null;
+  realEstate: IndustryData | null;
 }) {
   const industries = [
     {
@@ -370,6 +377,16 @@ function IndustryBreakdown({
       slug: "enterprise",
       advertisers: enterprise?.patterns?.advertisers?.length ?? 0,
       topAdvertisers: (enterprise?.patterns?.competitor_frequency ?? [])
+        .filter((c) => c.paid_impressions > 0)
+        .sort((a, b) => b.paid_impressions - a.paid_impressions)
+        .slice(0, 3)
+        .map((c) => ({ name: c.company, count: c.paid_impressions })),
+    },
+    {
+      name: "Real Estate",
+      slug: "real-estate",
+      advertisers: realEstate?.patterns?.advertisers?.length ?? 0,
+      topAdvertisers: (realEstate?.patterns?.competitor_frequency ?? [])
         .filter((c) => c.paid_impressions > 0)
         .sort((a, b) => b.paid_impressions - a.paid_impressions)
         .slice(0, 3)

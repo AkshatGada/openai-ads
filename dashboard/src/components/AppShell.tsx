@@ -67,8 +67,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </h4>
                 <ul className="space-y-2">
                   <li>
-                    <a href="/enterprise/advertisers" className="font-sans text-xs text-text-faint transition-colors hover:text-text">
-                      Enterprise &amp; Fintech
+                    <a href="/real-estate/advertisers" className="font-sans text-xs text-text-faint transition-colors hover:text-text">
+                      Real Estate Ads
                     </a>
                   </li>
                   <li>

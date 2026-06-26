@@ -1,6 +1,6 @@
 import type { IndustryData, PatternSummary, ProbeRecordV2 } from "@/lib/types";
 
-export type IndustryId = "oms" | "enterprise";
+export type IndustryId = "oms" | "enterprise" | "real-estate";
 
 export interface IndustryEntry {
   id: IndustryId;
@@ -19,6 +19,11 @@ const INDUSTRY_META: Record<IndustryId, Omit<IndustryEntry, "id">> = {
     label: "Enterprise & Fintech",
     tagline: "321 probes · 64 advertisers · live data",
     aliases: ["enterprise", "fintech", "privacy", "security", "compliance", "saas", "b2b", "cybersecurity", "payments"],
+  },
+  "real-estate": {
+    label: "Real Estate",
+    tagline: "334 probes · 60 advertisers · live data",
+    aliases: ["real estate", "realty", "property", "homes", "housing", "mortgage", "realtor"],
   },
 };
 
@@ -49,6 +54,16 @@ export async function getIndustryData(id: string): Promise<IndustryData | null> 
       const [patternsMod, probesMod] = await Promise.all([
         import("@/data/enterprise-patterns.json"),
         import("@/data/enterprise-probes.json"),
+      ]);
+      return {
+        patterns: patternsMod.default as unknown as PatternSummary,
+        probes: probesMod.default as unknown as ProbeRecordV2[],
+      };
+    }
+    case "real-estate": {
+      const [patternsMod, probesMod] = await Promise.all([
+        import("@/data/real-estate-patterns.json"),
+        import("@/data/real-estate-probes.json"),
       ]);
       return {
         patterns: patternsMod.default as unknown as PatternSummary,
