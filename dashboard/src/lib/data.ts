@@ -17,7 +17,7 @@ const INDUSTRY_META: Record<IndustryId, Omit<IndustryEntry, "id">> = {
   },
   "real-estate": {
     label: "Real Estate",
-    tagline: "655 probes · 116 advertisers · live data",
+    tagline: "334 probes · 60 advertisers · live data",
     aliases: ["real estate", "realty", "property", "homes", "housing", "mortgage", "realtor"],
   },
 };

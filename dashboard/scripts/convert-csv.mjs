@@ -82,11 +82,10 @@ function buildPatterns(probes) {
 }
 
 // ── Main ──
-const csv1 = readCsv("/Users/akshat/Downloads/chatgpt-ads-advertisers.csv");
-const csv2 = readCsv("/Users/akshat/Downloads/chatgpt-ads-advertisers-sobha real estate modular.csv");
-const allRows = [...csv1, ...csv2];
+// Only use the actual real estate CSV (sobha)
+const allRows = readCsv("/Users/akshat/Downloads/chatgpt-ads-advertisers-sobha real estate modular.csv");
 
-console.log(`CSV1: ${csv1.length} rows, CSV2: ${csv2.length} rows, Total: ${allRows.length}`);
+console.log(`CSV: ${allRows.length} rows`);
 
 const probes = generateProbes(allRows);
 const patterns = buildPatterns(probes);
