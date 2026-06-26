@@ -43,14 +43,6 @@ export default function HomePage() {
           animate="show"
           className="relative z-10 -mt-12 flex w-full max-w-3xl flex-col items-center gap-6"
         >
-          {/* Eyebrow */}
-          <motion.div
-            variants={fadeUp}
-            className="font-sans text-[11px] font-medium uppercase tracking-[0.12em] text-accent"
-          >
-            ChatGPT Ads Library
-          </motion.div>
-
           {/* Headline */}
           <motion.h1
             variants={fadeUp}
