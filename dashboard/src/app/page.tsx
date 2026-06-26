@@ -382,7 +382,11 @@ function IndustryBreakdown({
       probes: oms?.probes?.length ?? 0,
       ads: oms?.probes?.reduce((s, p) => s + p.ads.length, 0) ?? 0,
       advertisers: oms?.patterns?.advertisers?.length ?? 0,
-      tagline: "Crypto exchanges, payment APIs, fintech infrastructure",
+      topAdvertisers: (oms?.patterns?.competitor_frequency ?? [])
+        .filter((c) => c.paid_impressions > 0)
+        .sort((a, b) => b.paid_impressions - a.paid_impressions)
+        .slice(0, 3)
+        .map((c) => ({ name: c.company, count: c.paid_impressions })),
     },
     {
       name: "Real Estate",
@@ -390,7 +394,11 @@ function IndustryBreakdown({
       probes: realEstate?.probes?.length ?? 0,
       ads: realEstate?.probes?.reduce((s, p) => s + p.ads.length, 0) ?? 0,
       advertisers: realEstate?.patterns?.advertisers?.length ?? 0,
-      tagline: "Property listings, mortgage providers, real estate SaaS",
+      topAdvertisers: (realEstate?.patterns?.competitor_frequency ?? [])
+        .filter((c) => c.paid_impressions > 0)
+        .sort((a, b) => b.paid_impressions - a.paid_impressions)
+        .slice(0, 3)
+        .map((c) => ({ name: c.company, count: c.paid_impressions })),
     },
   ];
 
@@ -410,60 +418,85 @@ function IndustryBreakdown({
               By industry
             </p>
             <h2 className="font-sans text-2xl font-semibold text-text md:text-3xl">
-              Which industries run the most ads
+              Which industries buy sponsored ads
             </h2>
             <p className="mt-2 font-sans text-sm text-text-muted">
-              Industries we track, ranked by ad volume from {totalProbes.toLocaleString()} analyzed prompts.
+              Industries tracked, ranked by ad volume across {totalProbes.toLocaleString()} analyzed prompts.
             </p>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="overflow-hidden rounded-xl border border-border">
+            <div className="hidden md:grid md:grid-cols-12 gap-4 border-b border-border bg-surface-2 px-6 py-3">
+              <span className="col-span-4 font-sans text-[11px] font-medium uppercase tracking-[0.08em] text-text-faint">Industry</span>
+              <span className="col-span-2 font-sans text-[11px] font-medium uppercase tracking-[0.08em] text-text-faint text-right">Ads</span>
+              <span className="col-span-2 font-sans text-[11px] font-medium uppercase tracking-[0.08em] text-text-faint text-right">Share</span>
+              <span className="col-span-4 font-sans text-[11px] font-medium uppercase tracking-[0.08em] text-text-faint">Top advertisers</span>
+            </div>
+
             {industries.map((ind, i) => (
               <motion.a
                 key={ind.slug}
                 href={`/${ind.slug}/advertisers`}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, ease: EASE_OUT, delay: i * 0.08 }}
-                className="group rounded-xl border border-border bg-surface p-6 transition-all duration-200 hover:border-border-strong hover:bg-surface-2"
+                transition={{ duration: 0.3, delay: i * 0.06 }}
+                className="group grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 items-center border-b border-border px-6 py-5 last:border-b-0 transition-colors hover:bg-surface-2"
               >
-                <div className="mb-4 flex items-center justify-between">
-                  <h3 className="font-sans text-[15px] font-semibold text-text group-hover:text-accent transition-colors">
-                    {ind.name}
-                  </h3>
-                  <span className="tnum font-sans text-[13px] text-text-faint">
-                    {ind.ads} ads
-                  </span>
-                </div>
-
-                <div className="mb-3 relative h-2 overflow-hidden rounded-full bg-border">
-                  <motion.div
-                    className="absolute inset-y-0 left-0 rounded-full bg-accent"
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${(ind.ads / maxAds) * 100}%` }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.7, ease: EASE_OUT, delay: i * 0.08 + 0.3 }}
-                  />
-                </div>
-
-                <div className="flex items-center gap-6">
-                  <span className="tnum font-sans text-[28px] font-medium tracking-tight text-text">
-                    {ind.probes}
-                  </span>
-                  <span className="font-sans text-[13px] text-text-muted leading-tight">
-                    prompts<br />analyzed
-                  </span>
-                  <div className="ml-auto flex items-center gap-3">
-                    <span className="tnum font-sans text-sm text-text-faint">
-                      {ind.advertisers} advertisers
+                {/* Industry name */}
+                <div className="md:col-span-4 flex items-center gap-3">
+                  <span className="tnum font-sans text-xs text-text-faint w-5">{i + 1}</span>
+                  <div>
+                    <span className="font-sans text-sm font-medium text-text group-hover:text-accent transition-colors">
+                      {ind.name}
                     </span>
                   </div>
                 </div>
 
-                <p className="mt-3 font-sans text-xs text-text-faint">{ind.tagline}</p>
+                {/* Ads count */}
+                <div className="md:col-span-2 flex items-center md:justify-end gap-3">
+                  <span className="tnum font-sans text-sm text-text">{ind.ads}</span>
+                  <div className="hidden md:block relative h-1.5 w-20 overflow-hidden rounded-full bg-border">
+                    <motion.div
+                      className="absolute inset-y-0 left-0 rounded-full bg-accent"
+                      initial={{ width: 0 }}
+                      whileInView={{ width: `${(ind.ads / maxAds) * 100}%` }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.7, ease: EASE_OUT, delay: i * 0.06 + 0.3 }}
+                    />
+                  </div>
+                </div>
+
+                {/* Share % */}
+                <div className="md:col-span-2 flex items-center md:justify-end gap-2">
+                  <span className="tnum font-sans text-sm text-text-muted">
+                    {ind.probes > 0 ? ((ind.ads / ind.probes) * 100).toFixed(1) : "—"}%
+                  </span>
+                  <span className="font-sans text-xs text-text-faint">of prompts</span>
+                </div>
+
+                {/* Top advertisers */}
+                <div className="md:col-span-4 flex flex-wrap items-center gap-2">
+                  {ind.topAdvertisers?.map((a) => (
+                    <span key={a.name} className="rounded-md border border-border bg-surface-2 px-2 py-1 font-sans text-[12px] text-text-muted">
+                      {a.name}
+                    </span>
+                  ))}
+                  {ind.advertisers > 3 && (
+                    <span className="font-sans text-xs text-text-faint">
+                      +{ind.advertisers - 3} more
+                    </span>
+                  )}
+                </div>
               </motion.a>
             ))}
+          </div>
+
+          {/* Bottom summary */}
+          <div className="mt-6 flex flex-wrap items-center gap-6">
+            <span className="tnum font-sans text-sm text-text-faint">
+              {industries.length} industries · {industries.reduce((s, i) => s + i.ads, 0)} total ads · {industries.reduce((s, i) => s + i.probes, 0)} prompts
+            </span>
           </div>
         </motion.div>
       </div>
