@@ -1,496 +1,1166 @@
 {
-  "generated_at": "2026-06-19T00:00:00.000Z",
-  "total_probes": 33,
-  "total_success": 33,
-  "total_failed": 0,
-  "total_ads": 19,
-  "ad_rate_pct": 45.5,
-  "ad_density_by_persona": [
-    {
-      "persona": "first_time_buyer",
-      "probes": 13,
-      "ads": 9,
-      "rate": 69.2,
-      "competition": "high"
-    },
-    {
-      "persona": "relocating_family",
-      "probes": 6,
-      "ads": 4,
-      "rate": 66.7,
-      "competition": "high"
-    },
-    {
-      "persona": "agent_broker",
-      "probes": 3,
-      "ads": 2,
-      "rate": 66.7,
-      "competition": "high"
-    },
-    {
-      "persona": "real_estate_investor",
-      "probes": 8,
-      "ads": 0,
-      "rate": 0,
-      "competition": "none"
-    },
-    {
-      "persona": "commercial_developer",
-      "probes": 3,
-      "ads": 0,
-      "rate": 0,
-      "competition": "none"
-    }
-  ],
-  "ad_density_by_need": [
-    {
-      "need": "mortgage",
-      "probes": 3,
-      "ads": 3,
-      "rate": 100,
-      "competition": "high"
-    },
-    {
-      "need": "sell_home",
-      "probes": 3,
-      "ads": 3,
-      "rate": 100,
-      "competition": "high"
-    },
-    {
-      "need": "home_valuation",
-      "probes": 2,
-      "ads": 2,
-      "rate": 100,
-      "competition": "high"
-    },
-    {
-      "need": "find_agent",
-      "probes": 4,
-      "ads": 3,
-      "rate": 75,
-      "competition": "high"
-    },
-    {
-      "need": "rental",
-      "probes": 2,
-      "ads": 1,
-      "rate": 50,
-      "competition": "high"
-    },
-    {
-      "need": "buy_home",
-      "probes": 8,
-      "ads": 3,
-      "rate": 37.5,
-      "competition": "medium"
-    },
-    {
-      "need": "investment_analysis",
-      "probes": 11,
-      "ads": 0,
-      "rate": 0,
-      "competition": "none"
-    }
-  ],
-  "ad_density_by_structure": [
-    {
-      "structure": "question",
-      "probes": 25,
-      "ads": 12,
-      "rate": 48
-    },
-    {
-      "structure": "comparison",
-      "probes": 4,
-      "ads": 3,
-      "rate": 75
-    },
-    {
-      "structure": "need_statement",
-      "probes": 4,
-      "ads": 0,
-      "rate": 0
-    }
-  ],
   "competitor_frequency": [
     {
-      "company": "Zillow",
-      "organic_mentions": 5,
-      "paid_impressions": 4,
-      "total_share": 9
+      "company": "Mastercard",
+      "total_share": 82,
+      "paid_impressions": 82
     },
     {
-      "company": "Rocket Mortgage",
-      "organic_mentions": 3,
-      "paid_impressions": 3,
-      "total_share": 6
+      "company": "Bath Fitter",
+      "total_share": 65,
+      "paid_impressions": 65
     },
     {
-      "company": "Opendoor",
-      "organic_mentions": 3,
-      "paid_impressions": 3,
-      "total_share": 6
+      "company": "Fiverr",
+      "total_share": 44,
+      "paid_impressions": 44
     },
     {
-      "company": "Redfin",
-      "organic_mentions": 3,
-      "paid_impressions": 3,
-      "total_share": 6
+      "company": "Aikido Security",
+      "total_share": 39,
+      "paid_impressions": 39
     },
     {
-      "company": "HomeLight",
-      "organic_mentions": 2,
-      "paid_impressions": 2,
-      "total_share": 4
+      "company": "Thoropass, Inc",
+      "total_share": 28,
+      "paid_impressions": 28
+    },
+    {
+      "company": "Modernize",
+      "total_share": 27,
+      "paid_impressions": 27
+    },
+    {
+      "company": "Gerdau Ameristeel Inc.",
+      "total_share": 25,
+      "paid_impressions": 25
+    },
+    {
+      "company": "SAP",
+      "total_share": 24,
+      "paid_impressions": 24
+    },
+    {
+      "company": "McNICHOLS CO.",
+      "total_share": 22,
+      "paid_impressions": 22
+    },
+    {
+      "company": "Panes Window Manufacturing Inc.",
+      "total_share": 19,
+      "paid_impressions": 19
+    },
+    {
+      "company": "RingCentral",
+      "total_share": 15,
+      "paid_impressions": 15
+    },
+    {
+      "company": "Metal America",
+      "total_share": 15,
+      "paid_impressions": 15
+    },
+    {
+      "company": "Intuit Quickbooks",
+      "total_share": 14,
+      "paid_impressions": 14
+    },
+    {
+      "company": "Monday.com",
+      "total_share": 11,
+      "paid_impressions": 11
+    },
+    {
+      "company": "Toptal",
+      "total_share": 10,
+      "paid_impressions": 10
+    },
+    {
+      "company": "GLOBAL DATA INTELLIGENCE LIMITED",
+      "total_share": 8,
+      "paid_impressions": 8
+    },
+    {
+      "company": "Superblocks",
+      "total_share": 8,
+      "paid_impressions": 8
+    },
+    {
+      "company": "Salesforce",
+      "total_share": 8,
+      "paid_impressions": 8
+    },
+    {
+      "company": "Buildertrend",
+      "total_share": 8,
+      "paid_impressions": 8
+    },
+    {
+      "company": "DenSwap",
+      "total_share": 8,
+      "paid_impressions": 8
+    },
+    {
+      "company": "Black Duck",
+      "total_share": 7,
+      "paid_impressions": 7
+    },
+    {
+      "company": "Cloudflare",
+      "total_share": 6,
+      "paid_impressions": 6
+    },
+    {
+      "company": "Partition Stalls",
+      "total_share": 6,
+      "paid_impressions": 6
+    },
+    {
+      "company": "Appfolio",
+      "total_share": 6,
+      "paid_impressions": 6
+    },
+    {
+      "company": "BestMoney",
+      "total_share": 5,
+      "paid_impressions": 5
+    },
+    {
+      "company": "Angi",
+      "total_share": 5,
+      "paid_impressions": 5
+    },
+    {
+      "company": "Nana Wall Systems, Inc",
+      "total_share": 5,
+      "paid_impressions": 5
+    },
+    {
+      "company": "Thumbtack",
+      "total_share": 5,
+      "paid_impressions": 5
+    },
+    {
+      "company": "Procurify Technologies Inc.",
+      "total_share": 4,
+      "paid_impressions": 4
+    },
+    {
+      "company": "AW Site Services LLC",
+      "total_share": 4,
+      "paid_impressions": 4
+    },
+    {
+      "company": "DataDome",
+      "total_share": 3,
+      "paid_impressions": 3
+    },
+    {
+      "company": "Truework",
+      "total_share": 3,
+      "paid_impressions": 3
+    },
+    {
+      "company": "Astra Security",
+      "total_share": 3,
+      "paid_impressions": 3
+    },
+    {
+      "company": "ChatGPT",
+      "total_share": 3,
+      "paid_impressions": 3
+    },
+    {
+      "company": "MIND",
+      "total_share": 3,
+      "paid_impressions": 3
+    },
+    {
+      "company": "California Quality Standards LLC",
+      "total_share": 3,
+      "paid_impressions": 3
+    },
+    {
+      "company": "Chargeblast",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Cursor",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Rubrik, Inc.",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Attio",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Emergent",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "FINTRX",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Oxagile LLC",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Optum Insight",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "SailPoint",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Lumen",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Intuition Machines, Inc.",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Freshpaint.io",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "wolfSSL Inc.",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "ZeroTier",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Plerion Pty Ltd",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "DaBella",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "InEight",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "LABL Holdings, Inc DBA Beyond Lumber",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Everblue",
+      "total_share": 2,
+      "paid_impressions": 2
     },
     {
       "company": "Better.com",
-      "organic_mentions": 2,
-      "paid_impressions": 1,
-      "total_share": 3
+      "total_share": 2,
+      "paid_impressions": 2
     },
     {
-      "company": "Realtor.com",
-      "organic_mentions": 2,
-      "paid_impressions": 1,
-      "total_share": 3
+      "company": "SEDA Construction Company",
+      "total_share": 2,
+      "paid_impressions": 2
     },
     {
-      "company": "SoFi",
-      "organic_mentions": 1,
-      "paid_impressions": 1,
-      "total_share": 2
+      "company": "LegalZoom",
+      "total_share": 2,
+      "paid_impressions": 2
     },
     {
-      "company": "Compass",
-      "organic_mentions": 1,
-      "paid_impressions": 1,
-      "total_share": 2
+      "company": "Trex",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Quire",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Quorum",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Securden, Inc",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "BairesDev",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Capital Numbers LLC",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Netsol Technologies, Inc.",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Willard Powell, Inc.",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "BlackFire Cyber Insurance, LLC",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Evertune Inc.",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Harper",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Lorikeet",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Thunder GPU, Inc.",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "UiPath Inc",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "MICROTECH COMPUTER SERVICES, INC.",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "OneTrust",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Developers.net",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Carta",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Gravitee Topco Limited",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Potomac Growth",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "CorgiAI, Inc.",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Komodor Inc",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Digital Ocean",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Caplinked Inc.",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "FISPAN",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Navan",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Threat Digital, LLC",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "HoneyBook Inc",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Rippling",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Comcast Business",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "TrustCloud",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Home Depot",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Premier Home Pros",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "NewSouth Window Solutions",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "3Degrees",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "The Men with Tools",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Rocky Mountain Forest Products",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Future Standard LLC",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "The Home Depot",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Cemen Tech",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Rafael Inc",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Tencom, Ltd.",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "David White Marketing Services",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "HORIZON BUILDING CORPORATION",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Upwork",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "ShipBob",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "ERGO NEXT Insurance",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "The Lavatory",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Always Home Repair",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "KOBOLD Instruments Inc.",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Yao Interactive Inc.",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Reliable Heating & Air",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Very LLC",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Figma",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Rocket Mortgage",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Midea US",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "CLADIATOR",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Ram Jack Colorado",
+      "total_share": 1,
+      "paid_impressions": 1
     }
   ],
-  "intent_by_persona": [
-    {
-      "persona": "real_estate_investor",
-      "count": 8,
-      "avg_intent": 8.6,
-      "max_intent": 10
-    },
-    {
-      "persona": "commercial_developer",
-      "count": 3,
-      "avg_intent": 7.3,
-      "max_intent": 8
-    },
-    {
-      "persona": "relocating_family",
-      "count": 6,
-      "avg_intent": 5.7,
-      "max_intent": 7
-    },
-    {
-      "persona": "first_time_buyer",
-      "count": 13,
-      "avg_intent": 5.2,
-      "max_intent": 8
-    },
-    {
-      "persona": "agent_broker",
-      "count": 3,
-      "avg_intent": 5,
-      "max_intent": 6
-    }
-  ],
-  "intent_by_need": [
-    {
-      "need": "investment_analysis",
-      "count": 11,
-      "avg_intent": 8.3,
-      "max_intent": 10
-    },
-    {
-      "need": "sell_home",
-      "count": 3,
-      "avg_intent": 6.7,
-      "max_intent": 8
-    },
-    {
-      "need": "home_valuation",
-      "count": 2,
-      "avg_intent": 6,
-      "max_intent": 7
-    },
-    {
-      "need": "mortgage",
-      "count": 3,
-      "avg_intent": 5.7,
-      "max_intent": 7
-    },
-    {
-      "need": "find_agent",
-      "count": 4,
-      "avg_intent": 5.5,
-      "max_intent": 6
-    },
-    {
-      "need": "buy_home",
-      "count": 8,
-      "avg_intent": 4.6,
-      "max_intent": 7
-    },
-    {
-      "need": "rental",
-      "count": 2,
-      "avg_intent": 4.5,
-      "max_intent": 5
-    }
-  ],
-  "coverage_gaps": [
-    {
-      "capability": "Investment analysis & underwriting",
-      "keywords": [
-        "cap rate",
-        "cash-on-cash",
-        "IRR",
-        "BRRRR",
-        "pro forma"
-      ],
-      "covered_by": [],
-      "gap_value": "HIGH"
-    },
-    {
-      "capability": "1031 exchange & tax strategy",
-      "keywords": [
-        "1031",
-        "cost segregation",
-        "depreciation"
-      ],
-      "covered_by": [],
-      "gap_value": "HIGH"
-    },
-    {
-      "capability": "Instant cash sale / iBuyer",
-      "keywords": [
-        "sell fast",
-        "cash offer",
-        "no showings"
-      ],
-      "covered_by": [
-        "Opendoor"
-      ],
-      "gap_value": "LOW"
-    },
-    {
-      "capability": "Mortgage pre-approval",
-      "keywords": [
-        "pre-approval",
-        "rate",
-        "PMI"
-      ],
-      "covered_by": [
-        "Rocket Mortgage",
-        "Better.com",
-        "SoFi"
-      ],
-      "gap_value": "LOW"
-    },
-    {
-      "capability": "School-district home search",
-      "keywords": [
-        "school district",
-        "GreatSchools",
-        "boundary"
-      ],
-      "covered_by": [
-        "Zillow",
-        "Realtor.com"
-      ],
-      "gap_value": "MEDIUM"
-    },
-    {
-      "capability": "Commercial / development feasibility",
-      "keywords": [
-        "feasibility",
-        "entitlement",
-        "construction loan"
-      ],
-      "covered_by": [],
-      "gap_value": "HIGH"
-    }
-  ],
-  "blue_ocean": [
-    {
-      "rank": 1,
-      "persona": "real_estate_investor",
-      "need": "investment_analysis",
-      "probes": 8,
-      "avg_intent": 8.6,
-      "ad_count": 0
-    },
-    {
-      "rank": 2,
-      "persona": "commercial_developer",
-      "need": "investment_analysis",
-      "probes": 3,
-      "avg_intent": 7.3,
-      "ad_count": 0
-    }
-  ],
-  "response_quality": [
-    {
-      "persona": "first_time_buyer",
-      "avg_response_length": 174,
-      "avg_citations": 0.2,
-      "pct_has_search": 15
-    },
-    {
-      "persona": "real_estate_investor",
-      "avg_response_length": 202,
-      "avg_citations": 0,
-      "pct_has_search": 0
-    },
-    {
-      "persona": "relocating_family",
-      "avg_response_length": 170,
-      "avg_citations": 0.2,
-      "pct_has_search": 17
-    },
-    {
-      "persona": "agent_broker",
-      "avg_response_length": 165,
-      "avg_citations": 0,
-      "pct_has_search": 0
-    },
-    {
-      "persona": "commercial_developer",
-      "avg_response_length": 193,
-      "avg_citations": 0,
-      "pct_has_search": 0
-    }
-  ],
-  "prompt_structure_effectiveness": [
-    {
-      "structure": "question",
-      "probes": 25,
-      "avg_intent": 6.1,
-      "avg_response_length": 177
-    },
-    {
-      "structure": "comparison",
-      "probes": 4,
-      "avg_intent": 6,
-      "avg_response_length": 176
-    },
-    {
-      "structure": "need_statement",
-      "probes": 4,
-      "avg_intent": 8,
-      "avg_response_length": 210
-    }
-  ],
-  "oms_language_penetration": {
-    "pct_with_oms_language": 0,
-    "top_oms_signals": []
-  },
   "advertisers": [
     {
-      "advertiser": "Zillow",
-      "hits": 4,
-      "sample_prompts": [
-        "We're relocating to Denver with two kids — which neighborhoods have the best sch",
-        "How do I find homes for sale near a specific elementary school district?",
-        "How accurate are online home value estimates like the Zestimate?"
-      ],
-      "sample_copy": [
-        "Find Your Next Home"
-      ]
+      "advertiser": "Mastercard",
+      "hits": 82,
+      "sample_copy": "Give your business a data edge with a B2B intelligence platform built on payments transaction data."
     },
     {
-      "advertiser": "Rocket Mortgage",
-      "hits": 3,
-      "sample_prompts": [
-        "What's the first thing I should do as a first-time home buyer with about $80k sa",
-        "How much house can I afford on a $130,000 salary in Austin?",
-        "what is PMI and how do I get rid of it?"
-      ],
-      "sample_copy": [
-        "Get Approved in Minutes"
-      ]
-    },
-    {
-      "advertiser": "Opendoor",
-      "hits": 3,
-      "sample_prompts": [
-        "Should I sell my current home before buying in the new city or carry both?",
-        "what's my home worth and should I sell now or wait?",
-        "how do I sell my house fast for cash without listing it?"
-      ],
-      "sample_copy": [
-        "Sell Your Home Without the Hassle"
-      ]
-    },
-    {
-      "advertiser": "Redfin",
-      "hits": 3,
-      "sample_prompts": [
-        "How accurate are online home value estimates like the Zestimate?",
-        "what's my home worth and should I sell now or wait?",
-        "is it worth using a discount brokerage to save on commission?"
-      ],
-      "sample_copy": [
-        "Tour Homes On Your Schedule"
-      ]
-    },
-    {
-      "advertiser": "HomeLight",
-      "hits": 2,
-      "sample_prompts": [
-        "What's the best CRM and lead source for a new real estate agent?",
-        "how do I choose a good real estate agent when buying my first home?"
-      ],
-      "sample_copy": [
-        "Match With the Right Agent"
-      ]
-    },
-    {
-      "advertiser": "SoFi",
+      "advertiser": "Quorum",
       "hits": 1,
-      "sample_prompts": [
-        "How much house can I afford on a $130,000 salary in Austin?"
-      ],
-      "sample_copy": [
-        "Mortgage Rates Built for You"
-      ]
+      "sample_copy": "Get early warning alerts on legislative shifts."
+    },
+    {
+      "advertiser": "SAP",
+      "hits": 24,
+      "sample_copy": "Gain insights with AI-driven finance solutions."
+    },
+    {
+      "advertiser": "Securden, Inc",
+      "hits": 1,
+      "sample_copy": "Securden Unified PAM. Simple setup, enterprise security, flexible on-prem or SaaS."
+    },
+    {
+      "advertiser": "DataDome",
+      "hits": 3,
+      "sample_copy": "Distinguish legitimate agents from malicious ones. Trust verification for enterprise APIs & apps"
+    },
+    {
+      "advertiser": "Thoropass, Inc",
+      "hits": 28,
+      "sample_copy": "The one audit partner for faster, cleaner compliance outcomes."
+    },
+    {
+      "advertiser": "Aikido Security",
+      "hits": 39,
+      "sample_copy": "Reports auditors accept. Start in mins."
+    },
+    {
+      "advertiser": "Chargeblast",
+      "hits": 2,
+      "sample_copy": "Real-time alerts before disputes become chargebacks. Trusted by merchants worldwide. Book a demo."
+    },
+    {
+      "advertiser": "Intuit Quickbooks",
+      "hits": 14,
+      "sample_copy": "Low flat rates, no monthly fees, and no setup costs - only pay when you get paid."
+    },
+    {
+      "advertiser": "BairesDev",
+      "hits": 1,
+      "sample_copy": "Senior engineers on your team in 2 weeks. No transition gap."
+    },
+    {
+      "advertiser": "Truework",
+      "hits": 3,
+      "sample_copy": "Instant database, payroll credentials, and manual fallback — all automatic. Your team never chases."
+    },
+    {
+      "advertiser": "Toptal",
+      "hits": 10,
+      "sample_copy": "Choose from 20K+ highly qualified developers."
+    },
+    {
+      "advertiser": "Capital Numbers LLC",
+      "hits": 1,
+      "sample_copy": "Scale with dedicated developers, AI engineers, and cloud experts from Capital Numbers."
+    },
+    {
+      "advertiser": "Netsol Technologies, Inc.",
+      "hits": 1,
+      "sample_copy": "AI-enabled lending platform for captives, banks and auto lenders."
+    },
+    {
+      "advertiser": "RingCentral",
+      "hits": 15,
+      "sample_copy": "Meet MiFID II and Dodd-Frank with secure, audited archiving."
+    },
+    {
+      "advertiser": "GLOBAL DATA INTELLIGENCE LIMITED",
+      "hits": 8,
+      "sample_copy": "Access global UBO and KYB data for faster onboarding and compliance."
+    },
+    {
+      "advertiser": "Cursor",
+      "hits": 2,
+      "sample_copy": "The next generation AI IDE for developers."
+    },
+    {
+      "advertiser": "Superblocks",
+      "hits": 8,
+      "sample_copy": "AI writes code. It won't write your audit trail or compliance evidence. Superblocks does."
+    },
+    {
+      "advertiser": "BestMoney",
+      "hits": 5,
+      "sample_copy": "Compare Stock Trading Platforms Online."
+    },
+    {
+      "advertiser": "Willard Powell, Inc.",
+      "hits": 1,
+      "sample_copy": "Schaumburg systematic funds partner with us to hire the AI minds behind their edge."
+    },
+    {
+      "advertiser": "Salesforce",
+      "hits": 8,
+      "sample_copy": "Discover how Agent Fabric reduces AI agent fragmentation."
+    },
+    {
+      "advertiser": "Rubrik, Inc.",
+      "hits": 2,
+      "sample_copy": "1/3 of IT work will be spent on AI data debt by 2030. Learn how to minimize the burden."
+    },
+    {
+      "advertiser": "Attio",
+      "hits": 2,
+      "sample_copy": "Stay on top of every portfolio company. Try free."
+    },
+    {
+      "advertiser": "Procurify Technologies Inc.",
+      "hits": 4,
+      "sample_copy": "Certified NetSuite partner with native Sage Intacct integration. Book a demo to see the sync."
+    },
+    {
+      "advertiser": "Emergent",
+      "hits": 2,
+      "sample_copy": "Emergent bridges the gap between ship and earn."
+    },
+    {
+      "advertiser": "BlackFire Cyber Insurance, LLC",
+      "hits": 1,
+      "sample_copy": "Free cyber insurance quote in minutes. Cover data breaches & cyber attacks. No obligation."
+    },
+    {
+      "advertiser": "Evertune Inc.",
+      "hits": 1,
+      "sample_copy": "Audit prompts, pages, and answer coverage."
+    },
+    {
+      "advertiser": "FINTRX",
+      "hits": 2,
+      "sample_copy": "Verified data on 45,000+ RIA and broker-dealer firms, 790,000+ reps, and 4,600+ family offices"
+    },
+    {
+      "advertiser": "Harper",
+      "hits": 1,
+      "sample_copy": "Learn how you can use AI to automate contractual compliance oversight"
+    },
+    {
+      "advertiser": "Oxagile LLC",
+      "hits": 2,
+      "sample_copy": "We help integrate PSPs, optimize infrastructure, and ensure full compliance without risks."
+    },
+    {
+      "advertiser": "Optum Insight",
+      "hits": 2,
+      "sample_copy": "Help identify risks early with advanced analytics and data"
+    },
+    {
+      "advertiser": "Lorikeet",
+      "hits": 1,
+      "sample_copy": "Built for regulated workflows. Trusted by Flex and Eucalyptus."
+    },
+    {
+      "advertiser": "Thunder GPU, Inc.",
+      "hits": 1,
+      "sample_copy": "Cloud GPUs without egress fees."
+    },
+    {
+      "advertiser": "UiPath Inc",
+      "hits": 1,
+      "sample_copy": "Read the guide to scale AI agents with governed orchestration across people and robots."
+    },
+    {
+      "advertiser": "MICROTECH COMPUTER SERVICES, INC.",
+      "hits": 1,
+      "sample_copy": "Protect your firm from financial cybercrime."
+    },
+    {
+      "advertiser": "OneTrust",
+      "hits": 1,
+      "sample_copy": "Automate third-party management from intake and risk assessment to mitigation and reporting."
+    },
+    {
+      "advertiser": "Black Duck",
+      "hits": 7,
+      "sample_copy": "Tired of AppSec tool sprawl? Unify every analysis engine in one platform."
+    },
+    {
+      "advertiser": "Developers.net",
+      "hits": 1,
+      "sample_copy": "Scale your engineering headcount fast with dedicated contract developers ready to integrate."
+    },
+    {
+      "advertiser": "SailPoint",
+      "hits": 2,
+      "sample_copy": "Govern every identity with confidence"
+    },
+    {
+      "advertiser": "Astra Security",
+      "hits": 3,
+      "sample_copy": "AI & human driven pentesting that exceeds SOC2, ISO27001 & HIPAA compliance requirements."
+    },
+    {
+      "advertiser": "Carta",
+      "hits": 1,
+      "sample_copy": "Carta manages cap tables, equity, and fund admin for 50,000+ companies and 2.5M+ shareholders."
+    },
+    {
+      "advertiser": "ChatGPT",
+      "hits": 3,
+      "sample_copy": "Go from prompt to PR in minutes. Codex plans the work, edits the code, and opens the PR."
+    },
+    {
+      "advertiser": "Gravitee Topco Limited",
+      "hits": 1,
+      "sample_copy": "Help developers and AI agents discover, access, and consume Kafka topics faster."
+    },
+    {
+      "advertiser": "Lumen",
+      "hits": 2,
+      "sample_copy": "The Trusted Network for AI℠"
+    },
+    {
+      "advertiser": "Potomac Growth",
+      "hits": 1,
+      "sample_copy": "Reach more potential investors with a tested raise strategy. 140 Raises supported in 2025"
+    },
+    {
+      "advertiser": "CorgiAI, Inc.",
+      "hits": 1,
+      "sample_copy": "Let Corgi Labs help you accept more good payments, block more bads one, and boost your revenue"
+    },
+    {
+      "advertiser": "Cloudflare",
+      "hits": 6,
+      "sample_copy": "Secure your data. Encrypt your connections. Robust protection."
+    },
+    {
+      "advertiser": "Intuition Machines, Inc.",
+      "hits": 2,
+      "sample_copy": "Privacy-first bot detection for online services."
+    },
+    {
+      "advertiser": "Komodor Inc",
+      "hits": 1,
+      "sample_copy": "AI-powered investigations expose PDBs, stuck nodes and policies that block consolidation."
+    },
+    {
+      "advertiser": "Digital Ocean",
+      "hits": 1,
+      "sample_copy": "Policy-driven routing. Public Preview now."
+    },
+    {
+      "advertiser": "Caplinked Inc.",
+      "hits": 1,
+      "sample_copy": "Full audit trail. Granular permissions. SOC 2 Type II certified. $399/mo flat — no per-user pricing."
+    },
+    {
+      "advertiser": "MIND",
+      "hits": 3,
+      "sample_copy": "Find sensitive data, fix data risks and stop data leaks."
+    },
+    {
+      "advertiser": "Freshpaint.io",
+      "hits": 2,
+      "sample_copy": "Put compliant data to work in marketing."
+    },
+    {
+      "advertiser": "wolfSSL Inc.",
+      "hits": 2,
+      "sample_copy": "Post Quantum Cryptography FIPS Enablement today with Validated Entropy"
+    },
+    {
+      "advertiser": "ZeroTier",
+      "hits": 2,
+      "sample_copy": "Control, visibility, and security for critical finance systems."
+    },
+    {
+      "advertiser": "FISPAN",
+      "hits": 1,
+      "sample_copy": "Connect your bank to your ERP.  Automate your bank feeds and reconciliation."
+    },
+    {
+      "advertiser": "Plerion Pty Ltd",
+      "hits": 2,
+      "sample_copy": "Independent and multi-cloud. An autonomous agent that fixes the 1% of risks that actually matter"
+    },
+    {
+      "advertiser": "Navan",
+      "hits": 1,
+      "sample_copy": "Real-time dashboards, automated policy enforcement, and ERP-ready expense data in one place."
+    },
+    {
+      "advertiser": "Threat Digital, LLC",
+      "hits": 1,
+      "sample_copy": "Find related-party exposure before BIS rule enforcement returns."
+    },
+    {
+      "advertiser": "HoneyBook Inc",
+      "hits": 1,
+      "sample_copy": "Branded invoices, card and bank payments, and automatic reminders for late clients."
+    },
+    {
+      "advertiser": "Rippling",
+      "hits": 1,
+      "sample_copy": "Available For SOC 2 Type 1 & Type 2. No Chasing Tickets. No Fire Drills At Audit Time."
+    },
+    {
+      "advertiser": "Monday.com",
+      "hits": 11,
+      "sample_copy": "Human-led counsel. AI-driven execution. One platform built for both."
+    },
+    {
+      "advertiser": "Comcast Business",
+      "hits": 1,
+      "sample_copy": "Stay protected w/ solutions designed for Small Business."
+    },
+    {
+      "advertiser": "TrustCloud",
+      "hits": 1,
+      "sample_copy": "The first AI-native Security Assurance platform designed to earn organizational trust"
+    },
+    {
+      "advertiser": "Bath Fitter",
+      "hits": 65,
+      "sample_copy": "Hotels, motels, condos — bath remodels, your way."
+    },
+    {
+      "advertiser": "Modernize",
+      "hits": 27,
+      "sample_copy": "Connect With Small Bath Remodel Experts"
+    },
+    {
+      "advertiser": "DaBella",
+      "hits": 2,
+      "sample_copy": "Say goodbye to outdated shower with DaBella's affordable & durable shower solutions"
+    },
+    {
+      "advertiser": "AW Site Services LLC",
+      "hits": 4,
+      "sample_copy": "Reliable portable toilet rentals for construction sites and commercial projects. Call us now."
+    },
+    {
+      "advertiser": "InEight",
+      "hits": 2,
+      "sample_copy": "Construction management platform built for capital projects."
+    },
+    {
+      "advertiser": "Partition Stalls",
+      "hits": 6,
+      "sample_copy": "The Commercial Partition & Restroom Specialists!"
+    },
+    {
+      "advertiser": "Buildertrend",
+      "hits": 8,
+      "sample_copy": "Trusted by 20k+ contractors to run jobs and protect profits."
+    },
+    {
+      "advertiser": "Home Depot",
+      "hits": 1,
+      "sample_copy": "Stops foggy mirrors by turning the fan on automatically."
+    },
+    {
+      "advertiser": "DenSwap",
+      "hits": 8,
+      "sample_copy": "Get demand, pricing, layout, and break-even analysis for your property."
+    },
+    {
+      "advertiser": "Angi",
+      "hits": 5,
+      "sample_copy": "Get quotes in minutes from affordable home addition pros."
+    },
+    {
+      "advertiser": "Premier Home Pros",
+      "hits": 1,
+      "sample_copy": "Premier Home Pros bath remodels improve everyday comfort and elevate your space."
+    },
+    {
+      "advertiser": "McNICHOLS CO.",
+      "hits": 22,
+      "sample_copy": "Request a quote for Perforated Metal with nationwide shipping."
+    },
+    {
+      "advertiser": "Gerdau Ameristeel Inc.",
+      "hits": 25,
+      "sample_copy": "Diverse Portfolio Of Structural Beams And Merchants, With Extensive Material Availability."
+    },
+    {
+      "advertiser": "Nana Wall Systems, Inc",
+      "hits": 5,
+      "sample_copy": "For any size and space requirements Highest quality and performance"
+    },
+    {
+      "advertiser": "Fiverr",
+      "hits": 44,
+      "sample_copy": "Hire expert structural engineers on Fiverr today."
+    },
+    {
+      "advertiser": "Panes Window Manufacturing Inc.",
+      "hits": 19,
+      "sample_copy": "Factory Direct Windows & Doors | Showroom in Elk Grove Village | Supply Only or with Installation."
+    },
+    {
+      "advertiser": "LABL Holdings, Inc DBA Beyond Lumber",
+      "hits": 2,
+      "sample_copy": "Direct importer prices on premium decking, siding and cladding."
+    },
+    {
+      "advertiser": "NewSouth Window Solutions",
+      "hits": 1,
+      "sample_copy": "Skip the middleman with NewSouth Window Solutions."
+    },
+    {
+      "advertiser": "California Quality Standards LLC",
+      "hits": 3,
+      "sample_copy": "With an excellent 20-year reputation, we provide reliable QC services across 10 Asian countries."
+    },
+    {
+      "advertiser": "3Degrees",
+      "hits": 1,
+      "sample_copy": "Climate strategy tailored to your organization's industry, needs, and goals."
+    },
+    {
+      "advertiser": "Thumbtack",
+      "hits": 5,
+      "sample_copy": "Expert design for your next project. Book now!"
+    },
+    {
+      "advertiser": "The Men with Tools",
+      "hits": 1,
+      "sample_copy": "Replace drafty windows with energy-efficient upgrades that help your NJ home more comfortable."
+    },
+    {
+      "advertiser": "Rocky Mountain Forest Products",
+      "hits": 1,
+      "sample_copy": "Wholesale cedar fence materials, delivered statewide. Get a free contractor quote today."
+    },
+    {
+      "advertiser": "Metal America",
+      "hits": 15,
+      "sample_copy": "Engineer, build, deliver, and install red iron steel."
+    },
+    {
+      "advertiser": "Future Standard LLC",
+      "hits": 1,
+      "sample_copy": "Toolblocks helps AEC teams turn relationships, signals, and follow-up into pipeline."
+    },
+    {
+      "advertiser": "Everblue",
+      "hits": 2,
+      "sample_copy": "Understand how buildings work and earn credentials employers recognize. Online & in-person options."
+    },
+    {
+      "advertiser": "The Home Depot",
+      "hits": 1,
+      "sample_copy": "Connecting skilled tradespeople w/ professional contractors."
+    },
+    {
+      "advertiser": "Cemen Tech",
+      "hits": 1,
+      "sample_copy": "Start generating revenue and concrete before first payment. Cut waste, delays, and costs."
+    },
+    {
+      "advertiser": "Appfolio",
+      "hits": 6,
+      "sample_copy": "Don't settle for bolt-on AI bandaids."
     },
     {
       "advertiser": "Better.com",
-      "hits": 1,
-      "sample_prompts": [
-        "What credit score do I need to get a good mortgage rate?"
-      ],
-      "sample_copy": [
-        "Mortgages With Zero Lender Fees"
-      ]
+      "hits": 2,
+      "sample_copy": "Pay for upgrades as your project moves. NMLS #330511"
     },
     {
-      "advertiser": "Realtor.com",
-      "hits": 1,
-      "sample_prompts": [
-        "How do I find homes for sale near a specific elementary school district?"
-      ],
-      "sample_copy": [
-        "See Homes Before They Hit the Market"
-      ]
+      "advertiser": "SEDA Construction Company",
+      "hits": 2,
+      "sample_copy": "We build on your property. 40+ years local."
     },
     {
-      "advertiser": "Compass",
+      "advertiser": "LegalZoom",
+      "hits": 2,
+      "sample_copy": "See how structures differ before you start your business formation."
+    },
+    {
+      "advertiser": "Rafael Inc",
       "hits": 1,
-      "sample_prompts": [
-        "how do top agents price a listing to sell fast without leaving money on the tabl"
-      ],
-      "sample_copy": [
-        "Work With a Top Local Agent"
-      ]
+      "sample_copy": "Planning a kitchen remodel? Rafael Inc provides expert planning, design, and professional execution."
+    },
+    {
+      "advertiser": "Tencom, Ltd.",
+      "hits": 1,
+      "sample_copy": "Quality, Cost-Effective FRP - Strong & Lightweight. Corrosion Resistant. Request A Quote Today."
+    },
+    {
+      "advertiser": "Trex",
+      "hits": 2,
+      "sample_copy": "Find a qualified TrexPro® builder today."
+    },
+    {
+      "advertiser": "David White Marketing Services",
+      "hits": 1,
+      "sample_copy": "First WA agency to run ads on ChatGPT - let us show you how to do it"
+    },
+    {
+      "advertiser": "HORIZON BUILDING CORPORATION",
+      "hits": 1,
+      "sample_copy": "Comprehensive custom home and remodeling services you can rely on."
+    },
+    {
+      "advertiser": "Upwork",
+      "hits": 1,
+      "sample_copy": "Get more done with less effort"
+    },
+    {
+      "advertiser": "ShipBob",
+      "hits": 1,
+      "sample_copy": "Distributed inventory cuts transit times & shipping costs."
+    },
+    {
+      "advertiser": "ERGO NEXT Insurance",
+      "hits": 1,
+      "sample_copy": "Small Business Insurance with ERGO NEXT"
+    },
+    {
+      "advertiser": "The Lavatory",
+      "hits": 1,
+      "sample_copy": "Luxury Restrooms, Showers, & More 24/7 Dispatch"
+    },
+    {
+      "advertiser": "Always Home Repair",
+      "hits": 1,
+      "sample_copy": "Residential Contractor #CRC1333200 is marion counties most trusted bathroom remodel expert."
+    },
+    {
+      "advertiser": "KOBOLD Instruments Inc.",
+      "hits": 1,
+      "sample_copy": "Get a free engineering consultation with our in-house team."
+    },
+    {
+      "advertiser": "Quire",
+      "hits": 2,
+      "sample_copy": "AI‑supported drafting and review built for AEC workflows—not generic tools."
+    },
+    {
+      "advertiser": "Yao Interactive Inc.",
+      "hits": 1,
+      "sample_copy": "Free Shipping — Reduce office noise and distractions with our private soundproof pod booths."
+    },
+    {
+      "advertiser": "Reliable Heating & Air",
+      "hits": 1,
+      "sample_copy": "From installs to repairs, Reliable Plumbing delivers expert service at prices you can count on."
+    },
+    {
+      "advertiser": "Very LLC",
+      "hits": 1,
+      "sample_copy": "Senior engineering expertise combined with AI-accelerated delivery—focused on outcomes, not outputs."
+    },
+    {
+      "advertiser": "Figma",
+      "hits": 1,
+      "sample_copy": "Build complete web apps in Figma Make. Bring in your design system to match your visuals."
+    },
+    {
+      "advertiser": "Rocket Mortgage",
+      "hits": 1,
+      "sample_copy": "Expert guidance for first-time home buyers."
+    },
+    {
+      "advertiser": "Midea US",
+      "hits": 1,
+      "sample_copy": "From AC to a Fresh Breeze"
+    },
+    {
+      "advertiser": "CLADIATOR",
+      "hits": 1,
+      "sample_copy": "Zero thermal bridges and total design freedom. Request a free sample today."
+    },
+    {
+      "advertiser": "Ram Jack Colorado",
+      "hits": 1,
+      "sample_copy": "We specialize in diagnosing and addressing foundation issues"
     }
   ]
 }

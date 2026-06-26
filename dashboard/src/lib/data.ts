@@ -17,7 +17,7 @@ const INDUSTRY_META: Record<IndustryId, Omit<IndustryEntry, "id">> = {
   },
   "real-estate": {
     label: "Real Estate",
-    tagline: "Sample data · scrape pending",
+    tagline: "655 probes · 116 advertisers · live data",
     aliases: ["real estate", "realty", "property", "homes", "housing", "mortgage", "realtor"],
   },
 };
