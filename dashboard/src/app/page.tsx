@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import IndustrySearch from "@/components/IndustrySearch";
 import FloatingCreatives from "@/components/FloatingCreatives";
 import WaitlistForm from "@/components/WaitlistForm";
+import MarketChart from "@/components/MarketChart";
 import { suggestIndustries } from "@/lib/data";
 import type { IndustryEntry } from "@/lib/data";
 import type { IndustryData } from "@/lib/types";
@@ -141,65 +142,8 @@ function DataShowcase() {
 
   return (
     <>
-      {/* ── Leaderboard ── */}
-      <section className="mx-auto max-w-[1320px] px-6 py-20 md:px-10 md:py-28">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: DUR.base, ease: EASE_OUT }}
-        >
-          <div className="mb-10">
-            <p className="mb-2 font-sans text-[11px] font-medium uppercase tracking-[0.12em] text-accent">
-              Leaderboard
-            </p>
-            <h2 className="font-sans text-2xl font-semibold text-text md:text-3xl">
-              Brands showing up most in AI ads
-            </h2>
-            <p className="mt-2 font-sans text-sm text-text-muted">
-              The advertisers appearing most often across all tracked ChatGPT prompts.
-            </p>
-          </div>
-
-          <div className="overflow-hidden rounded-xl border border-border bg-surface">
-            {topAdvertisers.map(([name, count], i) => (
-              <motion.div
-                key={name}
-                initial={{ opacity: 0, x: -12 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, ease: EASE_OUT, delay: i * 0.04 }}
-                className="flex items-center gap-4 border-b border-border px-5 py-4 last:border-b-0 transition-colors hover:bg-surface-2"
-              >
-                <span className="tnum w-6 text-right font-sans text-sm text-text-faint">
-                  {i + 1}
-                </span>
-                <span className="w-36 shrink-0 truncate font-sans text-sm font-medium text-text">
-                  {name}
-                </span>
-                <div className="relative h-7 flex-1">
-                  <motion.div
-                    className="absolute inset-y-0 left-0 rounded-sm bg-accent-soft"
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${(count / Math.max(1, topAdvertisers[0]?.[1] ?? 1)) * 100}%` }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.7, ease: EASE_OUT, delay: i * 0.04 + 0.2 }}
-                  />
-                </div>
-              </motion.div>
-            ))}
-
-            {topAdvertisers.length === 0 && (
-              <div className="px-6 py-12 text-center font-sans text-sm text-text-faint">
-                Loading advertiser data…
-              </div>
-            )}
-          </div>
-        </motion.div>
-      </section>
-
       {/* ── Market overview chart ── */}
-      <MarketChart oms={oms} realEstate={realEstate} />
+      <MarketChart oms={oms} realEstate={realEstate} topAdvertisers={topAdvertisers} />
 
       {/* ── What an ad looks like ── */}
       <section className="border-t border-border bg-surface/30">
@@ -442,95 +386,6 @@ function IndustryBreakdown({
                 </div>
               </motion.a>
             ))}
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-function MarketChart({
-  oms,
-  realEstate,
-}: {
-  oms: IndustryData | null;
-  realEstate: IndustryData | null;
-}) {
-  const omsProbes = oms?.probes?.length ?? 0;
-  const reProbes = realEstate?.probes?.length ?? 0;
-  const omsAds = oms?.probes?.reduce((s, p) => s + p.ads.length, 0) ?? 0;
-  const reAds = realEstate?.probes?.reduce((s, p) => s + p.ads.length, 0) ?? 0;
-  const totalProbes = omsProbes + reProbes || 1;
-  const totalAds = omsAds + reAds || 1;
-
-  const segments = [
-    { name: "Stablecoin", probes: omsProbes, ads: omsAds, color: "bg-accent" },
-    { name: "Real Estate", probes: reProbes, ads: reAds, color: "bg-text-faint" },
-  ];
-
-  return (
-    <section className="border-t border-border">
-      <div className="mx-auto max-w-[1320px] px-6 py-20 md:px-10 md:py-28">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: DUR.base, ease: EASE_OUT }}
-        >
-          <h2 className="mb-10 text-center font-sans text-2xl font-semibold text-text md:text-3xl">
-            Ad distribution across industries
-          </h2>
-
-          {/* Probe distribution bar */}
-          <div className="mb-8">
-            <p className="mb-3 font-sans text-sm text-text-muted">Probes by industry</p>
-            <div className="relative h-6 w-full overflow-hidden rounded-full bg-border">
-              {segments.map((seg, i) => (
-                <motion.div
-                  key={seg.name}
-                  className={`absolute inset-y-0 ${seg.color}`}
-                  style={{
-                    left: `${segments.slice(0, i).reduce((s, x) => s + (x.probes / totalProbes) * 100, 0)}%`,
-                    width: `${(seg.probes / totalProbes) * 100}%`,
-                  }}
-                  initial={{ width: 0 }}
-                  whileInView={{ width: `${(seg.probes / totalProbes) * 100}%` }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, ease: EASE_OUT, delay: i * 0.15 }}
-                />
-              ))}
-            </div>
-            <div className="mt-2 flex justify-between font-sans text-xs text-text-faint">
-              {segments.map((seg) => (
-                <span key={seg.name}>{seg.name}</span>
-              ))}
-            </div>
-          </div>
-
-          {/* Ads distribution bar */}
-          <div>
-            <p className="mb-3 font-sans text-sm text-text-muted">Ads detected by industry</p>
-            <div className="relative h-6 w-full overflow-hidden rounded-full bg-border">
-              {segments.map((seg, i) => (
-                <motion.div
-                  key={seg.name}
-                  className={`absolute inset-y-0 ${seg.color}`}
-                  style={{
-                    left: `${segments.slice(0, i).reduce((s, x) => s + (x.ads / totalAds) * 100, 0)}%`,
-                    width: `${(seg.ads / totalAds) * 100}%`,
-                  }}
-                  initial={{ width: 0 }}
-                  whileInView={{ width: `${(seg.ads / totalAds) * 100}%` }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, ease: EASE_OUT, delay: i * 0.15 + 0.2 }}
-                />
-              ))}
-            </div>
-            <div className="mt-2 flex justify-between font-sans text-xs text-text-faint">
-              {segments.map((seg) => (
-                <span key={seg.name}>{seg.name}</span>
-              ))}
-            </div>
           </div>
         </motion.div>
       </div>
