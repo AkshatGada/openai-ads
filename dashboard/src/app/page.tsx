@@ -32,38 +32,45 @@ export default function HomePage() {
 
         <div
           className="pointer-events-none absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full"
-          style={{
-            background: "radial-gradient(circle, var(--accent-soft) 0%, transparent 70%)",
-            opacity: 0.6,
-          }}
+          style={{ background: "radial-gradient(circle, var(--accent-soft) 0%, transparent 70%)", opacity: 0.6 }}
         />
 
         <motion.div
           variants={staggerParent(0.12)}
           initial="hidden"
           animate="show"
-          className="relative z-10 -mt-12 flex w-full max-w-3xl flex-col items-center gap-7"
+          className="relative z-10 -mt-12 flex w-full max-w-3xl flex-col items-center gap-6"
         >
+          {/* Eyebrow badge */}
+          <motion.div
+            variants={fadeUp}
+            className="flex items-center gap-2 rounded-full border border-accent/30 bg-accent-soft px-4 py-1.5"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
+            <span className="font-sans text-[11px] font-medium tracking-wide text-accent">
+              ChatGPT ads are live — browse real probe data
+            </span>
+          </motion.div>
+
           {/* Headline */}
           <motion.h1
             variants={fadeUp}
             className="text-center text-hero font-bold tracking-tighter2 text-text md:font-extrabold"
           >
-            Who&apos;s advertising
+            See every ad
             <br />
-            on <span className="text-accent">ChatGPT?</span>
+            on <span className="text-accent">ChatGPT</span>
           </motion.h1>
 
           {/* Subtitle */}
           <motion.p
             variants={fadeUp}
-            className="max-w-lg text-center font-sans text-base text-text-muted md:text-lg"
+            className="max-w-xl text-center font-sans text-base text-text-muted md:text-lg"
           >
+            Track every advertiser, creative, and trigger prompt across any industry.
             The first public database of{" "}
-            <strong className="text-text">ChatGPT ads</strong>. See which
-            companies are running{" "}
-            <strong className="text-text">OpenAI advertising</strong>{" "}
-            campaigns, what creatives they use, and which prompts trigger their ads.
+            <strong className="text-text">ChatGPT ads</strong> — updated with real
+            probe data, not estimates.
           </motion.p>
 
           {/* Search */}
@@ -72,12 +79,13 @@ export default function HomePage() {
           </motion.div>
 
           {/* Industry chips */}
-          <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-2.5">
+          <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-2">
+            <span className="font-sans text-xs text-text-faint">Popular:</span>
             {industries.map((e) => (
               <button
                 key={e.id}
                 onClick={() => handleSelect(e)}
-                className="rounded-full border border-border bg-surface/80 px-4 py-2 font-sans text-sm text-text-muted backdrop-blur-md transition-all duration-200 hover:border-accent/60 hover:bg-accent-soft hover:text-text"
+                className="rounded-full border border-border bg-surface/80 px-4 py-1.5 font-sans text-sm text-text-muted backdrop-blur-md transition-all duration-200 hover:border-accent/50 hover:bg-accent-soft hover:text-text"
               >
                 {e.label}
               </button>
@@ -86,118 +94,178 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* ── Waitlist CTA ── */}
+      {/* ── Stats bar ── */}
       <section
-        aria-label="Waitlist"
-        className="mx-auto w-full max-w-[1320px] px-6 py-16 md:px-10 md:py-20"
+        aria-label="Platform stats"
+        className="border-y border-border bg-surface/30"
       >
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: DUR.base, ease: EASE_OUT }}
-          className="flex flex-col items-center gap-4 text-center"
-        >
-          <h2 className="font-sans text-lg font-semibold text-text md:text-xl">
-            Get early access to new industries
-          </h2>
-          <p className="max-w-md font-sans text-sm text-text-muted">
-            New advertiser data drops weekly. Be the first to know when your vertical goes live.
-          </p>
-          <WaitlistForm />
-        </motion.div>
+        <div className="mx-auto max-w-[1320px] px-6 py-10 md:px-10">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: DUR.base, ease: EASE_OUT }}
+            className="grid grid-cols-2 gap-6 md:grid-cols-5"
+          >
+            <StatItem value="116" label="Probes collected" />
+            <StatItem value="9" label="Ads detected" />
+            <StatItem value="5" label="Advertisers tracked" />
+            <StatItem value="2" label="Industries" />
+            <StatItem value="Real" label="Probe data" />
+          </motion.div>
+        </div>
       </section>
 
-      {/* ── Features ── */}
+      {/* ── How it works ── */}
       <section
         aria-label="How it works"
-        className="mx-auto w-full max-w-[1320px] px-6 pb-24 pt-20 md:px-10 md:pb-32 md:pt-28"
+        className="mx-auto w-full max-w-[1320px] px-6 pb-20 pt-20 md:px-10 md:pb-28 md:pt-28"
       >
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: DUR.base, ease: EASE_OUT }}
-          className="grid gap-8 md:grid-cols-3"
-        >
-          <article className="rounded-xl border border-border bg-surface/50 p-6 backdrop-blur-sm">
-            <div className="mb-3 font-mono text-xs font-semibold uppercase tracking-[0.1em] text-accent">Discover</div>
-            <h3 className="mb-2 font-display text-lg font-semibold text-text">See who advertises on ChatGPT</h3>
-            <p className="font-sans text-sm leading-relaxed text-text-muted">
-              Browse advertisers across any industry — fintech, real estate, SaaS, ecommerce, and more.
-              See every ChatGPT ad creative and the exact prompt that triggers it. The only public{" "}
-              <strong>ChatGPT ad intelligence</strong> database.
-            </p>
-          </article>
-
-          <article className="rounded-xl border border-border bg-surface/50 p-6 backdrop-blur-sm">
-            <div className="mb-3 font-mono text-xs font-semibold uppercase tracking-[0.1em] text-accent">Analyze</div>
-            <h3 className="mb-2 font-display text-lg font-semibold text-text">Understand competitor strategy</h3>
-            <p className="font-sans text-sm leading-relaxed text-text-muted">
-              Track which advertisers appear most often, what{" "}
-              <strong>ChatGPT context hints</strong> they target, and which landing pages they send traffic to.
-              Spot gaps and opportunities before your competitors do.
-            </p>
-          </article>
-
-          <article className="rounded-xl border border-border bg-surface/50 p-6 backdrop-blur-sm">
-            <div className="mb-3 font-mono text-xs font-semibold uppercase tracking-[0.1em] text-accent">Monitor</div>
-            <h3 className="mb-2 font-display text-lg font-semibold text-text">Stay ahead of the market</h3>
-            <p className="font-sans text-sm leading-relaxed text-text-muted">
-              New <strong>OpenAI advertisers</strong> appear every week. ChatGPT Ads Library updates regularly
-              so you can see who just entered your space — and what they&apos;re testing.
-            </p>
-          </article>
-        </motion.div>
-      </section>
-
-      {/* ── FAQ / SEO ── */}
-      <section
-        aria-label="Frequently asked questions about ChatGPT ads"
-        className="mx-auto w-full max-w-[1320px] px-6 pb-32 md:px-10"
-      >
-        <motion.h2
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: DUR.base, ease: EASE_OUT }}
-          className="mb-10 text-center font-display text-2xl font-semibold text-text md:text-3xl"
+          className="mb-12 text-center"
         >
-          What are <span className="text-accent">ChatGPT Ads</span>?
-        </motion.h2>
+          <p className="mb-3 font-sans text-[11px] font-medium uppercase tracking-[0.12em] text-accent">
+            How it works
+          </p>
+          <h2 className="font-sans text-2xl font-semibold text-text md:text-3xl">
+            Three signals that define your competitive edge
+          </h2>
+        </motion.div>
 
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: DUR.base, ease: EASE_OUT }}
+          className="grid gap-6 md:grid-cols-3"
+        >
+          {/* Signal 1 */}
+          <article className="group rounded-xl border border-border bg-surface p-6 transition-all duration-200 hover:border-border-strong hover:shadow-lg">
+            <div className="mb-4 grid h-10 w-10 place-items-center rounded-lg bg-accent-soft">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-accent">
+                <path d="M21 21H3V3"/><path d="M7 14l4-4 4 4 4-6"/>
+              </svg>
+            </div>
+            <h3 className="mb-2 font-sans text-[15px] font-semibold text-text">
+              Ad-triggered prompts
+            </h3>
+            <p className="font-sans text-sm leading-relaxed text-text-muted">
+              See exactly which prompts trigger ads in your industry. Filter by ads-served vs.
+              organic-only. Track how ad density shifts week to week.
+            </p>
+          </article>
+
+          {/* Signal 2 */}
+          <article className="group rounded-xl border border-border bg-surface p-6 transition-all duration-200 hover:border-border-strong hover:shadow-lg">
+            <div className="mb-4 grid h-10 w-10 place-items-center rounded-lg bg-accent-soft">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-accent">
+                <rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/>
+              </svg>
+            </div>
+            <h3 className="mb-2 font-sans text-[15px] font-semibold text-text">
+              Advertiser intelligence
+            </h3>
+            <p className="font-sans text-sm leading-relaxed text-text-muted">
+              Which brands are running ads in your category. Their creatives, frequency, and
+              messaging. Spot new entrants before they scale.
+            </p>
+          </article>
+
+          {/* Signal 3 */}
+          <article className="group rounded-xl border border-border bg-surface p-6 transition-all duration-200 hover:border-border-strong hover:shadow-lg">
+            <div className="mb-4 grid h-10 w-10 place-items-center rounded-lg bg-accent-soft">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-accent">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+              </svg>
+            </div>
+            <h3 className="mb-2 font-sans text-[15px] font-semibold text-text">
+              Prompt-level targeting
+            </h3>
+            <p className="font-sans text-sm leading-relaxed text-text-muted">
+              Every ad links to the prompt that surfaced it. Reverse-engineer competitor context
+              hints and find the unclaimed prompts in your space.
+            </p>
+          </article>
+        </motion.div>
+      </section>
+
+      {/* ── Waitlist CTA ── */}
+      <section
+        aria-label="Waitlist"
+        className="border-t border-border bg-surface/20"
+      >
+        <div className="mx-auto max-w-[1320px] px-6 py-20 md:px-10 md:py-24">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: DUR.base, ease: EASE_OUT }}
+            className="flex flex-col items-center gap-4 text-center"
+          >
+            <h2 className="font-sans text-xl font-semibold text-text md:text-2xl">
+              New industries drop every week
+            </h2>
+            <p className="max-w-md font-sans text-sm text-text-muted">
+              AI advertising is scaling fast. Be the first to know when your vertical goes live.
+            </p>
+            <WaitlistForm />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── FAQ ── */}
+      <section
+        aria-label="Frequently asked questions"
+        className="mx-auto w-full max-w-[1320px] px-6 pb-32 md:px-10"
+      >
         <motion.div
           initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: DUR.base, ease: EASE_OUT }}
-          className="mx-auto max-w-3xl space-y-6 font-sans text-sm leading-relaxed text-text-muted md:text-base"
         >
-          <p>
-            <strong className="text-text">ChatGPT Ads</strong> (also called{" "}
-            <strong className="text-text">OpenAI Ads</strong>) are sponsored messages that appear
-            inside ChatGPT conversations. When a user asks ChatGPT a question related to a product,
-            service, or topic, an advertiser&apos;s message may appear alongside the AI&apos;s response.
+          <p className="mb-3 text-center font-sans text-[11px] font-medium uppercase tracking-[0.12em] text-accent">
+            FAQ
           </p>
-          <p>
-            These ads are triggered by{" "}
-            <strong className="text-text">context hints</strong> — semantic descriptions of the
-            situations where an ad may be useful. Unlike traditional search ads that match on keywords,
-            ChatGPT ads match on the meaning and intent behind a conversation.
-          </p>
-          <p>
-            This makes <strong className="text-text">ChatGPT advertising competitive intelligence</strong>{" "}
-            critical for marketers. Understanding which context hints your competitors target, what
-            ad copy they use, and where they send traffic gives you an edge in the fastest-growing
-            ad platform since Google and Meta.
-          </p>
-          <p>
-            ChatGPT Ads Library is the first public tool to catalog and display every ad running inside
-            ChatGPT, organized by industry. Search for your vertical above to see which companies are
-            already advertising — and what they&apos;re saying.
-          </p>
+          <h2 className="mb-10 text-center font-sans text-2xl font-semibold text-text md:text-3xl">
+            What are <span className="text-accent">ChatGPT Ads</span>?
+          </h2>
+
+          <div className="mx-auto max-w-3xl space-y-5 font-sans text-sm leading-relaxed text-text-muted md:text-[15px]">
+            <p>
+              <strong className="text-text">ChatGPT Ads</strong> (also called OpenAI Ads)
+              are sponsored messages inside ChatGPT conversations. When a user asks about a
+              product or topic, an advertiser&apos;s card appears alongside the AI response.
+              Unlike search ads that match keywords, ChatGPT ads match on semantic{" "}
+              <strong className="text-text">context hints</strong> — the meaning and intent
+              behind a conversation.
+            </p>
+            <p>
+              The ad surface scaled dramatically in May 2026. What started as a beta has become
+              the fastest-growing ad platform since Google and Meta. Understanding who runs ads,
+              what they say, and which prompts trigger them is now a competitive necessity.
+            </p>
+            <p>
+              ChatGPT Ads Library catalogs every ad we detect inside ChatGPT, organized by
+              industry. Search your vertical to see which companies are advertising — and what
+              they&apos;re testing.
+            </p>
+          </div>
         </motion.div>
       </section>
     </motion.div>
+  );
+}
+
+function StatItem({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="flex flex-col items-center gap-1 text-center">
+      <span className="tnum font-sans text-[28px] font-medium tracking-tight text-text">{value}</span>
+      <span className="font-sans text-xs text-text-faint">{label}</span>
+    </div>
   );
 }

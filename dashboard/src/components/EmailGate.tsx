@@ -126,7 +126,7 @@ export default function EmailGate() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.98, y: 16 }}
             transition={{ duration: DUR.slow, ease: EASE_OUT }}
-            className="relative z-10 w-full max-w-[400px] overflow-hidden rounded-2xl border border-border bg-surface shadow-card-hover"
+            className="relative z-10 w-full max-w-[400px] overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl"
           >
             <AnimatePresence mode="wait">
               {/* ── Email step ── */}

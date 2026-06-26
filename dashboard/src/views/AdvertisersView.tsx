@@ -34,7 +34,7 @@ export default function AdvertisersView({ data }: { data: IndustryData }) {
                 key={f.company}
                 variants={fadeUp}
                 onClick={() => router.push(`/${industryId}/ads?advertiser=${encodeURIComponent(f.company)}`)}
-                className="group flex flex-col gap-4 rounded-lg border border-border bg-surface p-5 text-left shadow-sm transition-all duration-200 hover:border-border-strong hover:bg-surface-2 hover:shadow-card-hover"
+                className="group flex flex-col gap-4 rounded-lg border border-border bg-surface p-5 text-left shadow-sm transition-all duration-200 hover:border-border-strong hover:bg-surface-2 hover:shadow-lg"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-sans text-[15px] font-semibold text-text">{f.company}</span>
