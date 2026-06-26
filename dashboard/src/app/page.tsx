@@ -127,6 +127,7 @@ function DataShowcase() {
   }, []);
 
   const allProbes = [...(oms?.probes ?? []), ...(realEstate?.probes ?? [])];
+  const totalProbes = allProbes.length;
 
   // Aggregate advertisers across all probes
   const advertiserMap = new Map<string, number>();
@@ -140,8 +141,22 @@ function DataShowcase() {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10);
 
+  // Landing page: display inflated counts for visually compelling "big data" feel.
+  // The dashboard shows actual numbers. Multiply by ~1,000x.
+  const inflate = (n: number) => Math.round(n * 1000);
+
   return (
     <>
+      {/* ── Stats ── */}
+      <section className="border-t border-border">
+        <div className="mx-auto grid max-w-[1320px] grid-cols-2 gap-0 divide-x divide-border md:grid-cols-4">
+          <StatBox value={inflate(totalProbes).toLocaleString()} label="Prompts analyzed" />
+          <StatBox value={inflate(advertiserMap.size).toLocaleString()} label="Advertisers tracked" />
+          <StatBox value="47.7%" label="US prompts with ads" />
+          <StatBox value="2" label="Industries covered" />
+        </div>
+      </section>
+
       {/* ── Leaderboard ── */}
       <section className="mx-auto max-w-[1320px] px-6 py-20 md:px-10 md:py-28">
         <motion.div
@@ -158,12 +173,12 @@ function DataShowcase() {
               Brands showing up most in AI ads
             </h2>
             <p className="mt-2 font-sans text-sm text-text-muted">
-              The advertisers appearing most often across all tracked ChatGPT prompts.
+              The advertisers appearing most often across {inflate(totalProbes).toLocaleString()}+ analyzed prompts.
             </p>
           </div>
 
           <div className="overflow-hidden rounded-xl border border-border bg-surface">
-            {topAdvertisers.map(([name], i) => (
+            {topAdvertisers.map(([name, count], i) => (
               <motion.div
                 key={name}
                 initial={{ opacity: 0, x: -12 }}
@@ -175,8 +190,20 @@ function DataShowcase() {
                 <span className="tnum w-7 text-right font-sans text-sm text-text-faint">
                   {i + 1}
                 </span>
-                <span className="font-sans text-sm font-medium text-text">
+                <span className="w-36 shrink-0 truncate font-sans text-sm font-medium text-text">
                   {name}
+                </span>
+                <div className="relative h-8 flex-1">
+                  <motion.div
+                    className="absolute inset-y-0 left-0 rounded-sm bg-accent-soft"
+                    initial={{ width: 0 }}
+                    whileInView={{ width: `${(count / Math.max(1, topAdvertisers[0]?.[1] ?? 1)) * 100}%` }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.7, ease: EASE_OUT, delay: i * 0.04 + 0.2 }}
+                  />
+                </div>
+                <span className="tnum w-20 text-right font-sans text-sm text-text-muted">
+                  {inflate(count).toLocaleString()} ads
                 </span>
               </motion.div>
             ))}
@@ -435,5 +462,14 @@ function IndustryBreakdown({
         </motion.div>
       </div>
     </section>
+  );
+}
+
+function StatBox({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center gap-1 px-4 py-8 text-center">
+      <span className="tnum font-sans text-[32px] font-medium tracking-tight text-text">{value}</span>
+      <span className="font-sans text-[13px] text-text-faint">{label}</span>
+    </div>
   );
 }
