@@ -127,8 +127,6 @@ function DataShowcase() {
   }, []);
 
   const allProbes = [...(oms?.probes ?? []), ...(realEstate?.probes ?? [])];
-  const totalProbes = allProbes.length;
-  const totalAds = allProbes.reduce((s, p) => s + p.ads.length, 0);
 
   // Aggregate advertisers across all probes
   const advertiserMap = new Map<string, number>();
@@ -142,20 +140,8 @@ function DataShowcase() {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10);
 
-  const maxCount = topAdvertisers[0]?.[1] ?? 1;
-
   return (
     <>
-      {/* ── Stats ── */}
-      <section className="border-t border-border">
-        <div className="mx-auto grid max-w-[1320px] grid-cols-2 gap-0 divide-x divide-border md:grid-cols-4">
-          <StatBox value={totalProbes.toLocaleString()} label="Prompts analyzed" />
-          <StatBox value={totalAds.toLocaleString()} label="Ads detected" />
-          <StatBox value={advertiserMap.size.toLocaleString()} label="Advertisers tracked" />
-          <StatBox value="2" label="Industries covered" />
-        </div>
-      </section>
-
       {/* ── Leaderboard ── */}
       <section className="mx-auto max-w-[1320px] px-6 py-20 md:px-10 md:py-28">
         <motion.div
@@ -177,7 +163,7 @@ function DataShowcase() {
           </div>
 
           <div className="overflow-hidden rounded-xl border border-border bg-surface">
-            {topAdvertisers.map(([name, count], i) => (
+            {topAdvertisers.map(([name], i) => (
               <motion.div
                 key={name}
                 initial={{ opacity: 0, x: -12 }}
@@ -189,20 +175,8 @@ function DataShowcase() {
                 <span className="tnum w-7 text-right font-sans text-sm text-text-faint">
                   {i + 1}
                 </span>
-                <span className="w-36 shrink-0 truncate font-sans text-sm font-medium text-text">
+                <span className="font-sans text-sm font-medium text-text">
                   {name}
-                </span>
-                <div className="relative h-8 flex-1">
-                  <motion.div
-                    className="absolute inset-y-0 left-0 rounded-sm bg-accent-soft"
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${(count / maxCount) * 100}%` }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.7, ease: EASE_OUT, delay: i * 0.04 + 0.2 }}
-                  />
-                </div>
-                <span className="tnum w-16 text-right font-sans text-sm text-text-muted">
-                  {count} ad{count > 1 ? "s" : ""}
                 </span>
               </motion.div>
             ))}
@@ -294,7 +268,7 @@ function DataShowcase() {
       </section>
 
       {/* ── Industry breakdown ── */}
-      <IndustryBreakdown oms={oms} realEstate={realEstate} totalProbes={totalProbes} />
+      <IndustryBreakdown oms={oms} realEstate={realEstate} />
 
       {/* ── How it works ── */}
       <section className="border-t border-border">
@@ -369,18 +343,14 @@ function DataShowcase() {
 function IndustryBreakdown({
   oms,
   realEstate,
-  totalProbes,
 }: {
   oms: IndustryData | null;
   realEstate: IndustryData | null;
-  totalProbes: number;
 }) {
   const industries = [
     {
       name: "Stablecoin & Payments",
       slug: "oms",
-      probes: oms?.probes?.length ?? 0,
-      ads: oms?.probes?.reduce((s, p) => s + p.ads.length, 0) ?? 0,
       advertisers: oms?.patterns?.advertisers?.length ?? 0,
       topAdvertisers: (oms?.patterns?.competitor_frequency ?? [])
         .filter((c) => c.paid_impressions > 0)
@@ -391,8 +361,6 @@ function IndustryBreakdown({
     {
       name: "Real Estate",
       slug: "real-estate",
-      probes: realEstate?.probes?.length ?? 0,
-      ads: realEstate?.probes?.reduce((s, p) => s + p.ads.length, 0) ?? 0,
       advertisers: realEstate?.patterns?.advertisers?.length ?? 0,
       topAdvertisers: (realEstate?.patterns?.competitor_frequency ?? [])
         .filter((c) => c.paid_impressions > 0)
@@ -401,8 +369,6 @@ function IndustryBreakdown({
         .map((c) => ({ name: c.company, count: c.paid_impressions })),
     },
   ];
-
-  const maxAds = Math.max(1, ...industries.map((i) => i.ads));
 
   return (
     <section className="border-t border-border">
@@ -421,16 +387,14 @@ function IndustryBreakdown({
               Which industries buy sponsored ads
             </h2>
             <p className="mt-2 font-sans text-sm text-text-muted">
-              Industries tracked, ranked by ad volume across {totalProbes.toLocaleString()} analyzed prompts.
+              Industries we track, with the top advertisers running campaigns in each vertical.
             </p>
           </div>
 
           <div className="overflow-hidden rounded-xl border border-border">
             <div className="hidden md:grid md:grid-cols-12 gap-4 border-b border-border bg-surface-2 px-6 py-3">
-              <span className="col-span-4 font-sans text-[11px] font-medium uppercase tracking-[0.08em] text-text-faint">Industry</span>
-              <span className="col-span-2 font-sans text-[11px] font-medium uppercase tracking-[0.08em] text-text-faint text-right">Ads</span>
-              <span className="col-span-2 font-sans text-[11px] font-medium uppercase tracking-[0.08em] text-text-faint text-right">Share</span>
-              <span className="col-span-4 font-sans text-[11px] font-medium uppercase tracking-[0.08em] text-text-faint">Top advertisers</span>
+              <span className="col-span-5 font-sans text-[11px] font-medium uppercase tracking-[0.08em] text-text-faint">Industry</span>
+              <span className="col-span-7 font-sans text-[11px] font-medium uppercase tracking-[0.08em] text-text-faint">Top advertisers</span>
             </div>
 
             {industries.map((ind, i) => (
@@ -443,42 +407,16 @@ function IndustryBreakdown({
                 transition={{ duration: 0.3, delay: i * 0.06 }}
                 className="group grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 items-center border-b border-border px-6 py-5 last:border-b-0 transition-colors hover:bg-surface-2"
               >
-                {/* Industry name */}
-                <div className="md:col-span-4 flex items-center gap-3">
+                <div className="md:col-span-5 flex items-center gap-3">
                   <span className="tnum font-sans text-xs text-text-faint w-5">{i + 1}</span>
-                  <div>
-                    <span className="font-sans text-sm font-medium text-text group-hover:text-accent transition-colors">
-                      {ind.name}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Ads count */}
-                <div className="md:col-span-2 flex items-center md:justify-end gap-3">
-                  <span className="tnum font-sans text-sm text-text">{ind.ads}</span>
-                  <div className="hidden md:block relative h-1.5 w-20 overflow-hidden rounded-full bg-border">
-                    <motion.div
-                      className="absolute inset-y-0 left-0 rounded-full bg-accent"
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${(ind.ads / maxAds) * 100}%` }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.7, ease: EASE_OUT, delay: i * 0.06 + 0.3 }}
-                    />
-                  </div>
-                </div>
-
-                {/* Share % */}
-                <div className="md:col-span-2 flex items-center md:justify-end gap-2">
-                  <span className="tnum font-sans text-sm text-text-muted">
-                    {ind.probes > 0 ? ((ind.ads / ind.probes) * 100).toFixed(1) : "—"}%
+                  <span className="font-sans text-[15px] font-medium text-text group-hover:text-accent transition-colors">
+                    {ind.name}
                   </span>
-                  <span className="font-sans text-xs text-text-faint">of prompts</span>
                 </div>
 
-                {/* Top advertisers */}
-                <div className="md:col-span-4 flex flex-wrap items-center gap-2">
+                <div className="md:col-span-7 flex flex-wrap items-center gap-2">
                   {ind.topAdvertisers?.map((a) => (
-                    <span key={a.name} className="rounded-md border border-border bg-surface-2 px-2 py-1 font-sans text-[12px] text-text-muted">
+                    <span key={a.name} className="rounded-md border border-border bg-surface-2 px-2.5 py-1 font-sans text-[13px] text-text-muted">
                       {a.name}
                     </span>
                   ))}
@@ -487,28 +425,15 @@ function IndustryBreakdown({
                       +{ind.advertisers - 3} more
                     </span>
                   )}
+                  {ind.advertisers === 0 && (
+                    <span className="font-sans text-xs text-text-faint">No advertisers yet</span>
+                  )}
                 </div>
               </motion.a>
             ))}
           </div>
-
-          {/* Bottom summary */}
-          <div className="mt-6 flex flex-wrap items-center gap-6">
-            <span className="tnum font-sans text-sm text-text-faint">
-              {industries.length} industries · {industries.reduce((s, i) => s + i.ads, 0)} total ads · {industries.reduce((s, i) => s + i.probes, 0)} prompts
-            </span>
-          </div>
         </motion.div>
       </div>
     </section>
-  );
-}
-
-function StatBox({ value, label }: { value: string; label: string }) {
-  return (
-    <div className="flex flex-col items-center justify-center gap-1 px-4 py-8 text-center">
-      <span className="tnum font-sans text-[32px] font-medium tracking-tight text-text">{value}</span>
-      <span className="font-sans text-[13px] text-text-faint">{label}</span>
-    </div>
   );
 }
