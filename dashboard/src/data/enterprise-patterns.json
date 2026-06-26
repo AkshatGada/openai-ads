@@ -1,0 +1,646 @@
+{
+  "competitor_frequency": [
+    {
+      "company": "Mastercard",
+      "total_share": 81,
+      "paid_impressions": 81
+    },
+    {
+      "company": "Aikido Security",
+      "total_share": 39,
+      "paid_impressions": 39
+    },
+    {
+      "company": "Thoropass, Inc",
+      "total_share": 28,
+      "paid_impressions": 28
+    },
+    {
+      "company": "SAP",
+      "total_share": 21,
+      "paid_impressions": 21
+    },
+    {
+      "company": "Intuit Quickbooks",
+      "total_share": 14,
+      "paid_impressions": 14
+    },
+    {
+      "company": "RingCentral",
+      "total_share": 13,
+      "paid_impressions": 13
+    },
+    {
+      "company": "Toptal",
+      "total_share": 9,
+      "paid_impressions": 9
+    },
+    {
+      "company": "Superblocks",
+      "total_share": 8,
+      "paid_impressions": 8
+    },
+    {
+      "company": "Salesforce",
+      "total_share": 8,
+      "paid_impressions": 8
+    },
+    {
+      "company": "GLOBAL DATA INTELLIGENCE LIMITED",
+      "total_share": 7,
+      "paid_impressions": 7
+    },
+    {
+      "company": "Black Duck",
+      "total_share": 7,
+      "paid_impressions": 7
+    },
+    {
+      "company": "Cloudflare",
+      "total_share": 6,
+      "paid_impressions": 6
+    },
+    {
+      "company": "BestMoney",
+      "total_share": 4,
+      "paid_impressions": 4
+    },
+    {
+      "company": "DataDome",
+      "total_share": 3,
+      "paid_impressions": 3
+    },
+    {
+      "company": "Truework",
+      "total_share": 3,
+      "paid_impressions": 3
+    },
+    {
+      "company": "Astra Security",
+      "total_share": 3,
+      "paid_impressions": 3
+    },
+    {
+      "company": "ChatGPT",
+      "total_share": 3,
+      "paid_impressions": 3
+    },
+    {
+      "company": "MIND",
+      "total_share": 3,
+      "paid_impressions": 3
+    },
+    {
+      "company": "Chargeblast",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Cursor",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Rubrik, Inc.",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Attio",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Emergent",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "FINTRX",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Oxagile LLC",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Optum Insight",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "SailPoint",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Lumen",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Intuition Machines, Inc.",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Freshpaint.io",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "wolfSSL Inc.",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "ZeroTier",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Plerion Pty Ltd",
+      "total_share": 2,
+      "paid_impressions": 2
+    },
+    {
+      "company": "Quorum",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Securden, Inc",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "BairesDev",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Capital Numbers LLC",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Netsol Technologies, Inc.",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Willard Powell, Inc.",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Procurify Technologies Inc.",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "BlackFire Cyber Insurance, LLC",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Evertune Inc.",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Harper",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Lorikeet",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Thunder GPU, Inc.",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "UiPath Inc",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "MICROTECH COMPUTER SERVICES, INC.",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "OneTrust",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Developers.net",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Carta",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Gravitee Topco Limited",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Potomac Growth",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "CorgiAI, Inc.",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Komodor Inc",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Digital Ocean",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Caplinked Inc.",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "FISPAN",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Navan",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Threat Digital, LLC",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "HoneyBook Inc",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Rippling",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Monday.com",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "Comcast Business",
+      "total_share": 1,
+      "paid_impressions": 1
+    },
+    {
+      "company": "TrustCloud",
+      "total_share": 1,
+      "paid_impressions": 1
+    }
+  ],
+  "advertisers": [
+    {
+      "advertiser": "Mastercard",
+      "hits": 81,
+      "sample_copy": "Give your business a data edge with a B2B intelligence platform built on payments transaction data."
+    },
+    {
+      "advertiser": "Quorum",
+      "hits": 1,
+      "sample_copy": "Get early warning alerts on legislative shifts."
+    },
+    {
+      "advertiser": "SAP",
+      "hits": 21,
+      "sample_copy": "Gain insights with AI-driven finance solutions."
+    },
+    {
+      "advertiser": "Securden, Inc",
+      "hits": 1,
+      "sample_copy": "Securden Unified PAM. Simple setup, enterprise security, flexible on-prem or SaaS."
+    },
+    {
+      "advertiser": "DataDome",
+      "hits": 3,
+      "sample_copy": "Distinguish legitimate agents from malicious ones. Trust verification for enterprise APIs & apps"
+    },
+    {
+      "advertiser": "Thoropass, Inc",
+      "hits": 28,
+      "sample_copy": "The one audit partner for faster, cleaner compliance outcomes."
+    },
+    {
+      "advertiser": "Aikido Security",
+      "hits": 39,
+      "sample_copy": "Reports auditors accept. Start in mins."
+    },
+    {
+      "advertiser": "Chargeblast",
+      "hits": 2,
+      "sample_copy": "Real-time alerts before disputes become chargebacks. Trusted by merchants worldwide. Book a demo."
+    },
+    {
+      "advertiser": "Intuit Quickbooks",
+      "hits": 14,
+      "sample_copy": "Low flat rates, no monthly fees, and no setup costs - only pay when you get paid."
+    },
+    {
+      "advertiser": "BairesDev",
+      "hits": 1,
+      "sample_copy": "Senior engineers on your team in 2 weeks. No transition gap."
+    },
+    {
+      "advertiser": "Truework",
+      "hits": 3,
+      "sample_copy": "Instant database, payroll credentials, and manual fallback — all automatic. Your team never chases."
+    },
+    {
+      "advertiser": "Toptal",
+      "hits": 9,
+      "sample_copy": "Choose from 20K+ highly qualified developers."
+    },
+    {
+      "advertiser": "Capital Numbers LLC",
+      "hits": 1,
+      "sample_copy": "Scale with dedicated developers, AI engineers, and cloud experts from Capital Numbers."
+    },
+    {
+      "advertiser": "Netsol Technologies, Inc.",
+      "hits": 1,
+      "sample_copy": "AI-enabled lending platform for captives, banks and auto lenders."
+    },
+    {
+      "advertiser": "RingCentral",
+      "hits": 13,
+      "sample_copy": "Meet MiFID II and Dodd-Frank with secure, audited archiving."
+    },
+    {
+      "advertiser": "GLOBAL DATA INTELLIGENCE LIMITED",
+      "hits": 7,
+      "sample_copy": "Access global UBO and KYB data for faster onboarding and compliance."
+    },
+    {
+      "advertiser": "Cursor",
+      "hits": 2,
+      "sample_copy": "The next generation AI IDE for developers."
+    },
+    {
+      "advertiser": "Superblocks",
+      "hits": 8,
+      "sample_copy": "AI writes code. It won't write your audit trail or compliance evidence. Superblocks does."
+    },
+    {
+      "advertiser": "BestMoney",
+      "hits": 4,
+      "sample_copy": "Compare Stock Trading Platforms Online."
+    },
+    {
+      "advertiser": "Willard Powell, Inc.",
+      "hits": 1,
+      "sample_copy": "Schaumburg systematic funds partner with us to hire the AI minds behind their edge."
+    },
+    {
+      "advertiser": "Salesforce",
+      "hits": 8,
+      "sample_copy": "Discover how Agent Fabric reduces AI agent fragmentation."
+    },
+    {
+      "advertiser": "Rubrik, Inc.",
+      "hits": 2,
+      "sample_copy": "1/3 of IT work will be spent on AI data debt by 2030. Learn how to minimize the burden."
+    },
+    {
+      "advertiser": "Attio",
+      "hits": 2,
+      "sample_copy": "Stay on top of every portfolio company. Try free."
+    },
+    {
+      "advertiser": "Procurify Technologies Inc.",
+      "hits": 1,
+      "sample_copy": "Certified NetSuite partner with native Sage Intacct integration. Book a demo to see the sync."
+    },
+    {
+      "advertiser": "Emergent",
+      "hits": 2,
+      "sample_copy": "Emergent bridges the gap between ship and earn."
+    },
+    {
+      "advertiser": "BlackFire Cyber Insurance, LLC",
+      "hits": 1,
+      "sample_copy": "Free cyber insurance quote in minutes. Cover data breaches & cyber attacks. No obligation."
+    },
+    {
+      "advertiser": "Evertune Inc.",
+      "hits": 1,
+      "sample_copy": "Audit prompts, pages, and answer coverage."
+    },
+    {
+      "advertiser": "FINTRX",
+      "hits": 2,
+      "sample_copy": "Verified data on 45,000+ RIA and broker-dealer firms, 790,000+ reps, and 4,600+ family offices"
+    },
+    {
+      "advertiser": "Harper",
+      "hits": 1,
+      "sample_copy": "Learn how you can use AI to automate contractual compliance oversight"
+    },
+    {
+      "advertiser": "Oxagile LLC",
+      "hits": 2,
+      "sample_copy": "We help integrate PSPs, optimize infrastructure, and ensure full compliance without risks."
+    },
+    {
+      "advertiser": "Optum Insight",
+      "hits": 2,
+      "sample_copy": "Help identify risks early with advanced analytics and data"
+    },
+    {
+      "advertiser": "Lorikeet",
+      "hits": 1,
+      "sample_copy": "Built for regulated workflows. Trusted by Flex and Eucalyptus."
+    },
+    {
+      "advertiser": "Thunder GPU, Inc.",
+      "hits": 1,
+      "sample_copy": "Cloud GPUs without egress fees."
+    },
+    {
+      "advertiser": "UiPath Inc",
+      "hits": 1,
+      "sample_copy": "Read the guide to scale AI agents with governed orchestration across people and robots."
+    },
+    {
+      "advertiser": "MICROTECH COMPUTER SERVICES, INC.",
+      "hits": 1,
+      "sample_copy": "Protect your firm from financial cybercrime."
+    },
+    {
+      "advertiser": "OneTrust",
+      "hits": 1,
+      "sample_copy": "Automate third-party management from intake and risk assessment to mitigation and reporting."
+    },
+    {
+      "advertiser": "Black Duck",
+      "hits": 7,
+      "sample_copy": "Tired of AppSec tool sprawl? Unify every analysis engine in one platform."
+    },
+    {
+      "advertiser": "Developers.net",
+      "hits": 1,
+      "sample_copy": "Scale your engineering headcount fast with dedicated contract developers ready to integrate."
+    },
+    {
+      "advertiser": "SailPoint",
+      "hits": 2,
+      "sample_copy": "Govern every identity with confidence"
+    },
+    {
+      "advertiser": "Astra Security",
+      "hits": 3,
+      "sample_copy": "AI & human driven pentesting that exceeds SOC2, ISO27001 & HIPAA compliance requirements."
+    },
+    {
+      "advertiser": "Carta",
+      "hits": 1,
+      "sample_copy": "Carta manages cap tables, equity, and fund admin for 50,000+ companies and 2.5M+ shareholders."
+    },
+    {
+      "advertiser": "ChatGPT",
+      "hits": 3,
+      "sample_copy": "Go from prompt to PR in minutes. Codex plans the work, edits the code, and opens the PR."
+    },
+    {
+      "advertiser": "Gravitee Topco Limited",
+      "hits": 1,
+      "sample_copy": "Help developers and AI agents discover, access, and consume Kafka topics faster."
+    },
+    {
+      "advertiser": "Lumen",
+      "hits": 2,
+      "sample_copy": "The Trusted Network for AI℠"
+    },
+    {
+      "advertiser": "Potomac Growth",
+      "hits": 1,
+      "sample_copy": "Reach more potential investors with a tested raise strategy. 140 Raises supported in 2025"
+    },
+    {
+      "advertiser": "CorgiAI, Inc.",
+      "hits": 1,
+      "sample_copy": "Let Corgi Labs help you accept more good payments, block more bads one, and boost your revenue"
+    },
+    {
+      "advertiser": "Cloudflare",
+      "hits": 6,
+      "sample_copy": "Secure your data. Encrypt your connections. Robust protection."
+    },
+    {
+      "advertiser": "Intuition Machines, Inc.",
+      "hits": 2,
+      "sample_copy": "Privacy-first bot detection for online services."
+    },
+    {
+      "advertiser": "Komodor Inc",
+      "hits": 1,
+      "sample_copy": "AI-powered investigations expose PDBs, stuck nodes and policies that block consolidation."
+    },
+    {
+      "advertiser": "Digital Ocean",
+      "hits": 1,
+      "sample_copy": "Policy-driven routing. Public Preview now."
+    },
+    {
+      "advertiser": "Caplinked Inc.",
+      "hits": 1,
+      "sample_copy": "Full audit trail. Granular permissions. SOC 2 Type II certified. $399/mo flat — no per-user pricing."
+    },
+    {
+      "advertiser": "MIND",
+      "hits": 3,
+      "sample_copy": "Find sensitive data, fix data risks and stop data leaks."
+    },
+    {
+      "advertiser": "Freshpaint.io",
+      "hits": 2,
+      "sample_copy": "Put compliant data to work in marketing."
+    },
+    {
+      "advertiser": "wolfSSL Inc.",
+      "hits": 2,
+      "sample_copy": "Post Quantum Cryptography FIPS Enablement today with Validated Entropy"
+    },
+    {
+      "advertiser": "ZeroTier",
+      "hits": 2,
+      "sample_copy": "Control, visibility, and security for critical finance systems."
+    },
+    {
+      "advertiser": "FISPAN",
+      "hits": 1,
+      "sample_copy": "Connect your bank to your ERP.  Automate your bank feeds and reconciliation."
+    },
+    {
+      "advertiser": "Plerion Pty Ltd",
+      "hits": 2,
+      "sample_copy": "Independent and multi-cloud. An autonomous agent that fixes the 1% of risks that actually matter"
+    },
+    {
+      "advertiser": "Navan",
+      "hits": 1,
+      "sample_copy": "Real-time dashboards, automated policy enforcement, and ERP-ready expense data in one place."
+    },
+    {
+      "advertiser": "Threat Digital, LLC",
+      "hits": 1,
+      "sample_copy": "Find related-party exposure before BIS rule enforcement returns."
+    },
+    {
+      "advertiser": "HoneyBook Inc",
+      "hits": 1,
+      "sample_copy": "Branded invoices, card and bank payments, and automatic reminders for late clients."
+    },
+    {
+      "advertiser": "Rippling",
+      "hits": 1,
+      "sample_copy": "Available For SOC 2 Type 1 & Type 2. No Chasing Tickets. No Fire Drills At Audit Time."
+    },
+    {
+      "advertiser": "Monday.com",
+      "hits": 1,
+      "sample_copy": "Human-led counsel. AI-driven execution. One platform built for both."
+    },
+    {
+      "advertiser": "Comcast Business",
+      "hits": 1,
+      "sample_copy": "Stay protected w/ solutions designed for Small Business."
+    },
+    {
+      "advertiser": "TrustCloud",
+      "hits": 1,
+      "sample_copy": "The first AI-native Security Assurance platform designed to earn organizational trust"
+    }
+  ]
+}
