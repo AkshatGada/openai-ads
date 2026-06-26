@@ -113,21 +113,20 @@ export default function HomePage() {
 /* ── Data Showcase ── */
 function DataShowcase() {
   const [oms, setOms] = useState<IndustryData | null>(null);
-  const [realEstate, setRealEstate] = useState<IndustryData | null>(null);
+  const [enterprise, setEnterprise] = useState<IndustryData | null>(null);
 
   useEffect(() => {
     fetch("/api/industries/oms")
       .then((r) => r.json())
       .then(setOms)
       .catch(() => {});
-    fetch("/api/industries/real-estate")
+    fetch("/api/industries/enterprise")
       .then((r) => r.json())
-      .then(setRealEstate)
+      .then(setEnterprise)
       .catch(() => {});
   }, []);
 
-  // Aggregate advertisers across all probes
-  const allProbes = [...(oms?.probes ?? []), ...(realEstate?.probes ?? [])];
+  const allProbes = [...(oms?.probes ?? []), ...(enterprise?.probes ?? [])];
   const advertiserMap = new Map<string, number>();
   for (const p of allProbes) {
     for (const ad of p.ads) {
@@ -197,9 +196,6 @@ function DataShowcase() {
           </div>
         </motion.div>
       </section>
-
-      {/* ── Market overview chart ── */}
-      <MarketChart oms={oms} realEstate={realEstate} />
 
       {/* ── What an ad looks like ── */}
       <section className="border-t border-border bg-surface/30">
@@ -279,7 +275,7 @@ function DataShowcase() {
       </section>
 
       {/* ── Industry breakdown ── */}
-      <IndustryBreakdown oms={oms} realEstate={realEstate} />
+      <IndustryBreakdown oms={oms} enterprise={enterprise} />
 
       {/* ── How it works ── */}
       <section className="border-t border-border">
@@ -353,10 +349,10 @@ function DataShowcase() {
 
 function IndustryBreakdown({
   oms,
-  realEstate,
+  enterprise,
 }: {
   oms: IndustryData | null;
-  realEstate: IndustryData | null;
+  enterprise: IndustryData | null;
 }) {
   const industries = [
     {
@@ -370,10 +366,10 @@ function IndustryBreakdown({
         .map((c) => ({ name: c.company, count: c.paid_impressions })),
     },
     {
-      name: "Real Estate",
-      slug: "real-estate",
-      advertisers: realEstate?.patterns?.advertisers?.length ?? 0,
-      topAdvertisers: (realEstate?.patterns?.competitor_frequency ?? [])
+      name: "Enterprise & Fintech",
+      slug: "enterprise",
+      advertisers: enterprise?.patterns?.advertisers?.length ?? 0,
+      topAdvertisers: (enterprise?.patterns?.competitor_frequency ?? [])
         .filter((c) => c.paid_impressions > 0)
         .sort((a, b) => b.paid_impressions - a.paid_impressions)
         .slice(0, 3)
@@ -449,91 +445,3 @@ function IndustryBreakdown({
   );
 }
 
-function MarketChart({
-  oms,
-  realEstate,
-}: {
-  oms: IndustryData | null;
-  realEstate: IndustryData | null;
-}) {
-  const omsProbes = oms?.probes?.length ?? 0;
-  const reProbes = realEstate?.probes?.length ?? 0;
-  const omsAds = oms?.probes?.reduce((s, p) => s + p.ads.length, 0) ?? 0;
-  const reAds = realEstate?.probes?.reduce((s, p) => s + p.ads.length, 0) ?? 0;
-  const totalProbes = omsProbes + reProbes || 1;
-  const totalAds = omsAds + reAds || 1;
-
-  const segments = [
-    { name: "Stablecoin", probes: omsProbes, ads: omsAds, color: "bg-accent" },
-    { name: "Real Estate", probes: reProbes, ads: reAds, color: "bg-text-faint" },
-  ];
-
-  return (
-    <section className="border-t border-border">
-      <div className="mx-auto max-w-[1320px] px-6 py-20 md:px-10 md:py-28">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: DUR.base, ease: EASE_OUT }}
-        >
-          <h2 className="mb-10 text-center font-sans text-2xl font-semibold text-text md:text-3xl">
-            Ad distribution across industries
-          </h2>
-
-          {/* Probe distribution bar */}
-          <div className="mb-8">
-            <p className="mb-3 font-sans text-sm text-text-muted">Probes by industry</p>
-            <div className="relative h-6 w-full overflow-hidden rounded-full bg-border">
-              {segments.map((seg, i) => (
-                <motion.div
-                  key={seg.name}
-                  className={`absolute inset-y-0 ${seg.color}`}
-                  style={{
-                    left: `${segments.slice(0, i).reduce((s, x) => s + (x.probes / totalProbes) * 100, 0)}%`,
-                    width: `${(seg.probes / totalProbes) * 100}%`,
-                  }}
-                  initial={{ width: 0 }}
-                  whileInView={{ width: `${(seg.probes / totalProbes) * 100}%` }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, ease: EASE_OUT, delay: i * 0.15 }}
-                />
-              ))}
-            </div>
-            <div className="mt-2 flex justify-between font-sans text-xs text-text-faint">
-              {segments.map((seg) => (
-                <span key={seg.name}>{seg.name}</span>
-              ))}
-            </div>
-          </div>
-
-          {/* Ads distribution bar */}
-          <div>
-            <p className="mb-3 font-sans text-sm text-text-muted">Ads detected by industry</p>
-            <div className="relative h-6 w-full overflow-hidden rounded-full bg-border">
-              {segments.map((seg, i) => (
-                <motion.div
-                  key={seg.name}
-                  className={`absolute inset-y-0 ${seg.color}`}
-                  style={{
-                    left: `${segments.slice(0, i).reduce((s, x) => s + (x.ads / totalAds) * 100, 0)}%`,
-                    width: `${(seg.ads / totalAds) * 100}%`,
-                  }}
-                  initial={{ width: 0 }}
-                  whileInView={{ width: `${(seg.ads / totalAds) * 100}%` }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, ease: EASE_OUT, delay: i * 0.15 + 0.2 }}
-                />
-              ))}
-            </div>
-            <div className="mt-2 flex justify-between font-sans text-xs text-text-faint">
-              {segments.map((seg) => (
-                <span key={seg.name}>{seg.name}</span>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
