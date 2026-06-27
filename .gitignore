@@ -16,3 +16,4 @@ browser-profiles/
 playwright-outputs/
 playwright-logs/
 .vercel
+.opencode/
